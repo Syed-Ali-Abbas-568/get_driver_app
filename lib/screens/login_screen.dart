@@ -7,6 +7,7 @@ import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
 
 class LoginScreen extends StatefulWidget {
+
   const LoginScreen({super.key});
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -20,15 +21,15 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showSpinner = false;
   bool _passwordVisible = true;
   bool isLoginError = false;
-  double height = 0;
-  double width = 0;
+  double height=0;
+  double width=0;
   // GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   // GoogleSignInAccount? _user;
   // GoogleSignInAccount? get user => _user;
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    height=MediaQuery.of(context).size.height;
+    width=MediaQuery.of(context).size.width;
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
@@ -39,11 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.only(
                     top: height * 0.085,
                     left: height * 0.0225,
-<<<<<<< HEAD
                     // bottom: height * 0.113,
-=======
-                    bottom: height * 0.113,
->>>>>>> dc2c4f972b235b61f96cde9c1366789102c0982d
                     right: height * 0.0225),
                 child: const Text(
                   "Sign in",
@@ -92,12 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value!.isEmpty) {
                               return "Field required";
                             }
-<<<<<<< HEAD
                             if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-=======
-                            if (!RegExp(
-                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
->>>>>>> dc2c4f972b235b61f96cde9c1366789102c0982d
                                 .hasMatch(value)) {
                               return "Enter a valid email";
                             }
@@ -185,13 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 42.0,
                               child: const Text(
                                 'Log In',
-<<<<<<< HEAD
                                 style:
                                     TextStyle(color: Colors.white, fontSize: 16),
-=======
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
->>>>>>> dc2c4f972b235b61f96cde9c1366789102c0982d
                               ),
                             ),
                           ),
@@ -202,10 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text(
                               'Don\'t have an account? ',
                               style: TextStyle(
-<<<<<<< HEAD
                                 color: Color(0xff8893AC),
-=======
->>>>>>> dc2c4f972b235b61f96cde9c1366789102c0982d
                                 fontSize: 14,
                               ),
                             ),
@@ -228,7 +212,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-<<<<<<< HEAD
                         DividerWidget(width: width, height: height),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -248,32 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: height,
                                 img: "facebook_logo",
                                 text: "Facebook",
-=======
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(left: width * 0.032),
-                                child: ImgButton(
-                                  height: height,
-                                  img: "google_logo",
-                                  text: "Google",
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: width * 0.04,
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(right: width * 0.032),
-                                child: ImgButton(
-                                  height: height,
-                                  img: "facebook_logo",
-                                  text: "Facebook",
-                                ),
->>>>>>> dc2c4f972b235b61f96cde9c1366789102c0982d
                               ),
                             ),
                           ],
