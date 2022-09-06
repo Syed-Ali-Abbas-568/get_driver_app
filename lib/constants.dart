@@ -17,7 +17,7 @@ const kMessageTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.grey, width: 2.0),
+    borderSide: BorderSide(color: Color(0xff152C5E), width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
 );

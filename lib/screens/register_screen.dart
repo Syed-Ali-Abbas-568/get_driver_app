@@ -1,6 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
+import 'package:get_driver_app/widgets/divider_widget.dart';
+import 'package:get_driver_app/widgets/img_button.dart';
 import 'login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -12,10 +14,10 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   // final _auth = FirebaseAuth.instance;
-  final userNameController = TextEditingController();
+  final lNameController = TextEditingController();
   final passController = TextEditingController();
-  final C_pass_controller = TextEditingController();
-  final name_Controller = TextEditingController();
+  final fNameController = TextEditingController();
+  final emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   // bool showSpinner = false;
   bool isLoginError = false;
@@ -25,233 +27,274 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   // GoogleSignInAccount? _user;
 
   // GoogleSignInAccount? get user => _user;
-
+  double height=0;
+  double width=0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Visibility(
-                    visible: isLoginError,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        errorMessage,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
+    height=MediaQuery.of(context).size.height;
+    width=MediaQuery.of(context).size.width;
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    top: height * 0.085,
+                    left: height * 0.0225,
+                    right: height * 0.0225),
+                child: const Text(
+                  "Sign up",
+                  style: TextStyle(
+                    color: Color(0xff152C5E),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Name is required";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.next,
-                    cursorColor: Colors.purpleAccent,
-                    keyboardType: TextInputType.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.black),
-                    controller: name_Controller,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText: 'Enter Your Full Name',
-                      icon: const Icon(Icons.account_circle),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Field required";
-                      }
-                      if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                          .hasMatch(value)) {
-                        return "Enter a valid email";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.next,
-                    cursorColor: Colors.purple,
-                    keyboardType: TextInputType.emailAddress,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.black),
-                    controller: userNameController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText: 'Enter Your Email',
-                      icon: const Icon(Icons.email),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      RegExp regex = RegExp(r"^.{8,}$");
-                      if (value!.isEmpty) {
-                        return "Field is required";
-                      }
-                      if (!regex.hasMatch(value)) {
-                        return "Password must contain 8 characters minimum";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.done,
-                    cursorColor: Colors.purple,
-                    textAlign: TextAlign.center,
-                    obscureText: _passwordVisible,
-                    style: const TextStyle(color: Colors.black),
-                    controller: passController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
-                      ),
-                      hintText: 'Enter Your Password',
-                      icon: const Icon(Icons.key),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Field is required";
-                      }
-                      if (value != passController.text) {
-                        return "Password do not match try again";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.done,
-                    cursorColor: Colors.purple,
-                    textAlign: TextAlign.center,
-                    obscureText: _passwordVisible,
-                    style: const TextStyle(color: Colors.black),
-                    controller: C_pass_controller,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
-                      ),
-                      hintText: 'Confirm Password',
-                      icon: const Icon(Icons.key),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Material(
-                      color: Colors.purple,
-                      borderRadius: const BorderRadius.all(Radius.circular(30.0)),
-                      elevation: 5.0,
-                      child: MaterialButton(
-                        onPressed: () {
-                          SignUp(
-                              userNameController.text, passController.text);
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        splashColor: null,
-                        minWidth: 200.0,
-                        height: 42.0,
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: height * 0.0213, right: height * 0.0213),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      const Text('Already have an account? '),
-                      TextButton(
-                        style: const ButtonStyle(
-                            splashFactory: NoSplash
-                                .splashFactory //removing onclick splash color
+                      const SizedBox(
+                        height: 48.0,
+                      ),
+                      // Visibility(
+                      //   visible: isLoginError,
+                      //   child: const Text(
+                      //     "Please check your email or password",
+                      //     style: TextStyle(
+                      //       color: Colors.red,
+                      //       fontSize: 15,
+                      //     ),
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: height * 0.01),
+                        child: const Text(
+                          "First Name",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()));
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Field required";
+                          }
+                          if (!RegExp(r"^.{8,}$")
+                              .hasMatch(value)) {
+                            return "Enter a valid Name";
+                          }
+                          return null;
                         },
-                        child: const Text("LogIn"),
+                        cursorColor: Colors.purple,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        controller: fNameController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+
+                          hintText: 'John',
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: height * 0.01,top: height*0.02),
+                        child: const Text(
+                          "Last Name",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Field required";
+                          }
+                          if (!RegExp(r"^.{8,}$")
+                              .hasMatch(value)) {
+                            return "Enter a valid Last name";
+                          }
+                          return null;
+                        },
+                        cursorColor: Colors.purple,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        controller: lNameController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+
+                          hintText: 'Doe',
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: height * 0.01,top: height*0.02),
+                        child: const Text(
+                          "Email",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Field required";
+                          }
+                          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                              .hasMatch(value)) {
+                            return "Enter a valid email";
+                          }
+                          return null;
+                        },
+                        cursorColor: Colors.purple,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        controller: emailController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+
+                          hintText: 'example@gmail.com',
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: height * 0.02, bottom: height * 0.01),
+                        child: const Text(
+                          "Password",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          RegExp regex = RegExp(r"^.{8,}$");
+                          if (value!.isEmpty) {
+                            return "Field is required";
+                          }
+                          if (!regex.hasMatch(value)) {
+                            return "Password must contain 8 characters minimum";
+                          }
+                          return null;
+                        },
+                        cursorColor: Colors.purple,
+                        textInputAction: TextInputAction.done,
+                        obscureText: _passwordVisible,
+                        controller: passController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _passwordVisible
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                          ),
+                          hintText: '**********',
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: height * 0.055),
+                        child: Material(
+                          color: const Color(0xff152C5E),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(30.0)),
+                          elevation: 5.0,
+                          child: MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                // showSpinner = true;
+                              });
+                              // singIn(emailController.text, passController.text);
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
+                            minWidth: 200.0,
+                            height: 42.0,
+                            child: const Text(
+                              'Log In',
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Text(
+                            'Already have an account',
+                            style: TextStyle(
+                              color: Color(0xff8893AC),
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextButton(
+                            style: const ButtonStyle(
+                              splashFactory: NoSplash.splashFactory,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                      const LoginScreen()));
+                            },
+                            child: const Text(
+                              "Sign in",
+                              style: TextStyle(
+                                  color: Color(0xff152C5E), fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                      DividerWidget(width: width, height: height),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: width * 0.032),
+                            child: ImgButton(
+                              height: height,
+                              img: "google_logo",
+                              text: "Google",
+                            ),
+                          ),
+                          SizedBox(width: width*0.04,),
+                          Container(
+                            margin: EdgeInsets.only(right: width*0.032),
+                            child: ImgButton(
+                              height: height,
+                              img: "facebook_logo",
+                              text: "Facebook",
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  // Container(
-                  //   height: 35,
-                  //   child: GestureDetector(
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //       children: [
-                  //         Image.asset("image/google_logo.png"),
-                  //         Text(
-                  //           "oogle SignIn",
-                  //           style: TextStyle(
-                  //             fontSize: 20,
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     onTap: () {
-                  //       try {
-                  //         print("we will sign in through google");
-                  //         // googleSignIn();
-                  //       } catch (e) {
-                  //         print(e.toString());
-                  //       }
-                  //     },
-                  //   ),
-                  // ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
-
       ),
     );
   }
+
 
   void SignUp(String email, String password) async {
     // try {
