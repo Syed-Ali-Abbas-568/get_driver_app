@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/screens/register_screen.dart';
+import 'package:get_driver_app/widgets/img_button.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -34,21 +35,23 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top:height*0.085, left: 18),
-              child: const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Welcome Back,",
-                  style: TextStyle(
-                    color: Color(0xff152C5E),
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+              padding: EdgeInsets.only(
+                  top: height * 0.085,
+                  left: height * 0.0225,
+                  bottom: height * 0.113,
+                  right: height * 0.0225),
+              child: const Text(
+                "Sign in",
+                style: TextStyle(
+                  color: Color(0xff152C5E),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.only(
+                  left: height * 0.0213, right: height * 0.0213),
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
@@ -69,6 +72,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: height * 0.01),
+                        child: const Text(
+                          "Email",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                       TextFormField(
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -83,15 +96,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         cursorColor: Colors.purple,
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.emailAddress,
-                        textAlign: TextAlign.center,
                         controller: emailController,
                         decoration: kMessageTextFieldDecoration.copyWith(
-                          hintText: 'Enter Your Email',
-                          icon: const Icon(Icons.email),
+                          hintText: 'example@gmail.com',
                         ),
                       ),
-                      const SizedBox(
-                        height: 8.0,
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: height * 0.02, bottom: height * 0.01),
+                        child: const Text(
+                          "Password",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                       TextFormField(
                         validator: (value) {
@@ -107,15 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         cursorColor: Colors.purple,
                         textInputAction: TextInputAction.done,
                         obscureText: _passwordVisible,
-                        textAlign: TextAlign.center,
                         controller: passController,
                         decoration: kMessageTextFieldDecoration.copyWith(
                           suffixIcon: IconButton(
                             icon: Icon(
                               _passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Theme.of(context).primaryColorDark,
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
                             ),
                             onPressed: () {
                               setState(() {
@@ -123,17 +140,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                           ),
-                          hintText: 'Enter Your Password',
-                          icon: const Icon(Icons.vpn_key),
+                          hintText: '**********',
                         ),
                       ),
-                      const SizedBox(
-                        height: 24.0,
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xff152C5E),
+                            ),
+                          ),
+                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        padding: EdgeInsets.only(top: height * 0.055),
                         child: Material(
-                          color: Colors.purple,
+                          color: const Color(0xff152C5E),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(30.0)),
                           elevation: 5.0,
@@ -149,7 +175,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 42.0,
                             child: const Text(
                               'Log In',
-                              style: TextStyle(color: Colors.white),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
                         ),
@@ -157,7 +184,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          const Text('Don\'t have an account? '),
+                          const Text(
+                            'Don\'t have an account? ',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
                           TextButton(
                             style: const ButtonStyle(
                               splashFactory: NoSplash.splashFactory,
@@ -169,36 +201,36 @@ class _LoginScreenState extends State<LoginScreen> {
                                       builder: (context) =>
                                           const RegistrationScreen()));
                             },
-                            child: const Text("SignUp"),
+                            child: const Text(
+                              "SignUp",
+                              style: TextStyle(
+                                  color: Color(0xff152C5E), fontSize: 14),
+                            ),
                           ),
                         ],
                       ),
-                      // Container(
-                      //   height: 35,
-                      //   child: GestureDetector(
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         Image.asset("image/google_logo.png"),
-                      //         Text(
-                      //           "oogle SignIn",
-                      //           style: TextStyle(
-                      //             fontSize: 20,
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     onTap: () {
-                      //       try {
-                      //         print("we will sign in through google");
-                      //         // googleSignIn();
-                      //       } catch (e) {
-                      //         // Fluttertoast.showToast(msg: e.toString());
-                      //         print(e.toString());
-                      //       }
-                      //     },
-                      //   ),
-                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: width * 0.032),
+                            child: ImgButton(
+                              height: height,
+                              img: "google_logo",
+                              text: "Google",
+                            ),
+                          ),
+                          SizedBox(width: width*0.04,),
+                          Container(
+                            margin: EdgeInsets.only(right: width*0.032),
+                            child: ImgButton(
+                              height: height,
+                              img: "facebook_logo",
+                              text: "Facebook",
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
