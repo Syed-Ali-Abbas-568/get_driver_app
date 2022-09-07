@@ -4,7 +4,8 @@ class ImgButton extends StatelessWidget {
   final double height;
   final String img;
   final String text;
-  const ImgButton({Key? key,required this.height,required this.text,required this.img}) : super(key: key);
+  final VoidCallback onPressed;
+  const ImgButton({Key? key,required this.height,required this.text,required this.img,required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class ImgButton extends StatelessWidget {
             strokeAlign: StrokeAlign.inside),
       ),
       child: GestureDetector(
+        onTap: onPressed,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -37,15 +39,6 @@ class ImgButton extends StatelessWidget {
             ),
           ],
         ),
-        onTap: () {
-          try {
-            print("we will sign in through google");
-            // googleSignIn();
-          } catch (e) {
-            // Fluttertoast.showToast(msg: e.toString());
-            print(e.toString());
-          }
-        },
       ),
     );
   }
