@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
+  bool showGoogleSpinner = false;
   bool _passwordVisible = true;
   bool isLoginError = false;
   double height = 0;
@@ -223,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                           Container(
                             margin: EdgeInsets.only(left: width * 0.032),
-                            child: showSpinner
+                            child: showGoogleSpinner
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
@@ -239,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Container(
                             margin: EdgeInsets.only(right: width * 0.032),
-                            child: showSpinner
+                            child: showGoogleSpinner
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
@@ -298,11 +299,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future googleSignIn() async {
     final googleUser = await _googleSignIn.signIn();
     setState(() {
-      showSpinner = true;
+      showGoogleSpinner = true;
     });
     if (googleUser == null) return;
     _user = googleUser;
-
+    print("Google button pressed");
     final googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
@@ -311,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     await FirebaseAuth.instance.signInWithCredential(credential);
     setState(() {
-      showSpinner = false;
+      showGoogleSpinner = false;
     });
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(

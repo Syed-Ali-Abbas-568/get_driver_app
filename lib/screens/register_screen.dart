@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +30,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool showSpinner = false;
+  bool showGoogleSpinner = false;
   bool isLoginError = false;
   String errorMessage = "Something Went Wrong Please Try again";
   bool _passwordVisible = true;
@@ -240,24 +240,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       children: [
                         Container(
                           margin: EdgeInsets.only(left: width * 0.032),
-                          child: ImgButton(
-                            height: height,
-                            img: "google_logo",
-                            text: "Google",
-                            onPressed: googleSignIn,
-                          ),
+                          child: showGoogleSpinner
+                              ? const CircularProgressIndicator(
+                                  color: Color(0xff152C5E),
+                                )
+                              : ImgButton(
+                                  height: height,
+                                  img: "google_logo",
+                                  text: "Google",
+                                  onPressed: googleSignIn,
+                                ),
                         ),
                         SizedBox(
                           width: width * 0.04,
                         ),
                         Container(
                           margin: EdgeInsets.only(right: width * 0.032),
-                          child: ImgButton(
-                            height: height,
-                            img: "facebook_logo",
-                            text: "Facebook",
-                            onPressed: googleSignIn,
-                          ),
+                          child: showGoogleSpinner
+                              ? const CircularProgressIndicator(
+                                  color: Color(0xff152C5E),
+                                )
+                              : ImgButton(
+                                  height: height,
+                                  img: "facebook_logo",
+                                  text: "Facebook",
+                                  onPressed: googleSignIn,
+                                ),
                         ),
                       ],
                     ),
@@ -292,7 +300,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       } else {
         setState(() {
           showSpinner = false;
-          sleep(const Duration(seconds: 5));
           isLoginError = true;
         });
       }
@@ -306,6 +313,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   postDetailsToFireStore() async {
     try {
+      print("came to submit data");
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
       UserModel userModel = UserModel();
@@ -328,8 +336,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Future googleSignIn() async {
+    print("Google Button pressed");
     setState(() {
-      showSpinner = true;
+      showGoogleSpinner = true;
     });
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) return;
@@ -348,11 +357,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       lNameController.text = name[1];
     });
 
-    print(fNameController);
-    print(lNameController);
+    print("Names are");
+    print(fNameController.text);
+    print(lNameController.text);
     postDetailsToFireStore();
     setState(() {
-      showSpinner = false;
+      showGoogleSpinner = false;
     });
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
