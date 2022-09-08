@@ -126,13 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           return null;
                         },
-                          cursorColor: Colors.purple,
-                          textInputAction: TextInputAction.done,
-                          obscureText: _passwordVisible,
-                          controller: passController,
-                          decoration: kMessageTextFieldDecoration.copyWith(
-                            suffixIcon: IconButton(
-                              icon: Icon(
+                        cursorColor: Colors.purple,
+                        textInputAction: TextInputAction.done,
+                        obscureText: _passwordVisible,
+                        controller: passController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+                          suffixIcon: IconButton(
+                            icon: Icon(
                               _passwordVisible
                                   ? Icons.visibility_outlined
                                   : Icons.visibility_off_outlined,
@@ -144,24 +144,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                           ),
-                            hintText: '**********',
-                          ),
+                          hintText: '**********',
                         ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xff152C5E),
-                              ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xff152C5E),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: height * 0.055),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: height * 0.055),
                         child: Material(
                           color: const Color(0xff152C5E),
                           borderRadius:
@@ -189,39 +189,39 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const Text(
-                              'Don\'t have an account? ',
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Text(
+                            'Don\'t have an account? ',
+                            style: TextStyle(
+                              color: Color(0xff8893AC),
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextButton(
+                            style: const ButtonStyle(
+                              splashFactory: NoSplash.splashFactory,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegistrationScreen()));
+                            },
+                            child: const Text(
+                              "SignUp",
                               style: TextStyle(
-                                color: Color(0xff8893AC),
-                                fontSize: 14,
-                              ),
+                                  color: Color(0xff152C5E), fontSize: 14),
                             ),
-                            TextButton(
-                              style: const ButtonStyle(
-                                splashFactory: NoSplash.splashFactory,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RegistrationScreen()));
-                              },
-                              child: const Text(
-                                "SignUp",
-                                style: TextStyle(
-                                    color: Color(0xff152C5E), fontSize: 14),
-                              ),
-                            ),
-                          ],
-                        ),
-                        DividerWidget(width: width, height: height),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          ),
+                        ],
+                      ),
+                      DividerWidget(width: width, height: height),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           Container(
                             margin: EdgeInsets.only(left: width * 0.032),
                             child: showGoogleSpinner
