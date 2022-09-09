@@ -21,11 +21,11 @@ class TextFieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-          top: top, bottom: bottom, left: left, right: right),
-      child: const Text(
-        "First Name",
-        style: TextStyle(
+      padding:
+          EdgeInsets.only(top: top, bottom: bottom, left: left, right: right),
+      child: Text(
+        label,
+        style: const TextStyle(
           color: Colors.grey,
           fontSize: 14,
         ),

@@ -1,14 +1,15 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get_driver_app/constants.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:get_driver_app/screens/forgot_password.dart';
 import 'package:get_driver_app/screens/home_screen.dart';
 import 'package:get_driver_app/screens/register_screen.dart';
 import 'package:get_driver_app/widgets/divider_widget.dart';
+import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
-import 'package:get_driver_app/widgets/textfield_label.dart';
+import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,11 +25,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
+  bool showFacebookSpinner = false;
   bool showGoogleSpinner = false;
-  bool _passwordVisible = true;
   bool isLoginError = false;
   double height = 0;
   double width = 0;
+  String errorMessage = "";
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
@@ -74,88 +76,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Visibility(
                         visible: isLoginError,
-                        child: const Text(
-                          "Please check your email or password",
-                          style: TextStyle(
+                        child: Text(
+                          errorMessage,
+                          style: const TextStyle(
                             color: Colors.red,
                             fontSize: 15,
                           ),
                         ),
                       ),
-                      TextFieldLabel(
-                          height: height,
-                          top: 0,
-                          right: 0,
-                          left: 0,
-                          bottom: height * 0.01,
-                          label: "Email"),
-                      TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Field required";
-                          }
-                          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                              .hasMatch(value)) {
-                            return "Enter a valid email";
-                          }
-                          return null;
-                        },
-                        cursorColor: Colors.purple,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        controller: emailController,
-                        decoration: kMessageTextFieldDecoration.copyWith(
-                          hintText: 'example@gmail.com',
-                        ),
+                      EmailPasswordTextField(
+                        emailController: emailController,
+                        passController: passController,
+                        height: height,
                       ),
-                      TextFieldLabel(
-                          height: height,
-                          top: height * 0.02,
-                          bottom: height * 0.01,
-                          left: 0,
-                          right: 0,
-                          label: "Password"),
-                      TextFormField(
-                        validator: (value) {
-                          RegExp regex = RegExp(r"^.{8,}$");
-                          if (value!.isEmpty) {
-                            return "Field is required";
-                          }
-                          if (!regex.hasMatch(value)) {
-                            return "Password must contain 8 characters minimum";
-                          }
-                          return null;
-                        },
-                        cursorColor: Colors.purple,
-                        textInputAction: TextInputAction.done,
-                        obscureText: _passwordVisible,
-                        controller: passController,
-                        decoration: kMessageTextFieldDecoration.copyWith(
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _passwordVisible
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _passwordVisible = !_passwordVisible;
-                              });
+                      Padding(
+                        padding: const EdgeInsets.all(7.0),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgotPassword()));
                             },
-                          ),
-                          hintText: '**********',
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "Forgot Password?",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff152C5E),
+                            child: const Text(
+                              "Forgot Password?",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xff152C5E),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -240,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Container(
                             margin: EdgeInsets.only(right: width * 0.032),
-                            child: showGoogleSpinner
+                            child: showFacebookSpinner
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
@@ -248,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: height,
                                     img: "facebook_logo",
                                     text: "Facebook",
-                                    onPressed: googleSignIn,
+                                    onPressed: facebookLogin,
                                   ),
                           ),
                         ],
@@ -273,37 +223,85 @@ class _LoginScreenState extends State<LoginScreen> {
           setState(() {
             isLoginError = false;
           });
-          Fluttertoast.showToast(msg: "Login Successful");
+          SnackBarWidget.SnackBars(
+              "Sign in Successful", "assets/images/successImg.png", context);
         });
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()))
-            .catchError((e) {
-          Fluttertoast.showToast(msg: e);
-        });
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
       } catch (e) {
         setState(() {
           showSpinner = false;
           isLoginError = true;
+          if (e.toString() ==
+              "[firebase_auth/wrong-password] The password is invalid or the user does not have a password.") {
+            SnackBarWidget.SnackBars(
+                "Incorrect Password", "assets/images/errorImg.png", context);
+          } else if (e.toString() ==
+              "[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.") {
+            SnackBarWidget.SnackBars(
+                "Account not found", "assets/images/errorImg.png", context);
+          } else {
+            SnackBarWidget.SnackBars(
+                "Something went wrong", "assets/images/errorImg.png", context);
+          }
         });
-        Fluttertoast.showToast(msg: e.toString());
       }
     } else {
       setState(() {
-        isLoginError = true;
+        // isLoginError = true;
         showSpinner = false;
       });
     }
   }
 
+  // ignore: non_constant_identifier_names
+
+  void facebookLogin() async {
+    setState(() {
+      showFacebookSpinner = true;
+    });
+    try {
+      final result = await FacebookAuth.instance.login();
+      print(result);
+      if (result.status == LoginStatus.success) {
+        // final requestData = await FacebookAuth.instance.getUserData();
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const HomeScreen()));
+        SnackBarWidget.SnackBars(
+            "Sing in successful", "assets/images/successImg.png", context);
+        setState(() {
+          showFacebookSpinner = false;
+        });
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const HomeScreen()));
+      } else {
+        setState(() {
+          showFacebookSpinner = false;
+        });
+        SnackBarWidget.SnackBars("Something went wrong try again",
+            "assets/images/errorImg.png", context);
+      }
+    } catch (e) {
+      setState(() {
+        showFacebookSpinner = false;
+      });
+    }
+  }
+
   Future googleSignIn() async {
-    final googleUser = await _googleSignIn.signIn();
     setState(() {
       showGoogleSpinner = true;
     });
-    if (googleUser == null) return;
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      setState(() {
+        showGoogleSpinner = false;
+      });
+      SnackBarWidget.SnackBars("Something went wrong try again",
+          "assets/images/errorImg.png", context);
+      return;
+    }
     _user = googleUser;
-    print("Google button pressed");
     final googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
@@ -314,7 +312,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       showGoogleSpinner = false;
     });
-    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
   }

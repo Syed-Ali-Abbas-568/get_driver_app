@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Get Driver</string>
+    <string name="facebook_app_id">1479217275914707</string>
+    <string name="fb_login_protocol_scheme">fb1479217275914707</string>
+    <string name="facebook_client_token">80e4909305fee2564cc51d78e744b3ac</string>
+</resources>

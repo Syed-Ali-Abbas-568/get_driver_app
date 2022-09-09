@@ -1,14 +1,15 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get_driver_app/constants.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/screens/home_screen.dart';
 import 'package:get_driver_app/widgets/divider_widget.dart';
+import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
+import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -30,10 +31,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool showSpinner = false;
+  bool showFacebookSpinner = false;
   bool showGoogleSpinner = false;
   bool isLoginError = false;
   String errorMessage = "Something Went Wrong Please Try again";
-  bool _passwordVisible = true;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
@@ -75,16 +76,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     SizedBox(height: height * 0.06),
-                    Visibility(
-                      visible: isLoginError,
-                      child: Text(
-                        errorMessage,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
                     TextFieldLabel(
                       height: height,
                       label: "First Name",
@@ -112,70 +103,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       hintText: "John",
                       inputType: TextInputType.name,
                     ),
-                    TextFieldLabel(
-                        height: height,
-                        bottom: height * 0.01,
-                        top: height * 0.02,
-                        left: 0,
-                        right: 0,
-                        label: "Email"),
-                    TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Field required";
-                        }
-                        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                            .hasMatch(value)) {
-                          return "Enter a valid email";
-                        }
-                        return null;
-                      },
-                      cursorColor: Colors.purple,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
-                        hintText: 'example@gmail.com',
-                      ),
-                    ),
-                    TextFieldLabel(
-                        height: height,
-                        top: height * 0.02,
-                        bottom: height * 0.01,
-                        left: 0,
-                        right: 0,
-                        label: "Password"),
-                    TextFormField(
-                      validator: (value) {
-                        RegExp regex = RegExp(r"^.{8,}$");
-                        if (value!.isEmpty) {
-                          return "Field is required";
-                        }
-                        if (!regex.hasMatch(value)) {
-                          return "Password must contain 8 characters minimum";
-                        }
-                        return null;
-                      },
-                      cursorColor: Colors.purple,
-                      textInputAction: TextInputAction.done,
-                      obscureText: _passwordVisible,
-                      controller: passController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _passwordVisible
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
-                        ),
-                        hintText: '**********',
-                      ),
+                    EmailPasswordTextField(
+                      emailController: emailController,
+                      passController: passController,
+                      height: height,
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: height * 0.055),
@@ -256,7 +187,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                         Container(
                           margin: EdgeInsets.only(right: width * 0.032),
-                          child: showGoogleSpinner
+                          child: showFacebookSpinner
                               ? const CircularProgressIndicator(
                                   color: Color(0xff152C5E),
                                 )
@@ -264,7 +195,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   height: height,
                                   img: "facebook_logo",
                                   text: "Facebook",
-                                  onPressed: googleSignIn,
+                                  onPressed: facebookLogin,
                                 ),
                         ),
                       ],
@@ -293,8 +224,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             setState(() {
               showSpinner = false;
               isLoginError = true;
-              errorMessage = "Email already in use";
             });
+            SnackBarWidget.SnackBars(
+                "Email already in use", "assets/images/errorImg.png", context);
           }
         });
       } else {
@@ -313,7 +245,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   postDetailsToFireStore() async {
     try {
-      print("came to submit data");
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
       UserModel userModel = UserModel();
@@ -326,22 +257,58 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           .doc(user.uid)
           .set(userModel.toMap());
 
-      Fluttertoast.showToast(msg: "Account Created Successfully");
-      // ignore: use_build_context_synchronously
+      SnackBarWidget.SnackBars("Account created successfully",
+          "assets/images/successImg.png", context);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const HomeScreen()));
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      SnackBarWidget.SnackBars(
+          e.toString(), "assets/images/errorImg.png", context);
+    }
+  }
+
+  void facebookLogin() async {
+    setState(() {
+      showFacebookSpinner = true;
+    });
+    try {
+      final result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        // final requestData = await FacebookAuth.instance.getUserData();
+        SnackBarWidget.SnackBars(
+            "Sing in successful", "assets/images/successImg.png", context);
+        setState(() {
+          showFacebookSpinner = false;
+        });
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const HomeScreen()));
+      } else {
+        setState(() {
+          showFacebookSpinner = false;
+        });
+        SnackBarWidget.SnackBars("Something went wrong try again",
+            "assets/images/errorImg.png", context);
+      }
+    } catch (e) {
+      setState(() {
+        showFacebookSpinner = false;
+      });
     }
   }
 
   Future googleSignIn() async {
-    print("Google Button pressed");
     setState(() {
       showGoogleSpinner = true;
     });
     final googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) return;
+    if (googleUser == null) {
+      setState(() {
+        showGoogleSpinner = false;
+      });
+      SnackBarWidget.SnackBars("Something went wrong try again",
+          "assets/images/errorImg.png", context);
+      return;
+    }
     _user = googleUser;
 
     final googleAuth = await googleUser.authentication;
@@ -356,18 +323,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       fNameController.text = name![0];
       lNameController.text = name[1];
     });
-
-    print("Names are");
-    print(fNameController.text);
-    print(lNameController.text);
     postDetailsToFireStore();
     setState(() {
       showGoogleSpinner = false;
     });
-    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-    Fluttertoast.showToast(msg: credential.signInMethod);
-    Fluttertoast.showToast(msg: "SignIn successful");
+    SnackBarWidget.SnackBars(
+        "Sign in Successful", "assets/images/successImg.png", context);
   }
 }
