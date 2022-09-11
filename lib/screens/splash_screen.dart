@@ -13,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -27,12 +26,12 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-              // user == null?
-              const LoginScreen()
-                  // : dataPresent
-                  // ? OnBoardingScreen()
-                  // : ShifterScreen()
-      ));
+                  // user == null?
+                  const LoginScreen()
+              // : dataPresent
+              // ? OnBoardingScreen()
+              // : ShifterScreen()
+              ));
     });
   }
 

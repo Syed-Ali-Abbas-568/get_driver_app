@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-class SnackBarWidget{
-  static void SnackBars(String label, String img,BuildContext context) {
+class SnackBarWidget {
+  static void SnackBars(String label, String img, BuildContext context) {
     final snackBar = SnackBar(
       content: Row(
         children: [

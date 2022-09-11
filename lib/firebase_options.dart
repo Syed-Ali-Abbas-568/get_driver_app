@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '213412000717',
     projectId: 'get-driver-app',
     storageBucket: 'get-driver-app.appspot.com',
-    iosClientId: '213412000717-eg2khirc0jktmkifokkmhto9add7rfhh.apps.googleusercontent.com',
+    iosClientId:
+        '213412000717-eg2khirc0jktmkifokkmhto9add7rfhh.apps.googleusercontent.com',
     iosBundleId: 'com.example.getDriverApp',
   );
 }

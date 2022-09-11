@@ -5,14 +5,24 @@ class ImgButton extends StatelessWidget {
   final String img;
   final String text;
   final VoidCallback onPressed;
-  const ImgButton({Key? key,required this.height,required this.text,required this.img,required this.onPressed}) : super(key: key);
+  const ImgButton(
+      {Key? key,
+      required this.height,
+      required this.text,
+      required this.img,
+      required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:EdgeInsets.only(top:height*0.02,bottom: height*0.02,left: height*0.036,right:height*0.036 ),
-      height: height*0.063,
-      width: height*0.17,
+      padding: EdgeInsets.only(
+          top: height * 0.02,
+          bottom: height * 0.02,
+          left: height * 0.036,
+          right: height * 0.036),
+      height: height * 0.063,
+      width: height * 0.17,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(
           Radius.circular(100),
@@ -28,9 +38,14 @@ class ImgButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/images/$img.png",height: height*0.1,),
-            const SizedBox(width: 11,),
-             Text(
+            Image.asset(
+              "assets/images/$img.png",
+              height: height * 0.1,
+            ),
+            const SizedBox(
+              width: 11,
+            ),
+            Text(
               text,
               style: const TextStyle(
                 color: Color(0xff847C7C),
