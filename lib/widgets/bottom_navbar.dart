@@ -60,7 +60,7 @@ class _NavBarState extends State<NavBar> {
         ],
         iconSize: 40,
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 219, 11, 11),
+        selectedItemColor: Colors.red,
         unselectedItemColor: const Color(0xFF152C5E),
         backgroundColor: Colors.white,
         onTap: _onItemTapped,

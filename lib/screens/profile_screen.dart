@@ -212,15 +212,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text(
                             "First Name",
                             style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                              color: readOnly,
+                            ),
                           ),
                           TextFieldWidget(
-                              fNameController: firstName,
-                              hintText: "Input First Name Here",
-                              errorText: "",
-                              inputType: TextInputType.name),
+                            fNameController: firstName,
+                            hintText: "Input First Name Here",
+                            errorText: "",
+                            inputType: TextInputType.name,
+                            enabled: editable,
+                          ),
                           Text(
                             "Last Name",
                             style: TextStyle(
@@ -229,22 +232,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                              fNameController: lastName,
-                              hintText: "Input Last Name Here",
-                              errorText: "",
-                              inputType: TextInputType.name),
+                            fNameController: lastName,
+                            hintText: "Input Last Name Here",
+                            errorText: "",
+                            inputType: TextInputType.name,
+                            enabled: editable,
+                          ),
                           Text(
                             "Email",
                             style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                              color: readOnly,
+                            ),
                           ),
                           TextFieldWidget(
-                              fNameController: email,
-                              hintText: "Input Email Here",
-                              errorText: "",
-                              inputType: TextInputType.emailAddress),
+                            fNameController: email,
+                            hintText: "Input Email Here",
+                            errorText: "",
+                            inputType: TextInputType.emailAddress,
+                            enabled: editable,
+                          ),
                           Text(
                             "Password",
                             style: TextStyle(
@@ -253,10 +261,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                              fNameController: password,
-                              hintText: "Input Password Here",
-                              errorText: "",
-                              inputType: TextInputType.visiblePassword),
+                            fNameController: password,
+                            hintText: "Input Password Here",
+                            errorText: "",
+                            inputType: TextInputType.visiblePassword,
+                            enabled: editable,
+                          ),
                           Text(
                             "License Number",
                             style: TextStyle(
@@ -265,10 +275,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                              fNameController: liscenceNum,
-                              hintText: "Input License Number here",
-                              errorText: "",
-                              inputType: TextInputType.number),
+                            fNameController: liscenceNum,
+                            hintText: "Input License Number here",
+                            errorText: "",
+                            inputType: TextInputType.number,
+                            enabled: editable,
+                          ),
                           Text(
                             "Years of Experience",
                             style: TextStyle(
@@ -277,10 +289,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                              fNameController: yearsOfExp,
-                              hintText: "Input Years of Experience here",
-                              errorText: "",
-                              inputType: TextInputType.number),
+                            fNameController: yearsOfExp,
+                            hintText: "Input Years of Experience here",
+                            errorText: "",
+                            inputType: TextInputType.number,
+                            enabled: editable,
+                          ),
                           Text(
                             "Date of Birth",
                             style: TextStyle(
@@ -289,10 +303,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                              fNameController: dob,
-                              hintText: "Input DOB here",
-                              errorText: "",
-                              inputType: TextInputType.datetime),
+                            fNameController: dob,
+                            hintText: "Input DOB here",
+                            errorText: "",
+                            inputType: TextInputType.datetime,
+                            enabled: editable,
+                          ),
                           Text(
                             "CNIC",
                             style: TextStyle(
@@ -301,10 +317,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                              fNameController: cnic,
-                              hintText: "Input CNIC here",
-                              errorText: "",
-                              inputType: TextInputType.datetime),
+                            fNameController: cnic,
+                            hintText: "Input CNIC here",
+                            errorText: "",
+                            inputType: TextInputType.datetime,
+                            enabled: editable,
+                          ),
                         ],
                       ))
                 ],
