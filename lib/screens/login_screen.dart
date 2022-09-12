@@ -163,62 +163,66 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            margin: EdgeInsets.only(left: width * 0.032),
-                            child:
-                                context.watch<AuthProviders>().isGoogleLoading
-                                    ? const CircularProgressIndicator(
-                                        color: Color(0xff152C5E),
-                                      )
-                                    : ImgButton(
-                                        height: height,
-                                        img: "google_logo",
-                                        text: "Google",
-                                        onPressed: () async {
-                                          GoogleSignInAccount? account =
-                                              await context
-                                                  .read<AuthProviders>()
-                                                  .GoogleSignInFunc(context);
-                                          if (account != null) {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const HomeScreen(),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(left: width * 0.032),
+                              child:
+                                  context.watch<AuthProviders>().isGoogleLoading
+                                      ? const CircularProgressIndicator(
+                                          color: Color(0xff152C5E),
+                                        )
+                                      : ImgButton(
+                                          height: height,
+                                          img: "google_logo",
+                                          text: "Google",
+                                          onPressed: () async {
+                                            GoogleSignInAccount? account =
+                                                await context
+                                                    .read<AuthProviders>()
+                                                    .GoogleSignInFunc(context);
+                                            if (account != null) {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const HomeScreen(),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                            ),
                           ),
                           SizedBox(
                             width: width * 0.04,
                           ),
-                          Container(
-                            margin: EdgeInsets.only(right: width * 0.032),
-                            child: context
-                                    .watch<AuthProviders>()
-                                    .isFacebookLoading
-                                ? const CircularProgressIndicator(
-                                    color: Color(0xff152C5E),
-                                  )
-                                : ImgButton(
-                                    height: height,
-                                    img: "facebook_logo",
-                                    text: "Facebook",
-                                    onPressed: () async {
-                                      Map<String, dynamic>? data = await context
-                                          .read<AuthProviders>()
-                                          .FacebookSignIn(context);
-                                      if (data != null) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const HomeScreen(),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(right: width * 0.032),
+                              child: context
+                                      .watch<AuthProviders>()
+                                      .isFacebookLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Color(0xff152C5E),
+                                    )
+                                  : ImgButton(
+                                      height: height,
+                                      img: "facebook_logo",
+                                      text: "Facebook",
+                                      onPressed: () async {
+                                        Map<String, dynamic>? data = await context
+                                            .read<AuthProviders>()
+                                            .FacebookSignIn(context);
+                                        if (data != null) {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomeScreen(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                            ),
                           ),
                         ],
                       ),

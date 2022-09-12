@@ -56,7 +56,6 @@ class AuthProviders with ChangeNotifier {
     _isFacebookLoading = true;
     Map<String, dynamic>? loginStatus =
         await _firebaseAuthService.facebookLogin(context);
-    log(loginStatus.toString());
     _isFacebookLoading = false;
     notifyListeners();
     return loginStatus;

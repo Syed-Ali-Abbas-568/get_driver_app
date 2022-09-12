@@ -49,7 +49,6 @@ class FirebaseAuthService {
   Future<Map<String, dynamic>?> facebookLogin(BuildContext context) async {
     try {
       LoginResult result = await FacebookAuth.instance.login();
-      log(result.toString());
       if (result.status == LoginStatus.success) {
         final requestData = await FacebookAuth.instance.getUserData();
         SnackBarWidget.SnackBars(
