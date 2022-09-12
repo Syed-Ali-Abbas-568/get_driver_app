@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/screens/profile_screen.dart';
+import 'package:get_driver_app/widgets/bottom_navbar.dart';
 
 import 'login_screen.dart';
 
@@ -25,13 +27,15 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  // user == null?
-                  const LoginScreen()
-              // : dataPresent
-              // ? OnBoardingScreen()
-              // : ShifterScreen()
-              ));
+            builder: (context) =>
+                // user == null?
+                // const LoginScreen()
+                // : dataPresent
+                // ? OnBoardingScreen()
+                // : ShifterScreen()
+
+                const NavBar(),
+          ));
     });
   }
 

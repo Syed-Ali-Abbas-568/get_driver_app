@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
 
 class TextFieldWidget extends StatelessWidget {
-  const TextFieldWidget({
+  TextFieldWidget({
     Key? key,
     required this.fNameController,
     required this.hintText,
     required this.errorText,
     required this.inputType,
+    this.enabled = true,
   }) : super(key: key);
 
+  bool enabled;
   final TextEditingController fNameController;
   final String errorText;
   final TextInputType inputType;
@@ -27,6 +29,7 @@ class TextFieldWidget extends StatelessWidget {
         }
         return null;
       },
+      enabled: enabled,
       cursorColor: Colors.purple,
       textInputAction: TextInputAction.next,
       keyboardType: inputType,
