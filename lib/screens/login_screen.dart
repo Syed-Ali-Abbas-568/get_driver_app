@@ -1,16 +1,17 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, unnecessary_null_comparison
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get_driver_app/providers/auth_providers.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
-
 import 'package:get_driver_app/screens/forgot_password.dart';
-import 'package:get_driver_app/screens/home_screen.dart';
+import 'package:get_driver_app/screens/profile_creation.dart';
 import 'package:get_driver_app/screens/register_screen.dart';
+import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -108,9 +109,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                       context,
                                     );
                                 if (userCred != null) {
-                                  Navigator.of(context).push(
+                                  bool dataPresent = false;
+                                  User? user =
+                                      FirebaseAuth.instance.currentUser;
+                                  await FirebaseFirestore.instance
+                                      .collection('user')
+                                      .doc(user!.uid)
+                                      .collection('user_info')
+                                      .snapshots()
+                                      .first
+                                      .then((value) {
+                                    dataPresent = value.docs.isEmpty;
+                                  });
+                                  Navigator.pushReplacement(
+                                    context,
                                     MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
+                                      builder: (context) => user == null
+                                          ? const LoginScreen()
+                                          : dataPresent
+                                              ? const NavBar()
+                                              : const ProfileCreation(),
                                     ),
                                   );
                                 }
@@ -184,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const HomeScreen(),
+                                                      const NavBar(),
                                                 ),
                                               );
                                             }
@@ -216,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  const HomeScreen(),
+                                                  const NavBar(),
                                             ),
                                           );
                                         }

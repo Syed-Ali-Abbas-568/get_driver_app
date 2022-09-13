@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/material.dart';
 import 'package:get_driver_app/screens/dashboard_screen.dart';
 import 'package:get_driver_app/screens/profile_screen.dart';
 import 'package:get_driver_app/screens/report_screen.dart';

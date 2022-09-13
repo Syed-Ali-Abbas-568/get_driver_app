@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:get_driver_app/models/user_info_model.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -166,5 +167,38 @@ class FirebaseAuthService {
           e.toString(), "assets/images/errorImg.png", context);
     }
     return null;
+  }
+
+  postUserInfo(
+    String date,
+    int experience,
+    int CNIC,
+    int license,
+    int phone,
+    BuildContext context,
+  ) async {
+    try {
+      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+      User? user = _auth.currentUser;
+      UserInfoModel userInfoModel = UserInfoModel();
+      userInfoModel.experience = experience;
+      userInfoModel.license = license;
+      userInfoModel.CNIC = CNIC;
+      userInfoModel.phone = phone;
+      userInfoModel.date = date;
+      await firebaseFirestore
+          .collection('Users')
+          .doc(user?.uid)
+          .collection('user_info')
+          .doc()
+          .set(userInfoModel.toMap());
+
+      SnackBarWidget.SnackBars("Profile creation successful",
+          "assets/images/successImg.png", context);
+    } catch (e) {
+      log(e.toString());
+      SnackBarWidget.SnackBars(
+          e.toString(), "assets/images/errorImg.png", context);
+    }
   }
 }

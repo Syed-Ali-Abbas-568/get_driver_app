@@ -4,18 +4,20 @@ import 'package:get_driver_app/constants.dart';
 class TextFieldWidget extends StatelessWidget {
   TextFieldWidget({
     Key? key,
-    required this.fNameController,
+    required this.controller,
     required this.hintText,
     required this.errorText,
     required this.inputType,
     this.enabled = true,
+    this.length=2
   }) : super(key: key);
 
   bool enabled;
-  final TextEditingController fNameController;
+  final TextEditingController controller;
   final String errorText;
   final TextInputType inputType;
   final String hintText;
+  int length;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class TextFieldWidget extends StatelessWidget {
         if (value!.isEmpty) {
           return "Field required";
         }
-        if (value.length < 2) {
+        if (value.length < length) {
           return errorText;
         }
         return null;
@@ -33,7 +35,7 @@ class TextFieldWidget extends StatelessWidget {
       cursorColor: Colors.purple,
       textInputAction: TextInputAction.next,
       keyboardType: inputType,
-      controller: fNameController,
+      controller: controller,
       decoration: kMessageTextFieldDecoration.copyWith(
         hintText: hintText,
       ),

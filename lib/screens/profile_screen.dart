@@ -218,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           TextFieldWidget(
-                            fNameController: firstName,
+                            controller: firstName,
                             hintText: "Input First Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            fNameController: lastName,
+                            controller: lastName,
                             hintText: "Input Last Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
@@ -247,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           TextFieldWidget(
-                            fNameController: email,
+                            controller: email,
                             hintText: "Input Email Here",
                             errorText: "",
                             inputType: TextInputType.emailAddress,
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            fNameController: password,
+                            controller: password,
                             hintText: "Input Password Here",
                             errorText: "",
                             inputType: TextInputType.visiblePassword,
@@ -275,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            fNameController: liscenceNum,
+                            controller: liscenceNum,
                             hintText: "Input License Number here",
                             errorText: "",
                             inputType: TextInputType.number,
@@ -289,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            fNameController: yearsOfExp,
+                            controller: yearsOfExp,
                             hintText: "Input Years of Experience here",
                             errorText: "",
                             inputType: TextInputType.number,
@@ -303,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            fNameController: dob,
+                            controller: dob,
                             hintText: "Input DOB here",
                             errorText: "",
                             inputType: TextInputType.datetime,
@@ -317,7 +317,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            fNameController: cnic,
+                            controller: cnic,
                             hintText: "Input CNIC here",
                             errorText: "",
                             inputType: TextInputType.datetime,

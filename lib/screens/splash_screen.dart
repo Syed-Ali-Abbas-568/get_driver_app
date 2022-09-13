@@ -29,12 +29,12 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(
             builder: (context) =>
                 // user == null?
-                // const LoginScreen()
+                const LoginScreen()
                 // : dataPresent
                 // ? OnBoardingScreen()
                 // : ShifterScreen()
 
-                const NavBar(),
+                // const NavBar(),
           ));
     });
   }

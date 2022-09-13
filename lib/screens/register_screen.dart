@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:get_driver_app/providers/auth_providers.dart';
+import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import 'login_screen.dart';
-import 'package:get_driver_app/screens/home_screen.dart';
 import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
@@ -72,7 +72,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       right: 0,
                     ),
                     TextFieldWidget(
-                      fNameController: fNameController,
+                      controller: fNameController,
                       errorText: "Enter a valid first name",
                       hintText: "John",
                       inputType: TextInputType.name,
@@ -85,7 +85,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         right: 0,
                         label: "Last Name"),
                     TextFieldWidget(
-                      fNameController: lNameController,
+                      controller: lNameController,
                       errorText: "Enter a valid last name",
                       hintText: "John",
                       inputType: TextInputType.name,
@@ -120,7 +120,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 if (userCred != null) {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
+                                      builder: (context) => const NavBar(),
                                     ),
                                   );
                                 }
@@ -194,7 +194,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const HomeScreen(),
+                                                const NavBar(),
                                           ),
                                         );
                                       }
@@ -226,7 +226,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const HomeScreen(),
+                                                const NavBar(),
                                           ),
                                         );
                                       }

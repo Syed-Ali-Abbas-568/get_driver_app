@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
@@ -13,6 +11,9 @@ class AuthProviders with ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+  bool _isProfileCreation = false;
+
+  bool get isProfileCreation => _isProfileCreation;
   bool _isSignUpLoading = false;
 
   bool get isSignUpLoading => _isSignUpLoading;
@@ -84,5 +85,14 @@ class AuthProviders with ChangeNotifier {
     _isSignUpLoading = false;
     notifyListeners();
     return userCredentials;
+  }
+
+  profileCreation(String date, int experience, int CNIC, int license, int phone,
+      BuildContext context) async {
+    _isProfileCreation = true;
+    _firebaseAuthService.postUserInfo(
+        date, experience, CNIC, license, phone, context);
+    _isProfileCreation = false;
+    notifyListeners();
   }
 }

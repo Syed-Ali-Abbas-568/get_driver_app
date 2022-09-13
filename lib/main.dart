@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get_driver_app/screens/login_screen.dart';
+import 'package:get_driver_app/screens/profile_creation.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Inter",
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }
