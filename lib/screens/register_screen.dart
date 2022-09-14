@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get_driver_app/providers/auth_providers.dart';
+import 'package:get_driver_app/screens/profile_creation.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -120,7 +121,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 if (userCred != null) {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const NavBar(),
+                                      builder: (context) =>
+                                          const ProfileCreation(),
                                     ),
                                   );
                                 }
