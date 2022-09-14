@@ -27,16 +27,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _switch() {
-    Timer(const Duration(seconds: 3), () async {
+    Timer(const Duration(seconds: 3), ()  async {
       String? id;
-      await FacebookAuth.instance.getUserData().then((value) {
-        id = value['id'];
-        log(id!);
-      });
+       var result=await FacebookAuth.instance.getUserData();
+       id=result['id'];
       log("Going to Switch");
       bool dataPresent = false;
       User? user = FirebaseAuth.instance.currentUser;
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection('Users')
           .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
           .collection('user_info')

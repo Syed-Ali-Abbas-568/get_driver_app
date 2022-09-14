@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
+import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:get_driver_app/widgets/toast.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/image_picker.dart';
@@ -48,10 +47,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void getUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     String? id;
-    await FacebookAuth.instance.getUserData().then((value) {
-      id = value['id'];
-      log(id!);
-    });
+    var result = await FacebookAuth.instance.getUserData();
+    id = result['id'];
     FirebaseFirestore.instance
         .collection('Users')
         .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
@@ -71,12 +68,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .snapshots()
         .first
         .then((event) {
-      setState(() {
         cnicController.text = event.docs[0].get('CNIC').toString();
         licenceNumController.text = event.docs[0].get('license').toString();
         yearsOfExpController.text = event.docs[0].get('experience').toString();
         dobController.text = event.docs[0].get('date');
-      });
     });
   }
 
@@ -88,13 +83,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              height: 1180,
+              height: height + 200,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -277,18 +273,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       top: 470,
                       left: 16,
                       right: 17,
-                      height: 700,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "First Name",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: readOnly,
-                            ),
+                          TextFieldLabel(
+                            height: height,
+                            label: "First Name",
+                            top: 0,
+                            bottom: height * 0.01,
+                            left: 0,
+                            right: 0,
                           ),
                           TextFieldWidget(
                             controller: firstNameController,
@@ -297,12 +291,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             inputType: TextInputType.name,
                             enabled: false,
                           ),
-                          Text(
-                            "Last Name",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                          TextFieldLabel(
+                            height: height,
+                            label: "Last Name",
+                            top: height * 0.02,
+                            bottom: height * 0.01,
+                            left: 0,
+                            right: 0,
                           ),
                           TextFieldWidget(
                             controller: lastNameController,
@@ -311,12 +306,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             inputType: TextInputType.name,
                             enabled: false,
                           ),
-                          Text(
-                            "License Number",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                          TextFieldLabel(
+                            height: height,
+                            label: "License Number",
+                            top: height * 0.02,
+                            bottom: height * 0.01,
+                            left: 0,
+                            right: 0,
                           ),
                           TextFieldWidget(
                             controller: licenceNumController,
@@ -325,12 +321,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             inputType: TextInputType.number,
                             enabled: editable,
                           ),
-                          Text(
-                            "Years of Experience",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                          TextFieldLabel(
+                            height: height,
+                            label: "Years of experience",
+                            top: height * 0.02,
+                            bottom: height * 0.01,
+                            left: 0,
+                            right: 0,
                           ),
                           TextFieldWidget(
                             controller: yearsOfExpController,
@@ -339,12 +336,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             inputType: TextInputType.number,
                             enabled: editable,
                           ),
-                          Text(
-                            "Date of Birth",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                          TextFieldLabel(
+                            height: height,
+                            label: "Date of birth",
+                            top: height * 0.02,
+                            bottom: height * 0.01,
+                            left: 0,
+                            right: 0,
                           ),
                           TextFieldWidget(
                             controller: dobController,
@@ -353,12 +351,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             inputType: TextInputType.datetime,
                             enabled: false,
                           ),
-                          Text(
-                            "CNIC",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
+                          TextFieldLabel(
+                            height: height,
+                            label: "CNIC",
+                            top: height * 0.02,
+                            bottom: height * 0.01,
+                            left: 0,
+                            right: 0,
                           ),
                           TextFieldWidget(
                             controller: cnicController,

@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/constants.dart';
-import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/image_picker.dart';
@@ -67,10 +66,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
 
   void getUserData() async {
     String? id;
-    await FacebookAuth.instance.getUserData().then((value) {
-      id = value['id'];
-      log(id!);
-    });
+    var result = await FacebookAuth.instance.getUserData();
+    id = result['id'];
+
     User? user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('Users')
