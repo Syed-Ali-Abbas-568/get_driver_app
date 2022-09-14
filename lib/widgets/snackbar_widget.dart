@@ -13,7 +13,7 @@ class SnackBarWidget {
             height: 28,
           ),
           const SizedBox(width: 5),
-          Text(label),
+          Flexible(child: Text(label)),
         ],
       ),
       shape: const RoundedRectangleBorder(
