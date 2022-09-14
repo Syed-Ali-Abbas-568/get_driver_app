@@ -29,15 +29,20 @@ class _SplashScreenState extends State<SplashScreen> {
   _switch() {
     Timer(const Duration(seconds: 3), () async {
       String? id;
-      FacebookAuth.instance.getUserData().then((value) {
-        id = value['id'].toString();
-      });
+
       log("Going to Switch");
       bool dataPresent = false;
       User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        FacebookAuth.instance.getUserData().then((value) {
+          id = value['id'].toString();
+        });
+      } else {
+        id = user.uid;
+      }
       FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+          .doc(id)
           .collection('user_info')
           .snapshots()
           .first

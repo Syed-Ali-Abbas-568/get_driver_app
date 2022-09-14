@@ -47,12 +47,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void getUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     String? id;
-    FacebookAuth.instance.getUserData().then((value) {
-      id = value['id'].toString();
-    });
+    if (user == null) {
+      FacebookAuth.instance.getUserData().then((value) {
+        id = value['id'].toString();
+      });
+    } else {
+      id = user.uid;
+    }
     FirebaseFirestore.instance
         .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+        .doc(id)
         .snapshots()
         .listen((event) {
       setState(() {
@@ -64,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
     FirebaseFirestore.instance
         .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+        .doc(id)
         .collection('user_info')
         .snapshots()
         .first
