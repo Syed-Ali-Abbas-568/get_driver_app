@@ -11,13 +11,15 @@ class Toast {
         children: [
           const Icon(Icons.warning),
           const SizedBox(width: 5),
-          Text(
-            label,
-            style: GoogleFonts.roboto(
-              fontStyle: FontStyle.normal,
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+          Flexible(
+            child: Text(
+              label,
+              style: GoogleFonts.roboto(
+                fontStyle: FontStyle.normal,
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
             ),
           ),
           const SizedBox(width: 5),

@@ -96,7 +96,6 @@ class _ProfileCreationState extends State<ProfileCreation> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -123,26 +122,36 @@ class _ProfileCreationState extends State<ProfileCreation> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: height * 0.046, left: width * 0.045),
-                    child: TextButton(
-                      onPressed: () async {
-                        log("Img Button pressed");
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () async {
                         imagePath = await getImage();
                         if (imagePath != null) {
                           setState(() {});
                         }
                       },
-                      child: SizedBox(
-                        width: 58,
-                        height: 58,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: (imagePath != null)
-                              ? Image.file(File(imagePath!))
-                              : Image.asset("assets/images/selectImg.png"),
+                      child: Container(
+                        height: 125,
+                        width: 125,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 1.5,
+                          ),
+                          shape: BoxShape.circle,
                         ),
+                        child: (imagePath != null)
+                            ? CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                backgroundImage: FileImage(File(imagePath!)))
+                            : Image.asset(
+                                'assets/images/edit_image.png',
+                                color: Colors.black,
+                              ),
                       ),
                     ),
                   ),
