@@ -90,12 +90,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      appBar: editable
+          ? AppBar(
+              title: const Text("Edit Mode"),
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+            )
+          : null,
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              height: height + 200,
+              height: 1000,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -114,6 +121,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Image.asset(
                       "assets/images/splash_corner_image.png",
                       color: Colors.white,
+                    ),
+                  ),
+                  Positioned(
+                    height: 365.61,
+                    width: 366.24,
+                    left: -85,
+                    top: 527,
+                    child: Image.asset(
+                      "assets/images/splash_corner_image.png",
                     ),
                   ),
                   Positioned(
@@ -158,45 +174,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 270,
-                    height: 34,
-                    width: 118,
-                    right: 18,
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: const Color(0xFF152C5E),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
+                  Visibility(
+                    visible: !editable,
+                    child: Positioned(
+                      top: 270,
+                      height: 34,
+                      width: 118,
+                      right: 18,
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: const Color(0xFF152C5E),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          editable = true;
-                          setState(() {});
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Image(
-                              image: AssetImage('assets/images/edit.png'),
-                            ),
-                            Text(
-                              "Edit Details",
-                              style: GoogleFonts.manrope(
-                                fontStyle: FontStyle.normal,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 12,
+                          onPressed: () {
+                            editable = true;
+                            setState(() {});
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const Image(
+                                image: AssetImage('assets/images/edit.png'),
                               ),
-                            ),
-                          ],
-                        )),
+                              Text(
+                                "Edit Details",
+                                style: GoogleFonts.manrope(
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          )),
+                    ),
                   ),
                   Positioned(
                     left: 16,
                     top: 327,
                     child: Text(
-                      name,
+                      name.toUpperCase(),
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF152C5E),
