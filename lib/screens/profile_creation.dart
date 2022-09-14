@@ -66,8 +66,10 @@ class _ProfileCreationState extends State<ProfileCreation> {
 
   void getUserData() async {
     String? id;
-    var result = await FacebookAuth.instance.getUserData();
-    id = result['id'];
+    FacebookAuth.instance.getUserData().then((value) {
+      print(value['id']);
+      id = value['id'].toString();
+    });
 
     User? user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance

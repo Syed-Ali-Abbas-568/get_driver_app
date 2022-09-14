@@ -5,9 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../models/user_info_model.dart';
-import '../models/user_model.dart';
-
 class AuthProviders with ChangeNotifier {
   final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
   bool _isLoading = false;

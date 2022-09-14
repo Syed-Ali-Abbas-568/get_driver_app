@@ -20,7 +20,7 @@ class EmailPasswordTextField extends StatefulWidget {
 }
 
 class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
-  bool _passwordVisible = false;
+  bool _passwordVisible = true;
 
   @override
   Widget build(BuildContext context) {

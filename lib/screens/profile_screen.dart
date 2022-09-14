@@ -47,8 +47,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void getUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     String? id;
-    var result = await FacebookAuth.instance.getUserData();
-    id = result['id'];
+    FacebookAuth.instance.getUserData().then((value) {
+      id = value['id'].toString();
+    });
     FirebaseFirestore.instance
         .collection('Users')
         .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
@@ -68,10 +69,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .snapshots()
         .first
         .then((event) {
-        cnicController.text = event.docs[0].get('CNIC').toString();
-        licenceNumController.text = event.docs[0].get('license').toString();
-        yearsOfExpController.text = event.docs[0].get('experience').toString();
-        dobController.text = event.docs[0].get('date');
+      cnicController.text = event.docs[0].get('CNIC').toString();
+      licenceNumController.text = event.docs[0].get('license').toString();
+      yearsOfExpController.text = event.docs[0].get('experience').toString();
+      dobController.text = event.docs[0].get('date');
     });
   }
 
