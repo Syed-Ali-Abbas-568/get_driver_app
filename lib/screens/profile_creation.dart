@@ -1,11 +1,13 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
+import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:intl/intl.dart';
@@ -34,6 +36,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
   final phoneController = TextEditingController();
 
   final dateController = TextEditingController();
+  String? imagePath;
+
+  String? name;
 
   DateTime dateTime = DateTime.now();
   String pattern = '^(?:[+0]9)?[0-9]{11}\$';
@@ -55,10 +60,19 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
+  // @override
+  // void initState() async {
+  //   await context.read<AuthProviders>().getUser();
+  //   context.read<AuthProviders>().currentUser.firstName;
+
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -89,15 +103,21 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     padding: EdgeInsets.only(
                         top: height * 0.046, left: width * 0.045),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         log("Img Button pressed");
+                        imagePath = await getImage();
+                        if (imagePath != null) {
+                          setState(() {});
+                        }
                       },
                       child: SizedBox(
                         width: 58,
                         height: 58,
                         child: Align(
                           alignment: Alignment.center,
-                          child: Image.asset("assets/images/selectImg.png"),
+                          child: (imagePath != null)
+                              ? Image.file(File(imagePath!))
+                              : Image.asset("assets/images/selectImg.png"),
                         ),
                       ),
                     ),

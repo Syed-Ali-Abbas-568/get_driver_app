@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../models/user_info_model.dart';
+import '../models/user_model.dart';
+
 class AuthProviders with ChangeNotifier {
   final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
   bool _isLoading = false;
@@ -90,9 +93,23 @@ class AuthProviders with ChangeNotifier {
   profileCreation(String date, int experience, int CNIC, int license, int phone,
       BuildContext context) async {
     _isProfileCreation = true;
+
     _firebaseAuthService.postUserInfo(
         date, experience, CNIC, license, phone, context);
     _isProfileCreation = false;
     notifyListeners();
   }
+
+  // UserModel currentUser = UserModel();
+
+  // UserInfoModel? currentUserInfo = UserInfoModel();
+
+  // getUser() async {
+  //   await _firebaseAuthService.getUser(currentUser);
+  // }
+
+  // getUserModel() async {
+  //   await _firebaseAuthService.getUser(currentUser);
+
+  // }
 }

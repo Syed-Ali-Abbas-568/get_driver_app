@@ -227,9 +227,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       img: "facebook_logo",
                                       text: "Facebook",
                                       onPressed: () async {
-                                        Map<String, dynamic>? data = await context
-                                            .read<AuthProviders>()
-                                            .FacebookSignIn(context);
+                                        Map<String, dynamic>? data =
+                                            await context
+                                                .read<AuthProviders>()
+                                                .FacebookSignIn(context);
                                         if (data != null) {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(

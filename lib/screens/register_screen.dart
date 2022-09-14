@@ -187,9 +187,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     img: "google_logo",
                                     text: "Google",
                                     onPressed: () async {
-                                      GoogleSignInAccount? account = await context
-                                          .read<AuthProviders>()
-                                          .GoogleSignUpFunc(context);
+                                      GoogleSignInAccount? account =
+                                          await context
+                                              .read<AuthProviders>()
+                                              .GoogleSignUpFunc(context);
                                       if (account != null) {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(

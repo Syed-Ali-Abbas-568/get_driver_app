@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
+import 'package:get_driver_app/widgets/toast.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+
+import '../widgets/image_picker.dart';
 
 //const color variables for editable and non editable
 Color readOnly = const Color(0xFF152C5E);
@@ -17,14 +22,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController firstName = TextEditingController();
   final TextEditingController lastName = TextEditingController();
   final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
+
   final TextEditingController liscenceNum = TextEditingController();
   final TextEditingController yearsOfExp = TextEditingController();
   final TextEditingController dob = TextEditingController();
   final TextEditingController cnic = TextEditingController();
   bool editable = false;
-
-  void changeImage() {}
+  String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -70,16 +74,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     top: 165,
                     left: 26,
                     child: GestureDetector(
-                      onTap: changeImage,
+                      onTap: () async {
+                        if (editable) {
+                          imagePath = await getImage();
+                          if (imagePath != null) {
+                            setState(() {});
+                          }
+                        }
+                      },
                       child: Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 1.5,
+                          ),
                           shape: BoxShape.circle,
                         ),
-                        child: const CircleAvatar(
+                        child: CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage('assets/images/profile.png'),
+                          backgroundImage: (imagePath != null)
+                              ? FileImage(File(imagePath!))
+                              : const AssetImage('assets/images/profile.png')
+                                  as ImageProvider,
                         ),
                       ),
                     ),
@@ -222,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             hintText: "Input First Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
-                            enabled: editable,
+                            enabled: false,
                           ),
                           Text(
                             "Last Name",
@@ -236,36 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             hintText: "Input Last Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
-                            enabled: editable,
-                          ),
-                          Text(
-                            "Email",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: readOnly,
-                            ),
-                          ),
-                          TextFieldWidget(
-                            controller: email,
-                            hintText: "Input Email Here",
-                            errorText: "",
-                            inputType: TextInputType.emailAddress,
-                            enabled: editable,
-                          ),
-                          Text(
-                            "Password",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: readOnly),
-                          ),
-                          TextFieldWidget(
-                            controller: password,
-                            hintText: "Input Password Here",
-                            errorText: "",
-                            inputType: TextInputType.visiblePassword,
-                            enabled: editable,
+                            enabled: false,
                           ),
                           Text(
                             "License Number",
@@ -307,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             hintText: "Input DOB here",
                             errorText: "",
                             inputType: TextInputType.datetime,
-                            enabled: editable,
+                            enabled: false,
                           ),
                           Text(
                             "CNIC",
@@ -321,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             hintText: "Input CNIC here",
                             errorText: "",
                             inputType: TextInputType.datetime,
-                            enabled: editable,
+                            enabled: false,
                           ),
                         ],
                       ))
@@ -347,6 +335,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onPressed: () {
                   editable = false;
+
+                  Toast.snackBars("Changes Applied Successfully",
+                      const Color(0xFF2DD36F), context);
+
+                  // Toast.snackBars("Could Not Apply Changes ",
+                  //     const Color(0xFFFFC409), context);
+
+                  // Toast.snackBars(
+                  //     "Entry Unsuccessful", const Color(0xFFFF3939), context);
+
                   setState(() {});
                 },
               ),

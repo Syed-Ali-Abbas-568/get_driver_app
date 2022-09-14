@@ -43,6 +43,8 @@ dependencies:
   flutter_facebook_auth: ^4.4.1
   provider: ^6.0.3
   google_fonts: ^3.0.1
+  image_picker: ^0.8.5+3
+  firebase_storage: ^10.3.8
 
 dev_dependencies:
   flutter_test:

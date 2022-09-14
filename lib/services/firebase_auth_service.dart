@@ -1,9 +1,12 @@
 // ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -94,7 +97,8 @@ class FirebaseAuthService {
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
         userCredential = value;
-        postDetailsToFireStore(fName, lName, value.user!.uid, email, context);
+        postDetailsToFireStore(
+            fName, lName, value.user!.uid, email, "null", true, context);
       }).catchError((e) {
         if (e.toString() ==
             "[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
@@ -115,6 +119,8 @@ class FirebaseAuthService {
     String lName,
     String id,
     String email,
+    String photoUrl,
+    bool firstTime,
     BuildContext context,
   ) async {
     try {
@@ -125,6 +131,9 @@ class FirebaseAuthService {
       userModel.lastName = lName;
       userModel.email = email;
       userModel.id = id;
+      userModel.photoUrl = photoUrl;
+      userModel.firstTime = firstTime;
+
       await firebaseFirestore
           .collection('Users')
           .doc(user?.uid)
@@ -156,8 +165,11 @@ class FirebaseAuthService {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
       final name = _user!.displayName?.split(" ");
+
+      final String? photoUrl = _user!.photoUrl;
+
       postDetailsToFireStore(
-          name![0], name[1], _user!.id, _user!.email, context);
+          name![0], name[1], _user!.id, _user!.email, photoUrl!, true, context);
       SnackBarWidget.SnackBars(
           "Sign in Successful", "assets/images/successImg.png", context);
       return _user;
@@ -201,4 +213,58 @@ class FirebaseAuthService {
           e.toString(), "assets/images/errorImg.png", context);
     }
   }
+
+  updateUserPFP(String path) async {
+    Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
+    User? user = _auth.currentUser;
+    await ref.putFile(File(path));
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    ref.getDownloadURL().then((value) async {
+      await firebaseFirestore.collection('Users').doc(user?.uid).set({
+        'photoUrl': value,
+        'firstTime': false,
+      });
+    });
+  }
+
+  // getUser(UserModel current_user) async {
+  //   User? user = _auth.currentUser;
+  //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  //   await firebaseFirestore.collection('Users').doc(user?.uid).get().then(
+  //     (DocumentSnapshot documentSnapshot) {
+  //       Map<String, dynamic> data =
+  //           documentSnapshot.data()! as Map<String, dynamic>;
+  //       current_user.email = data["email"];
+  //       current_user.firstName = data["firstName"];
+  //       current_user.lastName = data["lastName"];
+  //       current_user.photoUrl = data["photoUrl"];
+  //       current_user.firstTime = data["fistTime"];
+  //       current_user.id = data["id"];
+  //     },
+  //   );
+  // }
+
+  // getUserInfo(UserInfoModel current_user_info) async {
+  //   User? user = _auth.currentUser;
+  //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  //   await firebaseFirestore
+  //       .collection('Users')
+  //       .doc(user?.uid)
+  //       .collection('user_info')
+  //       .doc()
+  //       .get()
+  //       .then(
+  //     (DocumentSnapshot documentSnapshot) {
+  //       Map<String, dynamic> data =
+  //           documentSnapshot.data()! as Map<String, dynamic>;
+  //       current_user_info.CNIC = data["CNIC"];
+  //       current_user_info.date = data["date"];
+  //       current_user_info.experience = data["experience"];
+  //       current_user_info.license = data["license"];
+  //       current_user_info.phone = data["phone"];
+  //     },
+  //   );
+  // }
 }
