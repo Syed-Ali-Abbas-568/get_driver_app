@@ -222,7 +222,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     onPressed: () async {
                                       Map<String, dynamic>? data = await context
                                           .read<AuthProviders>()
-                                          .FacebookSignIn(context);
+                                          .FacebookSignUp(context);
                                       if (data != null) {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(

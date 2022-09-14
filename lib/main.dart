@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_driver_app/screens/login_screen.dart';
-import 'package:get_driver_app/screens/profile_creation.dart';
-import 'package:get_driver_app/widgets/bottom_navbar.dart';
+import 'package:get_driver_app/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 import 'package:get_driver_app/providers/auth_providers.dart';
-import 'package:get_driver_app/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +33,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Inter",
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: const SplashScreen(),
       // const ProfileCreation(),
       //const NavBar(),
     );

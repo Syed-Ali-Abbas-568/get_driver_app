@@ -1,6 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/toast.dart';
 
@@ -19,16 +23,68 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController firstName = TextEditingController();
-  final TextEditingController lastName = TextEditingController();
-  final TextEditingController email = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
-  final TextEditingController liscenceNum = TextEditingController();
-  final TextEditingController yearsOfExp = TextEditingController();
-  final TextEditingController dob = TextEditingController();
-  final TextEditingController cnic = TextEditingController();
+  final TextEditingController licenceNumController = TextEditingController();
+  final TextEditingController yearsOfExpController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+  final TextEditingController cnicController = TextEditingController();
   bool editable = false;
   String? imagePath;
+  String name = "";
+  String email = "";
+
+  // Future<String?> getUid()async {
+  //   if(){
+  //     final requestData = await FacebookAuth.instance.getUserData();
+  //     String id=requestData['id'];
+  //     return id;
+  //   }
+  //   return FirebaseAuth.instance.currentUser?.uid;
+  // }
+
+  void getUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String? id;
+    await FacebookAuth.instance.getUserData().then((value) {
+      id = value['id'];
+      log(id!);
+    });
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+        .snapshots()
+        .listen((event) {
+      setState(() {
+        firstNameController.text = event.get('firstName');
+        lastNameController.text = event.get('lastName');
+        name = "${event.get('firstName')}${event.get('lastName')}";
+        email = event.get('email');
+      });
+    });
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+        .collection('user_info')
+        .snapshots()
+        .first
+        .then((event) {
+      setState(() {
+        cnicController.text = event.docs[0].get('CNIC').toString();
+        licenceNumController.text = event.docs[0].get('license').toString();
+        yearsOfExpController.text = event.docs[0].get('experience').toString();
+        dobController.text = event.docs[0].get('date');
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 16,
                     top: 327,
                     child: Text(
-                      "John Marcus Doe",
+                      name,
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF152C5E),
@@ -152,7 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 16,
                     top: 367,
                     child: Text(
-                      "AceGraxia@gmail.com",
+                      email,
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF8893AC),
@@ -235,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           TextFieldWidget(
-                            controller: firstName,
+                            controller: firstNameController,
                             hintText: "Input First Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
@@ -249,7 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            controller: lastName,
+                            controller: lastNameController,
                             hintText: "Input Last Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
@@ -263,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            controller: liscenceNum,
+                            controller: licenceNumController,
                             hintText: "Input License Number here",
                             errorText: "",
                             inputType: TextInputType.number,
@@ -277,7 +333,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            controller: yearsOfExp,
+                            controller: yearsOfExpController,
                             hintText: "Input Years of Experience here",
                             errorText: "",
                             inputType: TextInputType.number,
@@ -291,7 +347,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            controller: dob,
+                            controller: dobController,
                             hintText: "Input DOB here",
                             errorText: "",
                             inputType: TextInputType.datetime,
@@ -305,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: readOnly),
                           ),
                           TextFieldWidget(
-                            controller: cnic,
+                            controller: cnicController,
                             hintText: "Input CNIC here",
                             errorText: "",
                             inputType: TextInputType.datetime,

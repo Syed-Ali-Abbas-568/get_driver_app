@@ -3,8 +3,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/constants.dart';
+import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/image_picker.dart';
@@ -38,7 +42,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
   final dateController = TextEditingController();
   String? imagePath;
 
-  String? name;
+  String name = "";
+  String email = "";
 
   DateTime dateTime = DateTime.now();
   String pattern = '^(?:[+0]9)?[0-9]{11}\$';
@@ -60,13 +65,30 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
-  // @override
-  // void initState() async {
-  //   await context.read<AuthProviders>().getUser();
-  //   context.read<AuthProviders>().currentUser.firstName;
+  void getUserData() async {
+    String? id;
+    await FacebookAuth.instance.getUserData().then((value) {
+      id = value['id'];
+      log(id!);
+    });
+    User? user = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+        .snapshots()
+        .listen((event) {
+      setState(() {
+        name = "${event.get('firstName')}${event.get('lastName')}";
+        email = event.get('email');
+      });
+    });
+  }
 
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,9 +146,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: width * 0.045),
-                    child: const Text(
-                      "User's Name",
-                      style: TextStyle(
+                    child: Text(
+                      name,
+                      style: const TextStyle(
                         color: Color(0xff152C5E),
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -136,9 +158,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
                   Container(
                     margin: EdgeInsets.only(
                         left: width * 0.045, top: height * 0.01),
-                    child: const Text(
-                      "User's email",
-                      style: TextStyle(
+                    child: Text(
+                      email,
+                      style: const TextStyle(
                         color: Color(0xff8D8E8D),
                         fontSize: 14,
                       ),

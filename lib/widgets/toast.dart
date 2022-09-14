@@ -33,8 +33,8 @@ class Toast {
       ),
       margin: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.height - 150,
-        right: 20,
-        left: 20,
+        right: MediaQuery.of(context).size.width * 0.055,
+        left: MediaQuery.of(context).size.width * 0.055,
       ),
       behavior: SnackBarBehavior.floating,
     );

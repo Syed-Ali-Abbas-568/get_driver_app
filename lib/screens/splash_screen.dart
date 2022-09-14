@@ -1,8 +1,13 @@
+// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
+
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_driver_app/screens/profile_screen.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:get_driver_app/screens/profile_creation.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 
 import 'login_screen.dart';
@@ -22,20 +27,34 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _switch() {
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () async {
+      String? id;
+      await FacebookAuth.instance.getUserData().then((value) {
+        id = value['id'];
+        log(id!);
+      });
       log("Going to Switch");
+      bool dataPresent = false;
+      User? user = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+          .collection('user_info')
+          .snapshots()
+          .first
+          .then((value) {
+        dataPresent = value.docs.isEmpty;
+      });
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                // user == null?
-                const LoginScreen()
-                // : dataPresent
-                // ? OnBoardingScreen()
-                // : ShifterScreen()
-
-                // const NavBar(),
-          ));
+        context,
+        MaterialPageRoute(
+          builder: (context) => user == null && id == null
+              ? const LoginScreen()
+              : dataPresent
+                  ? const ProfileCreation()
+                  : const NavBar(),
+        ),
+      );
     });
   }
 

@@ -17,6 +17,11 @@ class AuthProviders with ChangeNotifier {
   bool _isProfileCreation = false;
 
   bool get isProfileCreation => _isProfileCreation;
+
+  bool _isFacebookSignUp = true;
+
+  bool get isFacebookSignUp => _isFacebookSignUp;
+
   bool _isSignUpLoading = false;
 
   bool get isSignUpLoading => _isSignUpLoading;
@@ -47,6 +52,8 @@ class AuthProviders with ChangeNotifier {
     return userCredentials;
   }
 
+  Future<String> get getFacebookId => _firebaseAuthService.facebookIdGetter();
+
   Future<GoogleSignInAccount?> GoogleSignInFunc(BuildContext context) async {
     _isGoogleLoading = true;
     GoogleSignInAccount? googleSignInAccount =
@@ -61,6 +68,14 @@ class AuthProviders with ChangeNotifier {
     Map<String, dynamic>? loginStatus =
         await _firebaseAuthService.facebookLogin(context);
     _isFacebookLoading = false;
+    notifyListeners();
+    return loginStatus;
+  }
+
+  Future<Map<String, dynamic>?> FacebookSignUp(BuildContext context) async {
+    _isFacebookSignUp = true;
+    Map<String, dynamic>? loginStatus =
+        await _firebaseAuthService.facebookSignUp(context);
     notifyListeners();
     return loginStatus;
   }
@@ -103,10 +118,6 @@ class AuthProviders with ChangeNotifier {
   // UserModel currentUser = UserModel();
 
   // UserInfoModel? currentUserInfo = UserInfoModel();
-
-  // getUser() async {
-  //   await _firebaseAuthService.getUser(currentUser);
-  // }
 
   // getUserModel() async {
   //   await _firebaseAuthService.getUser(currentUser);

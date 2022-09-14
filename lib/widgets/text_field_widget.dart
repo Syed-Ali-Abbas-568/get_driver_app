@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
 
 class TextFieldWidget extends StatelessWidget {
-  TextFieldWidget({
-    Key? key,
-    required this.controller,
-    required this.hintText,
-    required this.errorText,
-    required this.inputType,
-    this.enabled = true,
-    this.length=2
-  }) : super(key: key);
+  TextFieldWidget(
+      {Key? key,
+      required this.controller,
+      required this.hintText,
+      required this.errorText,
+      required this.inputType,
+      this.enabled = true,
+      this.length = 2})
+      : super(key: key);
 
   bool enabled;
   final TextEditingController controller;
