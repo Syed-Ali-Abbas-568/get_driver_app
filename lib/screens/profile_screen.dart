@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     User? user = FirebaseAuth.instance.currentUser;
     String? id;
     if (user == null) {
-      FacebookAuth.instance.getUserData().then((value) {
+      await FacebookAuth.instance.getUserData().then((value) {
         id = value['id'].toString();
       });
     } else {
