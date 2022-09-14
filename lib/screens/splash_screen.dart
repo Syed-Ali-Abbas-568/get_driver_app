@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _switch() {
-    Timer(const Duration(seconds: 3), () async {
+    Timer(const Duration(seconds: 3), ()  async {
       String? id;
 
       log("Going to Switch");
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         id = user.uid;
       }
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('Users')
           .doc(id)
           .collection('user_info')
@@ -48,7 +48,9 @@ class _SplashScreenState extends State<SplashScreen> {
           .first
           .then((value) {
         dataPresent = value.docs.isEmpty;
+        // log(value.docs.isEmpty.toString());
       });
+      log(dataPresent.toString());
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

@@ -191,8 +191,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: context
                                       .watch<AuthProviders>()
                                       .isGoogleLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Color(0xff152C5E),
+                                  ? Container(
+                                      width: 50,
+                                      height: 50,
+                                      child: const CircularProgressIndicator(
+                                        color: Color(0xff152C5E),
+                                      ),
                                     )
                                   : ImgButton(
                                       height: height,
@@ -205,25 +209,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 .GoogleSignInFunc(context);
                                         if (account != null) {
                                           bool dataPresent = false;
-                                          User? user =
-                                              FirebaseAuth.instance.currentUser;
                                           await FirebaseFirestore.instance
-                                              .collection('user')
-                                              .doc(user!.uid)
+                                              .collection('Users')
+                                              .doc(FirebaseAuth
+                                                  .instance.currentUser?.uid)
                                               .collection('user_info')
                                               .snapshots()
                                               .first
                                               .then((value) {
                                             dataPresent = value.docs.isEmpty;
                                           });
+                                          log(dataPresent.toString());
+                                          Future.delayed(
+                                              const Duration(seconds: 3));
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => user == null
+                                              builder: (context) => FirebaseAuth.instance.currentUser== null
                                                   ? const LoginScreen()
                                                   : dataPresent
-                                                      ? const NavBar()
-                                                      : const ProfileCreation(),
+                                                      ? const ProfileCreation()
+                                                      : const NavBar(),
                                             ),
                                           );
                                         }
@@ -253,12 +259,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 .read<AuthProviders>()
                                                 .FacebookSignIn(context);
                                         if (data != null) {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const NavBar(),
-                                            ),
-                                          );
+                                          bool dataPresent = false;
+                                          User? user =
+                                              FirebaseAuth.instance.currentUser;
+                                          await FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(data['id'])
+                                              .collection('user_info')
+                                              .snapshots()
+                                              .first
+                                              .then((value) {
+                                            dataPresent = value.docs.isEmpty;
+                                            log(dataPresent.toString());
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => data == null
+                                                    ? const LoginScreen()
+                                                    : dataPresent
+                                                    ? const ProfileCreation()
+                                                    : const NavBar(),
+                                              ),
+                                            );
+                                          });
                                         }
                                       },
                                     ),

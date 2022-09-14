@@ -197,7 +197,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const NavBar(),
+                                                const ProfileCreation(),
                                           ),
                                         );
                                       }
@@ -229,7 +229,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const NavBar(),
+                                                const ProfileCreation(),
                                           ),
                                         );
                                       }

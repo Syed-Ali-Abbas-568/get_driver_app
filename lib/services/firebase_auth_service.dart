@@ -228,12 +228,17 @@ class FirebaseAuthService {
   ) async {
     try {
       String? id;
-      await FacebookAuth.instance.getUserData().then((value) {
-        id = value['id'];
-        log(id!);
-      });
+
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
+      if(user==null){
+        FacebookAuth.instance.getUserData().then((value) {
+          id = value['id'];
+          log(id!);
+        });
+      }else{
+        id=user.uid;
+      }
       UserInfoModel userInfoModel = UserInfoModel();
       userInfoModel.experience = experience;
       userInfoModel.license = license;
@@ -242,7 +247,7 @@ class FirebaseAuthService {
       userInfoModel.date = date;
       await firebaseFirestore
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser == null ? id : user?.uid)
+          .doc(id)
           .collection('user_info')
           .doc()
           .set(userInfoModel.toMap());

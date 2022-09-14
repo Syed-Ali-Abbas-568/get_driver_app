@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void getUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
+    log(user.toString());
     String? id;
     if (user == null) {
       await FacebookAuth.instance.getUserData().then((value) {
@@ -54,17 +56,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       id = user.uid;
     }
+    log(id.toString());
     FirebaseFirestore.instance
         .collection('Users')
         .doc(id)
         .snapshots()
         .listen((event) {
-      setState(() {
-        firstNameController.text = event.get('firstName');
-        lastNameController.text = event.get('lastName');
-        name = "${event.get('firstName')}${event.get('lastName')}";
-        email = event.get('email');
-      });
+          setState(() {
+            firstNameController.text = event.get('firstName');
+            lastNameController.text = event.get('lastName');
+            name = "${event.get('firstName')}${event.get('lastName')}";
+            email = event.get('email');
+          });
     });
     FirebaseFirestore.instance
         .collection('Users')
@@ -271,28 +274,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  Positioned(
-                    right: 16,
-                    top: 410,
-                    width: 79,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Image(
-                          image: AssetImage("assets/images/location.png"),
-                        ),
-                        Text(
-                          "Lahore, PK",
-                          style: GoogleFonts.manrope(
-                            fontStyle: FontStyle.normal,
-                            color: const Color(0xFF8893AC),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Positioned(
+                  //   right: 16,
+                  //   top: 410,
+                  //   width: 79,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //     children: [
+                  //       const Image(
+                  //         image: AssetImage("assets/images/location.png"),
+                  //       ),
+                  //       Text(
+                  //         "Lahore, PK",
+                  //         style: GoogleFonts.manrope(
+                  //           fontStyle: FontStyle.normal,
+                  //           color: const Color(0xFF8893AC),
+                  //           fontWeight: FontWeight.w800,
+                  //           fontSize: 10,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Positioned(
                       top: 470,
                       left: 16,
