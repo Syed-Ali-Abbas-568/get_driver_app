@@ -68,7 +68,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
     String? id;
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      FacebookAuth.instance.getUserData().then((value) {
+      await FacebookAuth.instance.getUserData().then((value) {
         id = value['id'].toString();
       });
     } else {
