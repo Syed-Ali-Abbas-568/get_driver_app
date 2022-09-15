@@ -6,7 +6,6 @@ import 'package:get_driver_app/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-import 'package:get_driver_app/providers/auth_providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

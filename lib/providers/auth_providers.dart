@@ -10,9 +10,9 @@ class AuthProvider with ChangeNotifier {
 
   bool _isLoading = false;
   bool _hasError = false;
-  bool _isProfileCreation = false;
-  bool _isSignUpLoading = false;
-  bool _isGoogleLoading = false;
+  // bool _isProfileCreation = false;
+  // bool _isSignUpLoading = false;
+  // bool _isGoogleLoading = false;
   bool _isGoogleSignUpLoading = false;
   bool _isFacebookLoading = false;
   String _errorMsg = '';
