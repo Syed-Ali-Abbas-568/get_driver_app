@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
@@ -34,18 +33,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool editable = false;
   String? imagePath;
   String name = "";
-  String email = "";
 
-
-  void getUserData(){
-    UserModel userModel = UserModel();
-    var data = context.read<FirestoreProvider>().getUserData();
+  Future<void> getUserData() async {
+    final data = await context.read<FirestoreProvider>().getUserData();
+    if (data == null) return;
     log(data.toString());
-    firstNameController.text=data!['firstName'];
-    lastNameController.text=data['lastName'];
-    emailController.text=data['email'];
-    email=data['email'];
+    firstNameController.text = data.firstName ?? '';
+    lastNameController.text = data.lastName ?? '';
+    emailController.text = data.email ?? '';
   }
+
   @override
   void initState() {
     super.initState();
@@ -193,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 16,
                     top: 367,
                     child: Text(
-                      email,
+                      emailController.text,
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF8893AC),

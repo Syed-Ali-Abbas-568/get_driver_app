@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get_driver_app/services/firestore_auth_service.dart';
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/services/firestore_service.dart';
 
-class FirestoreProvider with ChangeNotifier{
-  final FirestoreAuthService _firestoreAuthService=FirestoreAuthService();
+class FirestoreProvider with ChangeNotifier {
+  final FirestoreService _firestoreAuthService = FirestoreService();
 
- Map<String, dynamic>? getUserData(){
+  Future<UserModel?> getUserData() {
     return _firestoreAuthService.getData();
   }
-
 }
