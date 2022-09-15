@@ -119,7 +119,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     );
 
                                 if (userCred != null) {
-                                  Navigator.of(context).push(
+                                  Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           const ProfileCreation(),
@@ -158,7 +158,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             splashFactory: NoSplash.splashFactory,
                           ),
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const LoginScreen()));
@@ -194,7 +194,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                               .read<AuthProviders>()
                                               .GoogleSignUpFunc(context);
                                       if (account != null) {
-                                        Navigator.of(context).push(
+                                        Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 const ProfileCreation(),
@@ -226,7 +226,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                           .read<AuthProviders>()
                                           .FacebookSignUp(context);
                                       if (data != null) {
-                                        Navigator.of(context).push(
+                                        Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 const ProfileCreation(),

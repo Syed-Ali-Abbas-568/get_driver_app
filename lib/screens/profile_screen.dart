@@ -1,14 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:get_driver_app/widgets/toast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/image_picker.dart';
 
@@ -36,57 +36,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String name = "";
   String email = "";
 
-  // Future<String?> getUid()async {
-  //   if(){
-  //     final requestData = await FacebookAuth.instance.getUserData();
-  //     String id=requestData['id'];
-  //     return id;
-  //   }
-  //   return FirebaseAuth.instance.currentUser?.uid;
-  // }
 
-  void getUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    log(user.toString());
-    String? id;
-    if (user == null) {
-      await FacebookAuth.instance.getUserData().then((value) {
-        id = value['id'].toString();
-      });
-    } else {
-      id = user.uid;
-    }
-    log(id.toString());
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(id)
-        .snapshots()
-        .listen((event) {
-          setState(() {
-            firstNameController.text = event.get('firstName');
-            lastNameController.text = event.get('lastName');
-            name = "${event.get('firstName')}${event.get('lastName')}";
-            email = event.get('email');
-          });
-    });
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(id)
-        .collection('user_info')
-        .snapshots()
-        .first
-        .then((event) {
-      cnicController.text = event.docs[0].get('CNIC').toString();
-      licenceNumController.text = event.docs[0].get('license').toString();
-      yearsOfExpController.text = event.docs[0].get('experience').toString();
-      dobController.text = event.docs[0].get('date');
-    });
+  void getUserData(){
+    UserModel userModel = UserModel();
+    var data = context.read<FirestoreProvider>().getUserData();
+    log(data.toString());
+    firstNameController.text=data!['firstName'];
+    lastNameController.text=data['lastName'];
+    emailController.text=data['email'];
+    email=data['email'];
   }
-
   @override
   void initState() {
     super.initState();
-    getUserData();
   }
 
   @override

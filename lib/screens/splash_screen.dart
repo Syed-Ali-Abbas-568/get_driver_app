@@ -3,11 +3,8 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:get_driver_app/screens/profile_creation.dart';
+import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 
 import 'login_screen.dart';
@@ -27,40 +24,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _switch() {
-    Timer(const Duration(seconds: 3), ()  async {
-      String? id;
-
+    Timer(const Duration(seconds: 3), () async {
       log("Going to Switch");
-      bool dataPresent = false;
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        await FacebookAuth.instance.getUserData().then((value) {
-          id = value['id'].toString();
-        });
-      } else {
-        id = user.uid;
-      }
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(id)
-          .collection('user_info')
-          .snapshots()
-          .first
-          .then((value) {
-        dataPresent = value.docs.isEmpty;
-        // log(value.docs.isEmpty.toString());
-      });
-      log(dataPresent.toString());
-      Navigator.pushReplacement(
-        context,
+      FirebaseAuthService firebaseAuthService = FirebaseAuthService();
+      // log(firebaseAuthService.firebaseUser.toString());
+
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => user == null && id == null
-              ? const LoginScreen()
-              : dataPresent
-                  ? const ProfileCreation()
-                  : const NavBar(),
+          builder: (context) => firebaseAuthService.firebaseUser != null
+              ? const NavBar()
+              : const LoginScreen(),
         ),
       );
+      // print(query);
     });
   }
 

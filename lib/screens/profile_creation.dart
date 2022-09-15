@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
+import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
@@ -64,28 +65,18 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
-  void getUserData() async {
-    String? id;
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      await FacebookAuth.instance.getUserData().then((value) {
-        id = value['id'].toString();
-      });
-    } else {
-      id = user.uid;
-    }
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(id)
-        .snapshots()
-        .listen((event) {
-      setState(() {
-        name = "${event.get('firstName')}${event.get('lastName')}";
-        email = event.get('email');
-      });
+  void getUserData(){
+    // UserModel userModel = UserModel();
+    // print(context.read<FirestoreProvider>().getUserData());
+    var data = context.read<FirestoreProvider>().getUserData();
+    // log(data.toString());
+    setState(() {
+      // firstNameController.text=data!['firstName'];
+      // lastNameController.text=data['lastName'];
+      // emailController.text=data['email'];
+      // email=data['email'];
     });
   }
-
   @override
   void initState() {
     super.initState();

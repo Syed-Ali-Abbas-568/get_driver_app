@@ -14,8 +14,12 @@ import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+
+
 class FirebaseAuthService {
-  final _auth = FirebaseAuth.instance;
+  static final _auth = FirebaseAuth.instance;
+  final firebaseUser=_auth.currentUser;
+
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
 
@@ -54,6 +58,7 @@ class FirebaseAuthService {
       LoginResult result = await FacebookAuth.instance.login();
 
       if (result.status == LoginStatus.success) {
+        log(result.status.toString());
         final requestData = await FacebookAuth.instance.getUserData();
         SnackBarWidget.SnackBars(
             "Sign in successful", "assets/images/successImg.png", context);
@@ -61,6 +66,7 @@ class FirebaseAuthService {
       } else {
         SnackBarWidget.SnackBars("Something went wrong try again",
             "assets/images/errorImg.png", context);
+
       }
     } catch (e) {
       log(e.toString());
@@ -98,7 +104,7 @@ class FirebaseAuthService {
           .then((value) {
         userCredential = value;
         postDetailsToFireStore(
-            fName, lName, value.user!.uid, email, "null", true, false, context);
+            fName, lName, value.user!.uid, email, "null", true, context);
       }).catchError((e) {
         if (e.toString() ==
             "[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
@@ -114,11 +120,6 @@ class FirebaseAuthService {
     return null;
   }
 
-  Future<String> facebookIdGetter() async {
-    final requestData = await FacebookAuth.instance.getUserData();
-    String id = requestData['id'];
-    return id;
-  }
 
   Future<Map<String, dynamic>?> facebookSignUp(BuildContext context) async {
     try {
@@ -130,10 +131,8 @@ class FirebaseAuthService {
         String lName = n[1];
         String email = requestData['email'];
         String id = requestData['id'];
-        facebookIdGetter();
         String url = requestData['picture']['data']['url'];
-        postDetailsToFireStore(
-            fName, lName, id, email, url, true, true, context);
+        postDetailsToFireStore(fName, lName, id, email, url, true, context);
         SnackBarWidget.SnackBars(
             "Sign in successful", "assets/images/successImg.png", context);
         return requestData;
@@ -156,7 +155,6 @@ class FirebaseAuthService {
     String email,
     String photoUrl,
     bool firstTime,
-    bool ifFacebook,
     BuildContext context,
   ) async {
     try {
@@ -169,12 +167,11 @@ class FirebaseAuthService {
       userModel.id = id;
       userModel.photoUrl = photoUrl;
       userModel.firstTime = firstTime;
-      String? uid = ifFacebook ? id : user?.uid;
 
       await firebaseFirestore
           .collection('Users')
-          .doc(uid)
-          .set(userModel.toMap());
+          .doc(user?.uid)
+          .set(userModel.toJson());
 
       SnackBarWidget.SnackBars("Account created successfully",
           "assets/images/successImg.png", context);
@@ -205,8 +202,8 @@ class FirebaseAuthService {
 
       final String? photoUrl = _user!.photoUrl;
 
-      postDetailsToFireStore(name![0], name[1], _user!.id, _user!.email,
-          photoUrl!, true, false, context);
+      postDetailsToFireStore(
+          name![0], name[1], _user!.id, _user!.email, photoUrl!, true, context);
       SnackBarWidget.SnackBars(
           "Sign in Successful", "assets/images/successImg.png", context);
       return _user;
@@ -239,18 +236,16 @@ class FirebaseAuthService {
       }else{
         id=user.uid;
       }
-      UserInfoModel userInfoModel = UserInfoModel();
-      userInfoModel.experience = experience;
-      userInfoModel.license = license;
-      userInfoModel.CNIC = CNIC;
-      userInfoModel.phone = phone;
-      userInfoModel.date = date;
+      UserModel userModel = UserModel();
+      userModel.experience = experience;
+      userModel.license = license;
+      userModel.CNIC = CNIC;
+      userModel.phone = phone;
+      userModel.date = date;
       await firebaseFirestore
           .collection('Users')
           .doc(id)
-          .collection('user_info')
-          .doc()
-          .set(userInfoModel.toMap());
+          .set(userModel.toJson());
 
       SnackBarWidget.SnackBars("Profile creation successful",
           "assets/images/successImg.png", context);
@@ -261,39 +256,44 @@ class FirebaseAuthService {
     }
   }
 
-  updateUserPFP(String path) async {
-    Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
-    User? user = _auth.currentUser;
-    await ref.putFile(File(path));
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    ref.getDownloadURL().then((value) async {
-      await firebaseFirestore.collection('Users').doc(user?.uid).set({
-        'photoUrl': value,
-        'firstTime': false,
-      });
-    });
-  }
-
-  // getUserInfo(UserInfoModel current_user_info) async {
+  // updateUserPFP(String path) async {
+  //   Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
   //   User? user = _auth.currentUser;
+  //   await ref.putFile(File(path));
   //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-
-  //   await firebaseFirestore
-  //       .collection('Users')
-  //       .doc(user?.uid)
-  //       .collection('user_info')
-  //       .doc()
-  //       .get()
-  //       .then(
-  //     (DocumentSnapshot documentSnapshot) {
-  //       Map<String, dynamic> data =
-  //           documentSnapshot.data()! as Map<String, dynamic>;
-  //       current_user_info.CNIC = data["CNIC"];
-  //       current_user_info.date = data["date"];
-  //       current_user_info.experience = data["experience"];
-  //       current_user_info.license = data["license"];
-  //       current_user_info.phone = data["phone"];
-  //     },
-  //   );
+  //   ref.getDownloadURL().then((value) async {
+  //     await firebaseFirestore.collection('Users').doc(user?.uid).set({
+  //       'photoUrl': value,
+  //       'firstTime': false,
+  //     });
+  //   });
   // }
+
+  Future<QuerySnapshot<Map<String, dynamic>>?> switcher() async {
+    try{
+      User? user = FirebaseAuth.instance.currentUser;
+      var result = await FacebookAuth.instance.getUserData();
+
+      String? uid;
+      if (user == null && result['id'] != null) {
+        uid = result['id'];
+      } else if (user != null && result['id'] == null) {
+        uid = user.uid;
+      } else {
+        uid = null;
+      }
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(uid)
+          .collection('user_info')
+          .snapshots()
+          .first
+          .then((value) {
+        return value;
+      });
+      return null;
+    }catch(e){
+      log(e.toString());
+    }
+  }
 }

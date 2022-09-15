@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
@@ -14,10 +15,6 @@ class AuthProviders with ChangeNotifier {
   bool _isProfileCreation = false;
 
   bool get isProfileCreation => _isProfileCreation;
-
-  bool _isFacebookSignUp = true;
-
-  bool get isFacebookSignUp => _isFacebookSignUp;
 
   bool _isSignUpLoading = false;
 
@@ -49,7 +46,6 @@ class AuthProviders with ChangeNotifier {
     return userCredentials;
   }
 
-  Future<String> get getFacebookId => _firebaseAuthService.facebookIdGetter();
 
   Future<GoogleSignInAccount?> GoogleSignInFunc(BuildContext context) async {
     _isGoogleLoading = true;
@@ -70,7 +66,6 @@ class AuthProviders with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>?> FacebookSignUp(BuildContext context) async {
-    _isFacebookSignUp = true;
     Map<String, dynamic>? loginStatus =
         await _firebaseAuthService.facebookSignUp(context);
     notifyListeners();
@@ -111,13 +106,4 @@ class AuthProviders with ChangeNotifier {
     _isProfileCreation = false;
     notifyListeners();
   }
-
-  // UserModel currentUser = UserModel();
-
-  // UserInfoModel? currentUserInfo = UserInfoModel();
-
-  // getUserModel() async {
-  //   await _firebaseAuthService.getUser(currentUser);
-
-  // }
 }
