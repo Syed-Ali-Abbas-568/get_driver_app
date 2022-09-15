@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/screens/profile_creation.dart';
-import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
@@ -109,7 +108,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (_formKey.currentState!.validate()) {
                                 final userCred = await context
-                                    .read<AuthProviders>()
+                                    .read<AuthProvider>()
                                     .SignUpWithEmailPass(
                                       fNameController.text,
                                       lNameController.text,
@@ -131,7 +130,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           },
                           minWidth: 200.0,
                           height: 42.0,
-                          child: context.watch<AuthProviders>().isSignUpLoading
+                          child: context.watch<AuthProvider>().isSignUpLoading
                               ? const CircularProgressIndicator(
                                   color: Color(0xffFBFAFA),
                                 )
@@ -179,7 +178,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           child: Container(
                             margin: EdgeInsets.only(left: width * 0.032),
                             child: context
-                                    .watch<AuthProviders>()
+                                    .watch<AuthProvider>()
                                     .isGoogleSignUpLoading
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
@@ -191,7 +190,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     onPressed: () async {
                                       GoogleSignInAccount? account =
                                           await context
-                                              .read<AuthProviders>()
+                                              .read<AuthProvider>()
                                               .GoogleSignUpFunc(context);
                                       if (account != null) {
                                         Navigator.of(context).pushReplacement(
@@ -212,7 +211,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           child: Container(
                             margin: EdgeInsets.only(right: width * 0.032),
                             child: context
-                                    .watch<AuthProviders>()
+                                    .watch<AuthProvider>()
                                     .isFacebookLoading
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
@@ -223,7 +222,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     text: "Facebook",
                                     onPressed: () async {
                                       Map<String, dynamic>? data = await context
-                                          .read<AuthProviders>()
+                                          .read<AuthProvider>()
                                           .FacebookSignUp(context);
                                       if (data != null) {
                                         Navigator.of(context).pushReplacement(

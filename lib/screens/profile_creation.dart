@@ -65,7 +65,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
-  void getUserData(){
+  void getUserData() {
     // UserModel userModel = UserModel();
     // print(context.read<FirestoreProvider>().getUserData());
     var data = context.read<FirestoreProvider>().getUserData();
@@ -77,6 +77,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
       // email=data['email'];
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -293,7 +294,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
                             FocusManager.instance.primaryFocus?.unfocus();
                             if (_formKey.currentState!.validate()) {
                               await context
-                                  .read<AuthProviders>()
+                                  .read<AuthProvider>()
                                   .profileCreation(
                                       dateController.text,
                                       int.parse(expController.text),
@@ -310,16 +311,15 @@ class _ProfileCreationState extends State<ProfileCreation> {
                           },
                           minWidth: 200.0,
                           height: 42.0,
-                          child:
-                              context.watch<AuthProviders>().isProfileCreation
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    )
-                                  : const Text(
-                                      'Submit',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    ),
+                          child: context.watch<AuthProvider>().isProfileCreation
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
                         ),
                       ),
                     ),

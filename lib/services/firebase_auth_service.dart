@@ -1,56 +1,53 @@
-// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
-
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:get_driver_app/models/user_info_model.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+class WrongPasswordException implements Exception {
+  final String message;
 
+  WrongPasswordException(this.message);
+}
+
+class UserNotFoundException implements Exception {
+  final String message;
+
+  UserNotFoundException(this.message);
+}
+
+class UnkownException implements Exception {
+  final String message;
+
+  UnkownException(this.message);
+}
 
 class FirebaseAuthService {
   static final _auth = FirebaseAuth.instance;
-  final firebaseUser=_auth.currentUser;
+  final firebaseUser = _auth.currentUser;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
 
   GoogleSignInAccount? get user => _user;
 
-  Future<UserCredential?> signIn(
-      String email, String password, BuildContext context) async {
-    UserCredential? userCredentials;
+  Future<void> signIn(String email, String password) async {
     try {
-      userCredentials = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      SnackBarWidget.SnackBars(
-          "Sign in successful", "assets/images/successImg.png", context);
-    } catch (e) {
-      if (e.toString() ==
-          "[firebase_auth/wrong-password] The password is invalid or the user does not have a password.") {
-        SnackBarWidget.SnackBars(
-            "Incorrect Password", "assets/images/errorImg.png", context);
-      } else if (e.toString() ==
-          "[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.") {
-        SnackBarWidget.SnackBars(
-            "Account not found", "assets/images/errorImg.png", context);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        throw WrongPasswordException('You have entered a wrong password');
+      } else if (e.code == 'user-not-found') {
+        throw UserNotFoundException('User not found');
       } else {
-        SnackBarWidget.SnackBars(
-            "Something went wrong", "assets/images/errorImg.png", context);
+        throw UnkownException('Something went wrong ${e.code} ${e.message}');
       }
-      log(e.toString());
     }
-    return userCredentials;
   }
 
   Future<Map<String, dynamic>?> facebookLogin(BuildContext context) async {
@@ -61,12 +58,14 @@ class FirebaseAuthService {
         log(result.status.toString());
         final requestData = await FacebookAuth.instance.getUserData();
         SnackBarWidget.SnackBars(
-            "Sign in successful", "assets/images/successImg.png", context);
+          "Sign in successful",
+          "assets/images/successImg.png",
+          context,
+        );
         return requestData;
       } else {
         SnackBarWidget.SnackBars("Something went wrong try again",
             "assets/images/errorImg.png", context);
-
       }
     } catch (e) {
       log(e.toString());
@@ -119,7 +118,6 @@ class FirebaseAuthService {
     }
     return null;
   }
-
 
   Future<Map<String, dynamic>?> facebookSignUp(BuildContext context) async {
     try {
@@ -228,13 +226,13 @@ class FirebaseAuthService {
 
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
-      if(user==null){
+      if (user == null) {
         FacebookAuth.instance.getUserData().then((value) {
           id = value['id'];
           log(id!);
         });
-      }else{
-        id=user.uid;
+      } else {
+        id = user.uid;
       }
       UserModel userModel = UserModel();
       userModel.experience = experience;
@@ -270,7 +268,7 @@ class FirebaseAuthService {
   // }
 
   Future<QuerySnapshot<Map<String, dynamic>>?> switcher() async {
-    try{
+    try {
       User? user = FirebaseAuth.instance.currentUser;
       var result = await FacebookAuth.instance.getUserData();
 
@@ -292,8 +290,9 @@ class FirebaseAuthService {
         return value;
       });
       return null;
-    }catch(e){
+    } catch (e) {
       log(e.toString());
     }
+    return null;
   }
 }
