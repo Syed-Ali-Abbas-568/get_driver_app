@@ -116,21 +116,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         // print(result);
         if (result.isEmpty) {
           SnackBarWidget.SnackBars(
-              "Account not found", "assets/images/errorImg.png", context);
+              "Account not found", "assets/images/errorImg.png", context: context);
           setState(() {
             showSpinner = false;
           });
         } else {
           FirebaseAuth.instance.sendPasswordResetEmail(email: email);
           SnackBarWidget.SnackBars(
-              "Email Sent", "assets/images/successImg.png", context);
+              "Email Sent", "assets/images/successImg.png",  context: context);
           setState(() {
             showSpinner = false;
           });
         }
       } catch (e) {
         SnackBarWidget.SnackBars(
-            e.toString(), "assets/images/successImg.png", context);
+            e.toString(), "assets/images/successImg.png", context: context);
 
         setState(() {
           showSpinner = false;

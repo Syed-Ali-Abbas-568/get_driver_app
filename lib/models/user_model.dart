@@ -11,7 +11,7 @@ class UserModel {
   int? experience;
   int? CNIC;
   int? license;
-  int? phone;
+  String? phone;
 
   UserModel(
       {this.id,
@@ -28,9 +28,9 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      firstName: json['userName'],
+      firstName: json['firstName'],
       email: json['email'],
-      lastName: json['secondName'],
+      lastName: json['lastName'],
       id: json['userId'],
       photoUrl: json['photoUrl'],
       firstTime: json['firstTime'],

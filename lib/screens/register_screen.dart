@@ -1,8 +1,14 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/models/user_model.dart';
 
 import 'package:get_driver_app/providers/auth_providers.dart';
-import 'package:get_driver_app/screens/profile_creation.dart';
+import 'package:get_driver_app/screens/create_profile.dart';
+import 'package:get_driver_app/widgets/bottom_navbar.dart';
+import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
@@ -104,33 +110,46 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         elevation: 5.0,
                         child: MaterialButton(
                           onPressed: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             if (_formKey.currentState!.validate()) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              if (_formKey.currentState!.validate()) {
-                                final userCred = await context
-                                    .read<AuthProvider>()
-                                    .SignUpWithEmailPass(
-                                      fNameController.text,
-                                      lNameController.text,
-                                      emailController.text,
-                                      passController.text,
-                                      context,
-                                    );
-
-                                if (userCred != null) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ProfileCreation(),
-                                    ),
+                              final userCred = await context
+                                  .read<AuthProvider>()
+                                  .SignUpWithEmailPass(
+                                    fNameController.text,
+                                    lNameController.text,
+                                    emailController.text,
+                                    passController.text,
                                   );
-                                }
+
+                              AuthProvider authProvider = AuthProvider();
+
+                              // if(authProvider.hasError==true){
+
+                              //   return ;
+                              // }
+
+                              if (userCred != null && !authProvider.hasError) {
+                                SnackBarWidget.SnackBars("Signup Successful",
+                                    "assets/images/successImg.png",
+                                    context: context);
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ProfileCreation(),
+                                  ),
+                                );
+                              } else {
+                                SnackBarWidget.SnackBars(
+                                  authProvider.errorMsg,
+                                  "assets/images/errorImg.png",
+                                  context: context,
+                                );
                               }
                             }
                           },
                           minWidth: 200.0,
                           height: 42.0,
-                          child: context.watch<AuthProvider>().isSignUpLoading
+                          child: context.watch<AuthProvider>().isLoading
                               ? const CircularProgressIndicator(
                                   color: Color(0xffFBFAFA),
                                 )
@@ -177,9 +196,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(left: width * 0.032),
-                            child: context
-                                    .watch<AuthProvider>()
-                                    .isGoogleSignUpLoading
+                            child: context.watch<AuthProvider>().isLoading
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
@@ -188,17 +205,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     img: "google_logo",
                                     text: "Google",
                                     onPressed: () async {
-                                      GoogleSignInAccount? account =
-                                          await context
-                                              .read<AuthProvider>()
-                                              .GoogleSignUpFunc(context);
-                                      if (account != null) {
+                                      AuthProvider authProvider =
+                                          AuthProvider();
+                                      if (authProvider.hasError) {
+                                        SnackBarWidget.SnackBars(
+                                            authProvider.errorMsg,
+                                            "assets/images/errorImg.png",
+                                            context: context);
+                                        return;
+                                      }
+                                      UserModel? userModel = await context
+                                          .read<AuthProvider>()
+                                          .FacebookSignUp();
+                                      if (userModel == null ||
+                                          userModel.CNIC == null) {
                                         Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 const ProfileCreation(),
                                           ),
                                         );
+                                      } else {
+                                        Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const NavBar(),
+                                          ),
+                                        );
+                                        SnackBarWidget.SnackBars(
+                                            "Facebook Sign in successful",
+                                            "assets/images/successImg.png",
+                                            context: context);
                                       }
                                     },
                                   ),
@@ -210,9 +247,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(right: width * 0.032),
-                            child: context
-                                    .watch<AuthProvider>()
-                                    .isFacebookLoading
+                            child: context.watch<AuthProvider>().isLoading
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
@@ -221,14 +256,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     img: "facebook_logo",
                                     text: "Facebook",
                                     onPressed: () async {
-                                      Map<String, dynamic>? data = await context
+                                      UserModel? userModel = await context
                                           .read<AuthProvider>()
-                                          .FacebookSignUp(context);
-                                      if (data != null) {
+                                          .FacebookSignUp();
+                                      if (userModel == null ||
+                                          userModel.CNIC == null) {
                                         Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 const ProfileCreation(),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const NavBar(),
                                           ),
                                         );
                                       }
@@ -247,4 +290,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
+
+  // Future<void> SignUp() async
 }

@@ -15,26 +15,26 @@ class ImgButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: height * 0.02,
-          bottom: height * 0.02,
-          left: height * 0.036,
-          right: height * 0.036),
-      height: height * 0.063,
-      width: height * 0.17,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(100),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.only(
+            top: height * 0.02,
+            bottom: height * 0.02,
+            left: height * 0.036,
+            right: height * 0.036),
+        height: height * 0.063,
+        width: height * 0.17,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(100),
+          ),
+          border: Border.all(
+              color: const Color(0xff8893AC),
+              width: 1.0,
+              style: BorderStyle.solid,
+              strokeAlign: StrokeAlign.inside),
         ),
-        border: Border.all(
-            color: const Color(0xff8893AC),
-            width: 1.0,
-            style: BorderStyle.solid,
-            strokeAlign: StrokeAlign.inside),
-      ),
-      child: GestureDetector(
-        onTap: onPressed,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

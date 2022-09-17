@@ -4,9 +4,11 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/screens/forgot_password.dart';
-import 'package:get_driver_app/screens/profile_creation.dart';
+import 'package:get_driver_app/screens/create_profile.dart';
+import 'package:get_driver_app/screens/profile_screen.dart';
 import 'package:get_driver_app/screens/register_screen.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
@@ -102,7 +104,60 @@ class _LoginScreenState extends State<LoginScreen> {
                               const BorderRadius.all(Radius.circular(30.0)),
                           elevation: 5.0,
                           child: MaterialButton(
-                            onPressed: () async => _loginWithEmail(),
+                            onPressed: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+
+                              if (_formKey.currentState!.validate()) {
+                                await context
+                                    .read<AuthProvider>()
+                                    .signInWithEmailPassword(
+                                      emailController.text,
+                                      passController.text,
+                                    );
+
+                                // final authProvider = ;
+
+                                if (context.read<AuthProvider>().hasError) {
+                                  SnackBarWidget.SnackBars(
+                                    context.read<AuthProvider>().errorMsg,
+                                    "assets/images/errorImg.png",
+                                    context: context,
+                                  );
+                                  return;
+                                }
+
+                                SnackBarWidget.SnackBars(
+                                  "Sign in successful",
+                                  "assets/images/successImg.png",
+                                  context: context,
+                                );
+
+                                String? dataPresent;
+                                User? user = FirebaseAuthService().firebaseUser;
+
+                                await FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(user!.uid)
+                                    .snapshots()
+                                    .first
+                                    .then((value) {
+                                  dataPresent = value.get('CNIC').toString();
+                                  log(dataPresent.toString());
+                                  // log(value.docs.isEmpty.toString());
+                                });
+
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => user == null
+                                        ? const LoginScreen()
+                                        : dataPresent == null
+                                            ? const ProfileCreation()
+                                            : const NavBar(),
+                                  ),
+                                );
+                              }
+                            },
                             minWidth: 200.0,
                             height: 42.0,
                             child: context.watch<AuthProvider>().isLoading
@@ -153,9 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.only(left: width * 0.032),
-                              child: context
-                                      .watch<AuthProvider>()
-                                      .isGoogleLoading
+                              child: context.watch<AuthProvider>().isLoading
                                   ? const SizedBox(
                                       width: 50,
                                       height: 50,
@@ -168,11 +221,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                       img: "google_logo",
                                       text: "Google",
                                       onPressed: () async {
-                                        GoogleSignInAccount? account =
-                                            await context
-                                                .read<AuthProvider>()
-                                                .GoogleSignInFunc(context);
-                                        if (account != null) {
+                                        AuthProvider authProvider =
+                                            AuthProvider();
+                                        if (authProvider.hasError) {
+                                          SnackBarWidget.SnackBars(
+                                              authProvider.errorMsg,
+                                              "assets/images/errorImg.png",
+                                              context: context);
+                                          return;
+                                        }
+                                        UserModel? userModel = await context
+                                            .read<AuthProvider>()
+                                            .GoogleSignUpFunc();
+                                        if (userModel != null) {
                                           bool dataPresent = false;
                                           await FirebaseFirestore.instance
                                               .collection('Users')
@@ -211,9 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.only(right: width * 0.032),
-                              child: context
-                                      .watch<AuthProvider>()
-                                      .isFacebookLoading
+                              child: context.watch<AuthProvider>().isLoading
                                   ? const CircularProgressIndicator(
                                       color: Color(0xff152C5E),
                                     )
@@ -222,35 +281,37 @@ class _LoginScreenState extends State<LoginScreen> {
                                       img: "facebook_logo",
                                       text: "Facebook",
                                       onPressed: () async {
-                                        Map<String, dynamic>? data =
-                                            await context
-                                                .read<AuthProvider>()
-                                                .FacebookSignIn(context);
-                                        if (data != null) {
-                                          bool dataPresent = false;
-                                          User? user =
-                                              FirebaseAuth.instance.currentUser;
-                                          await FirebaseFirestore.instance
-                                              .collection('Users')
-                                              .doc(data['id'])
-                                              .collection('user_info')
-                                              .snapshots()
-                                              .first
-                                              .then((value) {
-                                            dataPresent = value.docs.isEmpty;
-                                            log(dataPresent.toString());
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => data ==
-                                                        null
-                                                    ? const LoginScreen()
-                                                    : dataPresent
-                                                        ? const ProfileCreation()
-                                                        : const NavBar(),
-                                              ),
-                                            );
-                                          });
+                                        AuthProvider authProvider =
+                                            AuthProvider();
+                                        if (authProvider.hasError) {
+                                          SnackBarWidget.SnackBars(
+                                              authProvider.errorMsg,
+                                              "assets/images/errorImg.png",
+                                              context: context);
+                                          return;
+                                        }
+                                        UserModel? userModel = await context
+                                            .read<AuthProvider>()
+                                            .FacebookSignUp();
+                                        if (userModel == null ||
+                                            userModel.CNIC == null) {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ProfileCreation(),
+                                            ),
+                                          );
+                                        } else {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const NavBar(),
+                                            ),
+                                          );
+                                          SnackBarWidget.SnackBars(
+                                              "Facebook Sign in successful",
+                                              "assets/images/successImg.png",
+                                              context: context);
                                         }
                                       },
                                     ),
@@ -269,57 +330,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _loginWithEmail() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    if (_formKey.currentState!.validate()) {
-      await context.read<AuthProvider>().signInWithEmailPassword(
-            emailController.text,
-            passController.text,
-          );
-
-      final authProvider = context.read<AuthProvider>();
-
-      if (authProvider.hasError) {
-        SnackBarWidget.SnackBars(
-          authProvider.errorMsg,
-          "assets/images/successImg.png",
-          context,
-        );
-        return;
-      }
-
-      SnackBarWidget.SnackBars(
-        "Sign in successful",
-        "assets/images/successImg.png",
-        context,
-      );
-
-      bool dataPresent = false;
-      User? user = FirebaseAuthService().firebaseUser;
-
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(user!.uid)
-          .collection('user_info')
-          .snapshots()
-          .first
-          .then((value) {
-        dataPresent = value.docs.isEmpty;
-        log(dataPresent.toString());
-        log(value.docs.isEmpty.toString());
-      });
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => user == null
-              ? const LoginScreen()
-              : dataPresent
-                  ? const ProfileCreation()
-                  : const NavBar(),
-        ),
-      );
-    }
-  }
+  Future<void> _facebookSignIn() async {}
 }
