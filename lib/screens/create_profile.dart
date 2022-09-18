@@ -1,17 +1,15 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, use_build_context_synchronously
 
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/constants.dart';
-import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
+import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/image_picker.dart';
+import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:intl/intl.dart';
@@ -65,16 +63,13 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
-  void getUserData() {
-    // UserModel userModel = UserModel();
-    // print(context.read<FirestoreProvider>().getUserData());
-    var data = context.read<FirestoreProvider>().getUserData();
-    // log(data.toString());
-    setState(() {
-      // firstNameController.text=data!['firstName'];
-      // lastNameController.text=data['lastName'];
-      // emailController.text=data['email'];
-      // email=data['email'];
+  void getUserData() async {
+    Future.delayed(Duration.zero, () async {
+      final data = await context.read<FirestoreProvider>().getUserData();
+      if (data == null) return;
+      if (!mounted) return;
+        email = data.email ?? '';
+        name = "${data.firstName} ${data.lastName}";
     });
   }
 
@@ -105,7 +100,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     child: const Align(
                       alignment: Alignment.center,
                       child: Text(
-                        "Profile Creation",
+                        "Create Profile",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 32,
@@ -290,28 +285,14 @@ class _ProfileCreationState extends State<ProfileCreation> {
                             const BorderRadius.all(Radius.circular(30.0)),
                         elevation: 5.0,
                         child: MaterialButton(
-                          onPressed: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            if (_formKey.currentState!.validate()) {
-                              await context
-                                  .read<AuthProvider>()
-                                  .profileCreation(
-                                      dateController.text,
-                                      int.parse(expController.text),
-                                      int.parse(cnicController.text),
-                                      int.parse(licenseController.text),
-                                      int.parse(phoneController.text),
-                                      context);
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const NavBar(),
-                                ),
-                              );
-                            }
+                          onPressed: () {
+                            update();
                           },
                           minWidth: 200.0,
                           height: 42.0,
-                          child: context.watch<AuthProvider>().isProfileCreation
+                          child: context
+                                  .watch<FirestoreProvider>()
+                                  .isProfileCreation
                               ? const CircularProgressIndicator(
                                   color: Colors.white,
                                 )
@@ -331,5 +312,32 @@ class _ProfileCreationState extends State<ProfileCreation> {
         ),
       ),
     );
+  }
+
+  Future<void> update() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_formKey.currentState!.validate()) {
+      await context.read<FirestoreProvider>().uploadRemainingData(
+          "null",
+          dateController.text,
+          int.parse(expController.text),
+          int.parse(cnicController.text),
+          int.parse(licenseController.text),
+          phoneController.text);
+
+      final firestoreProvider = context.read<FirestoreProvider>();
+      if (firestoreProvider.hasFirestoreError) {
+        SnackBarWidget.SnackBars(firestoreProvider.FirestoreErrorMsg,
+            "assets/images/errorImg.png", context: context);
+      } else {
+        SnackBarWidget.SnackBars(
+            "Data Added successfully", "assets/images/successImg.png", context: context, );
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ),
+        );
+      }
+    }
   }
 }

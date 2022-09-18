@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
               FacebookAuth.instance.logOut();
               FirebaseAuth.instance.signOut();
               SnackBarWidget.SnackBars("SignOut Successful",
-                  "assets/images/successImg.png", context);
+                  "assets/images/successImg.png",  context: context);
 
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(

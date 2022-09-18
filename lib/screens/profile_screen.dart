@@ -37,15 +37,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> getUserData() async {
     final data = await context.read<FirestoreProvider>().getUserData();
     if (data == null) return;
-    log(data.toString());
-    firstNameController.text = data.firstName ?? '';
-    lastNameController.text = data.lastName ?? '';
-    emailController.text = data.email ?? '';
+    if (!mounted) return;
+    setState(() {
+      firstNameController.text = data.firstName ?? '';
+      lastNameController.text = data.lastName ?? '';
+      // imagePath = data.photoUrl;
+      emailController.text = data.email ?? '';
+      licenceNumController.text = data.license.toString();
+      yearsOfExpController.text = data.experience.toString();
+      cnicController.text = data.CNIC.toString();
+      dobController.text = data.date ?? " ";
+      name = "${firstNameController.text} ${lastNameController.text}";
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    getUserData();
   }
 
   @override
@@ -191,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 16,
                     top: 327,
                     child: Text(
-                      name.toUpperCase(),
+                      name,
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF152C5E),
