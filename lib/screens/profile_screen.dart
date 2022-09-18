@@ -49,6 +49,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    cnicController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    licenceNumController.dispose();
+    yearsOfExpController.dispose();
+    dobController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -56,6 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ? AppBar(
               title: const Text("Edit Mode"),
               centerTitle: true,
+              backgroundColor: readOnly,
               automaticallyImplyLeading: false,
             )
           : null,
