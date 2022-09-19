@@ -8,7 +8,6 @@ import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/screens/forgot_password.dart';
 import 'package:get_driver_app/screens/create_profile.dart';
-import 'package:get_driver_app/screens/profile_screen.dart';
 import 'package:get_driver_app/screens/register_screen.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
@@ -16,7 +15,6 @@ import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -230,22 +228,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                               context: context);
                                           return;
                                         }
+                                        SnackBarWidget.SnackBars(
+                                            "Sign in successful",
+                                            "assets/images/successImg.png",
+                                            context: context);
                                         UserModel? userModel = await context
                                             .read<AuthProvider>()
                                             .GoogleSignUpFunc();
                                         if (userModel != null) {
-                                          bool dataPresent = false;
-                                          await FirebaseFirestore.instance
-                                              .collection('Users')
-                                              .doc(FirebaseAuth
-                                                  .instance.currentUser?.uid)
-                                              .collection('user_info')
-                                              .snapshots()
-                                              .first
-                                              .then((value) {
-                                            dataPresent = value.docs.isEmpty;
-                                          });
-                                          log(dataPresent.toString());
                                           Future.delayed(
                                               const Duration(seconds: 3));
                                           Navigator.pushReplacement(
@@ -256,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                           .currentUser ==
                                                       null
                                                   ? const LoginScreen()
-                                                  : dataPresent
+                                                  : userModel.CNIC==null
                                                       ? const ProfileCreation()
                                                       : const NavBar(),
                                             ),
@@ -301,6 +291,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   const ProfileCreation(),
                                             ),
                                           );
+                                          SnackBarWidget.SnackBars(
+                                              "Sign in successful",
+                                              "assets/images/successImg.png",
+                                              context: context);
                                         } else {
                                           Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
@@ -309,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                           );
                                           SnackBarWidget.SnackBars(
-                                              "Facebook Sign in successful",
+                                              "Sign in successful",
                                               "assets/images/successImg.png",
                                               context: context);
                                         }

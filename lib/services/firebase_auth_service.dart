@@ -195,7 +195,7 @@ class FirebaseAuthService {
       await FirebaseAuth.instance.signInWithCredential(credential);
       User? firebaseUser = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
-      print(firebaseUser);
+      // print(firebaseUser);
       await firestore
           .collection('Users')
           .doc(firebaseUser?.uid)
