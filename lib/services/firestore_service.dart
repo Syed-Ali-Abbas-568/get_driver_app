@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
@@ -33,7 +31,6 @@ class FirestoreService {
       var userInfo = UserModel.fromJson(data.data()!);
       myUser = userInfo;
     } catch (e) {
-      log("in firestore service");
       debugPrint(e.toString());
     }
     return myUser;
@@ -50,10 +47,8 @@ class FirestoreService {
       } else {
         id = user.uid;
       }
-      log(id!);
       var names =
           await FirebaseFirestore.instance.collection('Users').doc(id).get();
-      log(names.data()?['firstName']);
       UserModel userModel = UserModel();
       userModel.firstName = names.data()?['firstName'];
       userModel.lastName = names.data()?['lastName'];

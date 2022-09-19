@@ -126,8 +126,6 @@ class FirebaseAuthService {
           isEmpty = value.exists;
         });
 
-        log(requestData['email']);
-        log(isEmpty.toString());
         if (!isEmpty) {
           var n = requestData['name'].toString().split(" ");
           userModel.firstName = n[0];
@@ -170,12 +168,8 @@ class FirebaseAuthService {
           .doc(user?.uid)
           .set(userModel.toJson());
 
-      // SnackBarWidget.SnackBars(
-      //     "Account created successfully", "assets/images/successImg.png",
-      //     context: context);
     } catch (e) {
-      // SnackBarWidget.SnackBars(e.toString(), "assets/images/errorImg.png",
-      //     context: context);
+      log(e.toString());
     }
   }
 
@@ -195,7 +189,6 @@ class FirebaseAuthService {
       await FirebaseAuth.instance.signInWithCredential(credential);
       User? firebaseUser = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
-      // print(firebaseUser);
       await firestore
           .collection('Users')
           .doc(firebaseUser?.uid)
@@ -223,88 +216,4 @@ class FirebaseAuthService {
     }
     return userModel;
   }
-
-  // void postUserInfo(
-  //   String date,
-  //   int experience,
-  //   int CNIC,
-  //   int license,
-  //   String phone,
-  //   BuildContext context,
-  // ) async {
-  //   try {
-  //     String? id;
-
-  //     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  //     User? user = _auth.currentUser;
-  //     if (user == null) {
-  //       FacebookAuth.instance.getUserData().then((value) {
-  //         id = value['id'];
-  //         log(id!);
-  //       });
-  //     } else {
-  //       id = user.uid;
-  //     }
-  //     UserModel userModel = UserModel();
-  //     userModel.experience = experience;
-  //     userModel.license = license;
-  //     userModel.CNIC = CNIC;
-  //     userModel.phone = phone;
-  //     userModel.date = date;
-  //     await firebaseFirestore
-  //         .collection('Users')
-  //         .doc(id)
-  //         .set(userModel.toJson());
-
-  //     SnackBarWidget.SnackBars(
-  //         "Profile creation successful", "assets/images/successImg.png",
-  //         context: context);
-  //   } catch (e) {
-  //     log(e.toString());
-  //     SnackBarWidget.SnackBars(e.toString(), "assets/images/errorImg.png",
-  //         context: context);
-  //   }
-  // }
-
-  // updateUserPFP(String path) async {
-  //   Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
-  //   User? user = _auth.currentUser;
-  //   await ref.putFile(File(path));
-  //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  //   ref.getDownloadURL().then((value) async {
-  //     await firebaseFirestore.collection('Users').doc(user?.uid).set({
-  //       'photoUrl': value,
-  //       'firstTime': false,
-  //     });
-  //   });
-  // }
-
-  // Future<QuerySnapshot<Map<String, dynamic>>?> switcher() async {
-  //   try {
-  //     User? user = FirebaseAuth.instance.currentUser;
-  //     var result = await FacebookAuth.instance.getUserData();
-
-  //     String? uid;
-  //     if (user == null && result['id'] != null) {
-  //       uid = result['id'];
-  //     } else if (user != null && result['id'] == null) {
-  //       uid = user.uid;
-  //     } else {
-  //       uid = null;
-  //     }
-  //     await FirebaseFirestore.instance
-  //         .collection('Users')
-  //         .doc(uid)
-  //         .collection('user_info')
-  //         .snapshots()
-  //         .first
-  //         .then((value) {
-  //       return value;
-  //     });
-  //     return null;
-  //   } catch (e) {
-  //     log(e.toString());
-  //   }
-  //   return null;
-  // }
 }

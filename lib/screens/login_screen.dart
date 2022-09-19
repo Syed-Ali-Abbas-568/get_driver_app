@@ -323,6 +323,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  Future<void> _facebookSignIn() async {}
 }
