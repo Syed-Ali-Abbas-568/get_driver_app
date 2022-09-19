@@ -32,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController cnicController = TextEditingController();
   bool editable = false;
   String? imagePath;
+  String? imageUrl;
   String name = "";
 
   Future<void> getUserData() async {
@@ -41,7 +42,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       firstNameController.text = data.firstName ?? '';
       lastNameController.text = data.lastName ?? '';
-      // imagePath = data.photoUrl;
+      imageUrl = data.photoUrl;
+
       emailController.text = data.email ?? '';
       licenceNumController.text = data.license.toString();
       yearsOfExpController.text = data.experience.toString();
@@ -153,8 +155,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           backgroundColor: Colors.transparent,
                           backgroundImage: (imagePath != null)
                               ? FileImage(File(imagePath!))
-                              : const AssetImage('assets/images/profile.png')
-                                  as ImageProvider,
+                              : (imageUrl != null && imagePath != "null")
+                                  ? NetworkImage(imageUrl!)
+                                  : const AssetImage(
+                                          'assets/images/profile.png')
+                                      as ImageProvider,
                         ),
                       ),
                     ),
@@ -311,7 +316,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           TextFieldWidget(
                             controller: lastNameController,
                             hintText: "Input Last Name Here",
-                            errorText: "",
+                            errorText: "Invalid Name",
                             inputType: TextInputType.name,
                             enabled: false,
                           ),
@@ -326,7 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           TextFieldWidget(
                             controller: licenceNumController,
                             hintText: "Input License Number here",
-                            errorText: "",
+                            errorText: "Invalid or Empty License Number",
                             inputType: TextInputType.number,
                             enabled: editable,
                           ),
@@ -341,7 +346,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           TextFieldWidget(
                             controller: yearsOfExpController,
                             hintText: "Input Years of Experience here",
-                            errorText: "",
+                            errorText: "Invalid or Empty Value",
                             inputType: TextInputType.number,
                             enabled: editable,
                           ),

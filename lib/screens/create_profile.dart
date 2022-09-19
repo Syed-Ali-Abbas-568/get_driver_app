@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
@@ -48,6 +49,22 @@ class _ProfileCreationState extends State<ProfileCreation> {
 
   void DateOfBirthPicker() {
     showDatePicker(
+            builder: (context, child) {
+              return Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(
+                      primary: primaryColor,
+                      onPrimary: Colors.white,
+                      onSurface: Colors.black,
+                    ),
+                    textButtonTheme: TextButtonThemeData(
+                      style: TextButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white),
+                    ),
+                  ),
+                  child: child!);
+            },
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(1800),
@@ -68,8 +85,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
       final data = await context.read<FirestoreProvider>().getUserData();
       if (data == null) return;
       if (!mounted) return;
-        email = data.email ?? '';
-        name = "${data.firstName} ${data.lastName}";
+      email = data.email ?? '';
+      name = "${data.firstName} ${data.lastName}";
     });
   }
 
@@ -327,11 +344,15 @@ class _ProfileCreationState extends State<ProfileCreation> {
 
       final firestoreProvider = context.read<FirestoreProvider>();
       if (firestoreProvider.hasFirestoreError) {
-        SnackBarWidget.SnackBars(firestoreProvider.FirestoreErrorMsg,
-            "assets/images/errorImg.png", context: context);
+        SnackBarWidget.SnackBars(
+            firestoreProvider.FirestoreErrorMsg, "assets/images/errorImg.png",
+            context: context);
       } else {
         SnackBarWidget.SnackBars(
-            "Data Added successfully", "assets/images/successImg.png", context: context, );
+          "Data Added successfully",
+          "assets/images/successImg.png",
+          context: context,
+        );
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const NavBar(),

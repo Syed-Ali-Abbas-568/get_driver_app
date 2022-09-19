@@ -21,3 +21,5 @@ const kMessageTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
 );
+
+Color primaryColor = const Color(0xFF152C5E);
