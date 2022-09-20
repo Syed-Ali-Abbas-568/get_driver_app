@@ -19,6 +19,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   bool showSpinner = false;
+//TODO: Global variables should be priavte. Still not Following :(
 
   @override
   Widget build(BuildContext context) {

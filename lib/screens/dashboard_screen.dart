@@ -14,8 +14,11 @@ class DashBoard extends StatelessWidget {
               onPressed: () {
                 FacebookAuth.instance.logOut();
                 FirebaseAuth.instance.signOut().then((value) {
-                  SnackBarWidget.SnackBars("Signout successful",
-                      "assets/images/successImg.png",  context: context);
+                  SnackBarWidget.SnackBars(
+                      "Signout successful", "assets/images/successImg.png",
+                      context: context);
+//TODO: Trailing commas not use :(
+
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => const LoginScreen(),

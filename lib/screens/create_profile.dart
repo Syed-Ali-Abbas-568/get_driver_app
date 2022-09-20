@@ -2,12 +2,9 @@
 
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
-import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
@@ -46,6 +43,10 @@ class _ProfileCreationState extends State<ProfileCreation> {
 
   DateTime dateTime = DateTime.now();
   String pattern = '^(?:[+0]9)?[0-9]{11}\$';
+//TODO: Global variables should be priavte. Still not Following :(
+
+//TODO: Naming convention not following :(
+//TODO: Functions should be private priavte. Still not Following :(
 
   void DateOfBirthPicker() {
     showDatePicker(
@@ -188,6 +189,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
                       left: 0,
                       bottom: height * 0.01,
                       label: "CNIC No"),
+//TODO: Trailing commans not added :(
+
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {

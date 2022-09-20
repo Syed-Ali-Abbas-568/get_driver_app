@@ -13,12 +13,17 @@ class FirestoreProvider with ChangeNotifier {
   bool get hasFirestoreError => _hasFirestoreError;
 
   String get FirestoreErrorMsg => _FirestoreErrorMsg;
+//TODO: Naming convention not following :(
 
   Future<UserModel?> getUserData() async {
+//*IMPORTANT: Function type and the returning value (name) is not matching  :(
+
     var name = await _firestoreAuthService.getData();
     // print(name);
     return name;
   }
+
+//TODO: Trailing commas not used :(
 
   Future<void> uploadRemainingData(String photoUrl, String date, int experience,
       int cnic, int license, String phone) async {

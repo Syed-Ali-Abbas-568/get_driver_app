@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -8,6 +6,8 @@ import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 
 import 'login_screen.dart';
+
+//TODO: DO NOT USE COMMENTS in Your CODE :(
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

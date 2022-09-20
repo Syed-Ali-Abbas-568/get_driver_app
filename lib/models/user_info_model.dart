@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 class UserInfoModel {
   String? date;
   int? experience;
@@ -9,6 +7,8 @@ class UserInfoModel {
 
   UserInfoModel(
       {this.phone, this.date, this.CNIC, this.experience, this.license});
+
+//TODO: naming Convention not followed and Trailing commas not added :(
 
   factory UserInfoModel.fromMap(map) {
     return UserInfoModel(

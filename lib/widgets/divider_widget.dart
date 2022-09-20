@@ -5,6 +5,7 @@ class DividerWidget extends StatelessWidget {
   final double height;
   const DividerWidget({Key? key, required this.width, required this.height})
       : super(key: key);
+//TODO: Trailing commas not added :(
 
   @override
   Widget build(BuildContext context) {

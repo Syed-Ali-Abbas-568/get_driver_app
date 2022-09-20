@@ -6,7 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
+//TODO: unused and commented code still here :(
 
 class AuthProvider with ChangeNotifier {
   final _firebaseAuthService = FirebaseAuthService();
@@ -53,6 +54,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return userModel;
   }
+//TODO: naming Convention not followed. Still not Following :(
 
   Future<UserModel?> GoogleSignUpFunc() async {
     _isLoading = true;
@@ -67,6 +69,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return userModel;
   }
+//TODO: naming Convention not followed and Trailing commas not added :(
 
   Future<UserCredential?> SignUpWithEmailPass(
       String fName, String lName, String email, String password) async {

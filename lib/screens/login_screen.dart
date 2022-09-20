@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   double height = 0;
   double width = 0;
+//TODO: Global variables should be priavte. Still not Following :(
 
   @override
   Widget build(BuildContext context) {

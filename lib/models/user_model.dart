@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
 
 class UserModel {
   String? email;
@@ -25,6 +24,7 @@ class UserModel {
       this.CNIC,
       this.license,
       this.phone});
+//TODO: naming Convention not followed and Trailing commas not added :(
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(

@@ -61,6 +61,7 @@ class FirebaseAuthService {
     }
   }
 
+//!ALERT: All SnackBars should be move to UI code 
   Future<GoogleSignInAccount?> googleSignIn(BuildContext context) async {
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) {
@@ -70,6 +71,7 @@ class FirebaseAuthService {
       return null;
     }
     _user = googleUser;
+
     SnackBarWidget.SnackBars(
         "Google login successful", "assets/images/successImg.png",
         context: context);
@@ -81,6 +83,7 @@ class FirebaseAuthService {
     await FirebaseAuth.instance.signInWithCredential(credential);
     return _user;
   }
+//TODO: naming Convention not followed and Trailing commas not added :(
 
   Future<UserCredential?> SignUp(
       String fName, String lName, String email, String password) async {
@@ -125,6 +128,7 @@ class FirebaseAuthService {
           isEmpty = false;
           isEmpty = value.exists;
         });
+        //*IMPORTANT: All Firestore related code should be moved to Firestore Service. Explain many times
 
         if (!isEmpty) {
           var n = requestData['name'].toString().split(" ");
@@ -144,6 +148,8 @@ class FirebaseAuthService {
     return userModel;
   }
 
+  //*IMPORTANT: All Firestore related code should be moved to Firestore Service. Explain many times
+  //TODO: Function type not defined
   postDetailsToFireStore(
     String fName,
     String lName,
@@ -167,7 +173,6 @@ class FirebaseAuthService {
           .collection('Users')
           .doc(user?.uid)
           .set(userModel.toJson());
-
     } catch (e) {
       log(e.toString());
     }
@@ -187,6 +192,8 @@ class FirebaseAuthService {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+
+      //*IMPORTANT: All Firestore related code should be moved to Firestore Service. Explain many times
       User? firebaseUser = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
       await firestore

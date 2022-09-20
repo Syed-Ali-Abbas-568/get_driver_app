@@ -34,6 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? imagePath;
   String? imageUrl;
   String name = "";
+//TODO: Global variables should be priavte. Still not Following :(
 
   Future<void> getUserData() async {
     final data = await context.read<FirestoreProvider>().getUserData();

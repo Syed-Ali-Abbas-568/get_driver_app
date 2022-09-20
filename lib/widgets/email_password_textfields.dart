@@ -14,6 +14,7 @@ class EmailPasswordTextField extends StatefulWidget {
   final emailController;
   final passController;
   final double height;
+//TODO:  Trailing commas not added :(
 
   @override
   State<EmailPasswordTextField> createState() => _EmailPasswordTextFieldState();
@@ -34,6 +35,8 @@ class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
             left: 0,
             bottom: widget.height * 0.01,
             label: "Email"),
+//TODO: Trailing commas not added :(
+
         TextFormField(
           validator: (value) {
             if (value!.isEmpty) {
@@ -60,6 +63,8 @@ class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
             left: 0,
             right: 0,
             label: "Password"),
+//TODO: Trailing commas not added :(
+
         TextFormField(
           validator: (value) {
             RegExp regex = RegExp(r"^.{8,}$");
