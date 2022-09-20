@@ -1,4 +1,3 @@
-
 class UserModel {
   String? email;
   String? firstName;
@@ -8,7 +7,7 @@ class UserModel {
   bool? firstTime;
   String? date;
   int? experience;
-  int? CNIC;
+  int? cnic;
   int? license;
   String? phone;
 
@@ -21,12 +20,14 @@ class UserModel {
       this.firstTime,
       this.date,
       this.experience,
-      this.CNIC,
+      this.cnic,
       this.license,
       this.phone});
-//TODO: naming Convention not followed and Trailing commas not added :(
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+
+  factory UserModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return UserModel(
       firstName: json['firstName'],
       email: json['email'],
@@ -36,7 +37,7 @@ class UserModel {
       firstTime: json['firstTime'],
       date: json['date'],
       experience: json['experience'],
-      CNIC: json['CNIC'],
+      cnic: json['CNIC'],
       license: json['license'],
       phone: json['phone'],
     );
@@ -52,7 +53,7 @@ class UserModel {
       'firstTime': firstTime,
       'date': date,
       'experience': experience,
-      'CNIC': CNIC,
+      'CNIC': cnic,
       'license': license,
       'phone': phone,
     };

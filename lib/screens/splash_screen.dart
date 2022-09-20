@@ -7,8 +7,6 @@ import 'package:get_driver_app/widgets/bottom_navbar.dart';
 
 import 'login_screen.dart';
 
-//TODO: DO NOT USE COMMENTS in Your CODE :(
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -27,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       log("Going to Switch");
       FirebaseAuthService firebaseAuthService = FirebaseAuthService();
-      // log(firebaseAuthService.firebaseUser.toString());
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -36,7 +33,6 @@ class _SplashScreenState extends State<SplashScreen> {
               : const LoginScreen(),
         ),
       );
-      // print(query);
     });
   }
 

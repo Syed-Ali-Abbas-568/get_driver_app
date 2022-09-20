@@ -3,39 +3,48 @@ import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/services/firestore_service.dart';
 
 class FirestoreProvider with ChangeNotifier {
-  final FirestoreService _firestoreAuthService = FirestoreService();
+  final FirestoreService _firestoreService = FirestoreService();
 
   bool _hasFirestoreError = false;
-  String _FirestoreErrorMsg = '';
+  String _firestoreErrorMsg = '';
   bool _isProfileCreation = false;
   bool get isProfileCreation => _isProfileCreation;
 
   bool get hasFirestoreError => _hasFirestoreError;
 
-  String get FirestoreErrorMsg => _FirestoreErrorMsg;
-//TODO: Naming convention not following :(
+  String get firestoreErrorMsg => _firestoreErrorMsg;
+
 
   Future<UserModel?> getUserData() async {
-//*IMPORTANT: Function type and the returning value (name) is not matching  :(
 
-    var name = await _firestoreAuthService.getData();
-    // print(name);
-    return name;
+  UserModel? userModel= await _firestoreService.getData();
+    return userModel;
   }
 
-//TODO: Trailing commas not used :(
+
+  Future<void> postDetails(String fName,String lName,String id,String email,String photoUrl,bool firstTime,){
+    return _firestoreService.postDetailsToFireStore(fName, lName, id, email, photoUrl, firstTime);
+  }
+
+  Future<void> uploadSignUpDetails(UserModel userModel,String id,){
+    return _firestoreService.uploadSignUpInfo(userModel, id);
+  }
 
   Future<void> uploadRemainingData(String photoUrl, String date, int experience,
-      int cnic, int license, String phone) async {
+      int cnic, int license, String phone,) async {
     try {
       _isProfileCreation = true;
-      _firestoreAuthService.UpdateData(
+      _firestoreService.updateData(
           photoUrl, date, experience, cnic, license, phone);
     } on UnkownFirestoreException {
-      _FirestoreErrorMsg = 'Something went wrong';
+      _firestoreErrorMsg = 'Something went wrong';
       _hasFirestoreError = true;
     }
     _isProfileCreation = false;
     notifyListeners();
+  }
+
+  Future<bool> isDataPresent(String id){
+    return _firestoreService.isPresent(id);
   }
 }

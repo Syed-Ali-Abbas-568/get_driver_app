@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -22,53 +21,52 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  final TextEditingController licenceNumController = TextEditingController();
-  final TextEditingController yearsOfExpController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  final TextEditingController cnicController = TextEditingController();
-  bool editable = false;
-  String? imagePath;
-  String? imageUrl;
-  String name = "";
-//TODO: Global variables should be priavte. Still not Following :(
+  final TextEditingController _licenceNumController = TextEditingController();
+  final TextEditingController _yearsOfExpController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _cnicController = TextEditingController();
+  bool _editable = false;
+  String? _imagePath;
+  String? _imageUrl;
+  String _name = "";
 
-  Future<void> getUserData() async {
+  Future<void> _getUserData() async {
     final data = await context.read<FirestoreProvider>().getUserData();
     if (data == null) return;
     if (!mounted) return;
     setState(() {
-      firstNameController.text = data.firstName ?? '';
-      lastNameController.text = data.lastName ?? '';
-      imageUrl = data.photoUrl;
+      _firstNameController.text = data.firstName ?? '';
+      _lastNameController.text = data.lastName ?? '';
+      _imageUrl = data.photoUrl;
 
-      emailController.text = data.email ?? '';
-      licenceNumController.text = data.license.toString();
-      yearsOfExpController.text = data.experience.toString();
-      cnicController.text = data.CNIC.toString();
-      dobController.text = data.date ?? " ";
-      name = "${firstNameController.text} ${lastNameController.text}";
+      _emailController.text = data.email ?? '';
+      _licenceNumController.text = data.license.toString();
+      _yearsOfExpController.text = data.experience.toString();
+      _cnicController.text = data.cnic.toString();
+      _dobController.text = data.date ?? " ";
+      _name = "${_firstNameController.text} ${_lastNameController.text}";
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getUserData();
+    _getUserData();
   }
 
   @override
   void dispose() {
-    cnicController.dispose();
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    licenceNumController.dispose();
-    yearsOfExpController.dispose();
-    dobController.dispose();
+    _cnicController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _licenceNumController.dispose();
+    _yearsOfExpController.dispose();
+    _dobController.dispose();
 
     super.dispose();
   }
@@ -77,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: editable
+      appBar: _editable
           ? AppBar(
               title: const Text("Edit Mode"),
               centerTitle: true,
@@ -136,9 +134,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 26,
                     child: GestureDetector(
                       onTap: () async {
-                        if (editable) {
-                          imagePath = await getImage();
-                          if (imagePath != null) {
+                        if (_editable) {
+                          _imagePath = await getImage();
+                          if (_imagePath != null) {
                             setState(() {});
                           }
                         }
@@ -154,10 +152,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage: (imagePath != null)
-                              ? FileImage(File(imagePath!))
-                              : (imageUrl != null && imagePath != "null")
-                                  ? NetworkImage(imageUrl!)
+                          backgroundImage: (_imagePath != null)
+                              ? FileImage(File(_imagePath!))
+                              : (_imageUrl != null && _imagePath != "null")
+                                  ? NetworkImage(_imageUrl!)
                                   : const AssetImage(
                                           'assets/images/profile.png')
                                       as ImageProvider,
@@ -166,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   Visibility(
-                    visible: !editable,
+                    visible: !_editable,
                     child: Positioned(
                       top: 270,
                       height: 34,
@@ -180,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           onPressed: () {
-                            editable = true;
+                            _editable = true;
                             setState(() {});
                           },
                           child: Row(
@@ -206,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 16,
                     top: 327,
                     child: Text(
-                      name,
+                      _name,
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF152C5E),
@@ -219,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     left: 16,
                     top: 367,
                     child: Text(
-                      emailController.text,
+                      _emailController.text,
                       style: GoogleFonts.manrope(
                         fontStyle: FontStyle.normal,
                         color: const Color(0xFF8893AC),
@@ -300,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 0,
                           ),
                           TextFieldWidget(
-                            controller: firstNameController,
+                            controller: _firstNameController,
                             hintText: "Input First Name Here",
                             errorText: "",
                             inputType: TextInputType.name,
@@ -315,7 +313,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 0,
                           ),
                           TextFieldWidget(
-                            controller: lastNameController,
+                            controller: _lastNameController,
                             hintText: "Input Last Name Here",
                             errorText: "Invalid Name",
                             inputType: TextInputType.name,
@@ -330,11 +328,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 0,
                           ),
                           TextFieldWidget(
-                            controller: licenceNumController,
+                            controller: _licenceNumController,
                             hintText: "Input License Number here",
                             errorText: "Invalid or Empty License Number",
                             inputType: TextInputType.number,
-                            enabled: editable,
+                            enabled: _editable,
                           ),
                           TextFieldLabel(
                             height: height,
@@ -345,11 +343,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 0,
                           ),
                           TextFieldWidget(
-                            controller: yearsOfExpController,
+                            controller: _yearsOfExpController,
                             hintText: "Input Years of Experience here",
                             errorText: "Invalid or Empty Value",
                             inputType: TextInputType.number,
-                            enabled: editable,
+                            enabled: _editable,
                           ),
                           TextFieldLabel(
                             height: height,
@@ -360,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 0,
                           ),
                           TextFieldWidget(
-                            controller: dobController,
+                            controller: _dobController,
                             hintText: "Input DOB here",
                             errorText: "",
                             inputType: TextInputType.datetime,
@@ -375,7 +373,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             right: 0,
                           ),
                           TextFieldWidget(
-                            controller: cnicController,
+                            controller: _cnicController,
                             hintText: "Input CNIC here",
                             errorText: "",
                             inputType: TextInputType.datetime,
@@ -387,7 +385,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Visibility(
-              visible: editable,
+              visible: _editable,
               child: TextButton(
                 style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFF152C5E),
@@ -404,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontSize: 16),
                 ),
                 onPressed: () {
-                  editable = false;
+                  _editable = false;
 
                   Toast.snackBars("Changes Applied Successfully",
                       const Color(0xFF2DD36F), context);

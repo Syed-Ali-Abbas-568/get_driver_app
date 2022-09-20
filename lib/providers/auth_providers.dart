@@ -1,13 +1,10 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
-
-//TODO: unused and commented code still here :(
 
 class AuthProvider with ChangeNotifier {
   final _firebaseAuthService = FirebaseAuthService();
@@ -15,7 +12,6 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _hasError = false;
   String _errorMsg = '';
-  // String _errorMsg = '';
 
   bool get isLoading => _isLoading;
   bool get hasError => _hasError;
@@ -40,7 +36,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<UserModel?> FacebookSignUp() async {
+  Future<UserModel?> facebookSignUp() async {
     _isLoading = true;
     UserModel? userModel;
     try {
@@ -54,9 +50,8 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return userModel;
   }
-//TODO: naming Convention not followed. Still not Following :(
 
-  Future<UserModel?> GoogleSignUpFunc() async {
+  Future<UserModel?> googleSignUpFunc() async {
     _isLoading = true;
     UserModel? userModel;
     try {
@@ -69,14 +64,17 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return userModel;
   }
-//TODO: naming Convention not followed and Trailing commas not added :(
 
-  Future<UserCredential?> SignUpWithEmailPass(
-      String fName, String lName, String email, String password) async {
+  Future<UserCredential?> signUpWithEmailPass(
+    String fName,
+    String lName,
+    String email,
+    String password,
+  ) async {
     UserCredential? userCredentials;
     try {
       _isLoading = true;
-      userCredentials = await _firebaseAuthService.SignUp(
+      userCredentials = await _firebaseAuthService.signUp(
         fName,
         lName,
         email,
@@ -93,12 +91,4 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return userCredentials;
   }
-
-  // profileCreation(String date, int experience, int CNIC, int license, int phone,
-  //     BuildContext context) async {
-  //
-  //   _firebaseAuthService.postUserInfo(
-  //       date, experience, CNIC, license, phone, context);
-  //   notifyListeners();
-  // }
 }

@@ -40,7 +40,7 @@ class FirebaseAuthService {
   static final _auth = FirebaseAuth.instance;
   final firebaseUser = _auth.currentUser;
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
-  final firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
@@ -61,37 +61,19 @@ class FirebaseAuthService {
     }
   }
 
-//!ALERT: All SnackBars should be move to UI code 
-  Future<GoogleSignInAccount?> googleSignIn(BuildContext context) async {
-    final googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) {
-      SnackBarWidget.SnackBars(
-          "Something went wrong try again", "assets/images/errorImg.png",
-          context: context);
-      return null;
-    }
-    _user = googleUser;
-
-    SnackBarWidget.SnackBars(
-        "Google login successful", "assets/images/successImg.png",
-        context: context);
-    final googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    return _user;
-  }
-//TODO: naming Convention not followed and Trailing commas not added :(
-
-  Future<UserCredential?> SignUp(
-      String fName, String lName, String email, String password) async {
+  Future<UserCredential?> signUp(
+    String fName,
+    String lName,
+    String email,
+    String password,
+  ) async {
     UserCredential? userCredential;
     try {
       userCredential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      postDetailsToFireStore(
+        email: email,
+        password: password,
+      );
+      _firestoreProvider.postDetails(
         fName,
         lName,
         userCredential.user!.uid,
@@ -118,18 +100,9 @@ class FirebaseAuthService {
         final requestData = await FacebookAuth.instance.getUserData();
 
         String? id = requestData['id'];
-        bool isEmpty = false;
-        await firestore
-            .collection('Users')
-            .doc(id)
-            .snapshots()
-            .first
-            .then((value) {
-          isEmpty = false;
-          isEmpty = value.exists;
-        });
-        //*IMPORTANT: All Firestore related code should be moved to Firestore Service. Explain many times
 
+        bool isEmpty = false;
+        isEmpty = await _firestoreProvider.isDataPresent(id!);
         if (!isEmpty) {
           var n = requestData['name'].toString().split(" ");
           userModel.firstName = n[0];
@@ -137,7 +110,7 @@ class FirebaseAuthService {
           userModel.email = requestData['email'];
           userModel.id = id;
           userModel.photoUrl = requestData['picture']['data']['url'];
-          await firestore.collection('Users').doc(id).set(userModel.toJson());
+          _firestoreProvider.uploadSignUpDetails(userModel, id);
         } else {
           userModel = await _firestoreProvider.getUserData();
         }
@@ -146,36 +119,6 @@ class FirebaseAuthService {
       throw UnkownException('Something went wrong ${e.code} ${e.message}');
     }
     return userModel;
-  }
-
-  //*IMPORTANT: All Firestore related code should be moved to Firestore Service. Explain many times
-  //TODO: Function type not defined
-  postDetailsToFireStore(
-    String fName,
-    String lName,
-    String id,
-    String email,
-    String photoUrl,
-    bool firstTime,
-  ) async {
-    try {
-      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-      User? user = _auth.currentUser;
-      UserModel userModel = UserModel();
-      userModel.firstName = fName;
-      userModel.lastName = lName;
-      userModel.email = email;
-      userModel.id = id;
-      userModel.photoUrl = photoUrl;
-      userModel.firstTime = firstTime;
-
-      await firebaseFirestore
-          .collection('Users')
-          .doc(user?.uid)
-          .set(userModel.toJson());
-    } catch (e) {
-      log(e.toString());
-    }
   }
 
   Future<UserModel?> googleSignUp() async {
@@ -192,29 +135,17 @@ class FirebaseAuthService {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-
-      //*IMPORTANT: All Firestore related code should be moved to Firestore Service. Explain many times
       User? firebaseUser = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
-      await firestore
-          .collection('Users')
-          .doc(firebaseUser?.uid)
-          .snapshots()
-          .first
-          .then((value) {
-        isEmpty = value.exists;
-      });
+      isEmpty=await _firestoreProvider.isDataPresent(firebaseUser!.uid);
       final name = _user!.displayName?.split(" ");
       if (!isEmpty) {
         userModel.firstName = name?[0];
         userModel.lastName = name?[1];
         userModel.email = _user?.email;
-        userModel.id = firebaseUser?.uid;
+        userModel.id = firebaseUser.uid;
         userModel.photoUrl = _user?.photoUrl;
-        await firestore
-            .collection('Users')
-            .doc(firebaseUser?.uid)
-            .set(userModel.toJson());
+        _firestoreProvider.uploadSignUpDetails(userModel, firebaseUser.uid);
       } else {
         userModel = await _firestoreProvider.getUserData();
       }

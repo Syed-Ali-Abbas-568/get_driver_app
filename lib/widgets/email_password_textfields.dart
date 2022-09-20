@@ -5,16 +5,15 @@ import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 
 class EmailPasswordTextField extends StatefulWidget {
-  const EmailPasswordTextField(
-      {Key? key,
-      required this.emailController,
-      required this.passController,
-      required this.height})
-      : super(key: key);
+  const EmailPasswordTextField({
+    Key? key,
+    required this.emailController,
+    required this.passController,
+    required this.height,
+  }) : super(key: key);
   final emailController;
   final passController;
   final double height;
-//TODO:  Trailing commas not added :(
 
   @override
   State<EmailPasswordTextField> createState() => _EmailPasswordTextFieldState();
@@ -29,14 +28,13 @@ class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFieldLabel(
-            height: widget.height,
-            top: widget.height * 0.02,
-            right: 0,
-            left: 0,
-            bottom: widget.height * 0.01,
-            label: "Email"),
-//TODO: Trailing commas not added :(
-
+          height: widget.height,
+          top: widget.height * 0.02,
+          right: 0,
+          left: 0,
+          bottom: widget.height * 0.01,
+          label: "Email",
+        ),
         TextFormField(
           validator: (value) {
             if (value!.isEmpty) {
@@ -57,14 +55,13 @@ class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
           ),
         ),
         TextFieldLabel(
-            height: widget.height,
-            top: widget.height * 0.02,
-            bottom: widget.height * 0.01,
-            left: 0,
-            right: 0,
-            label: "Password"),
-//TODO: Trailing commas not added :(
-
+          height: widget.height,
+          top: widget.height * 0.02,
+          bottom: widget.height * 0.01,
+          left: 0,
+          right: 0,
+          label: "Password",
+        ),
         TextFormField(
           validator: (value) {
             RegExp regex = RegExp(r"^.{8,}$");

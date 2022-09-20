@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
@@ -14,17 +12,16 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  double height = 0;
-  double width = 0;
+  double _height = 0;
+  double _width = 0;
   final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  bool showSpinner = false;
-//TODO: Global variables should be priavte. Still not Following :(
+  final _emailController = TextEditingController();
+  bool _showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+    _width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -34,25 +31,26 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         backgroundColor: const Color(0xff152C5E),
       ),
       body: Padding(
-        padding: EdgeInsets.all(height * 0.05),
+        padding: EdgeInsets.all(_height * 0.05),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(bottom: height * 0.03),
+              padding: EdgeInsets.only(bottom: _height * 0.03),
               child: const Text(
                 "Enter your email to reset reset password",
                 style: TextStyle(color: Color(0xff152C5E), fontSize: 28),
               ),
             ),
             TextFieldLabel(
-                height: height,
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: height * 0.01,
-                label: "Email"),
+              height: _height,
+              top: 0,
+              right: 0,
+              left: 0,
+              bottom: _height * 0.01,
+              label: "Email",
+            ),
             Form(
               key: _formKey,
               child: TextFormField(
@@ -69,15 +67,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 cursorColor: Colors.purple,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.emailAddress,
-                controller: emailController,
+                controller: _emailController,
                 decoration: kMessageTextFieldDecoration.copyWith(
                   hintText: 'example@gmail.com',
                 ),
               ),
             ),
             Container(
-              width: width,
-              padding: EdgeInsets.only(top: height * 0.055),
+              width: _width,
+              padding: EdgeInsets.only(top: _height * 0.055),
               child: Material(
                 color: const Color(0xff152C5E),
                 borderRadius: const BorderRadius.all(Radius.circular(30.0)),
@@ -85,20 +83,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: MaterialButton(
                   onPressed: () {
                     setState(() {
-                      showSpinner = true;
+                      _showSpinner = true;
                     });
-                    resetPassword(emailController.text);
+                    _resetPassword(_emailController.text);
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                   minWidth: 200.0,
                   height: 42.0,
-                  child: showSpinner
+                  child: _showSpinner
                       ? const CircularProgressIndicator(
                           color: Color(0xffFBFAFA),
                         )
                       : const Text(
                           'Confirm',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
                 ),
               ),
@@ -109,37 +110,45 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  void resetPassword(String email) async {
+  void _resetPassword(String email) async {
     if (_formKey.currentState!.validate()) {
       try {
         var result =
             await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-        // print(result);
         if (result.isEmpty) {
           SnackBarWidget.SnackBars(
-              "Account not found", "assets/images/errorImg.png", context: context);
+            "Account not found",
+            "assets/images/errorImg.png",
+            context: context,
+          );
           setState(() {
-            showSpinner = false;
+            _showSpinner = false;
           });
         } else {
           FirebaseAuth.instance.sendPasswordResetEmail(email: email);
           SnackBarWidget.SnackBars(
-              "Email Sent", "assets/images/successImg.png",  context: context);
+            "Email Sent",
+            "assets/images/successImg.png",
+            context: context,
+          );
           setState(() {
-            showSpinner = false;
+            _showSpinner = false;
           });
         }
       } catch (e) {
         SnackBarWidget.SnackBars(
-            e.toString(), "assets/images/successImg.png", context: context);
+          e.toString(),
+          "assets/images/successImg.png",
+          context: context,
+        );
 
         setState(() {
-          showSpinner = false;
+          _showSpinner = false;
         });
       }
     } else {
       setState(() {
-        showSpinner = false;
+        _showSpinner = false;
       });
     }
   }

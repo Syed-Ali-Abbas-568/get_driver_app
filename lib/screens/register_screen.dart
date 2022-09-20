@@ -1,23 +1,18 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/models/user_model.dart';
-
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/screens/create_profile.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
-import 'package:get_driver_app/widgets/snackbar_widget.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
-
-import 'login_screen.dart';
 import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
+import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
+import 'package:provider/provider.dart';
+
+import 'login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -27,20 +22,18 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final lNameController = TextEditingController();
-  final passController = TextEditingController();
-  final fNameController = TextEditingController();
-  final emailController = TextEditingController();
+  final _lNameController = TextEditingController();
+  final _passController = TextEditingController();
+  final _fNameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  double height = 0;
-  double width = 0;
-//TODO: Global variables should be priavte. Still not Following :(
+  double _height = 0;
+  double _width = 0;
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+    _width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -48,9 +41,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           children: [
             Padding(
               padding: EdgeInsets.only(
-                  top: height * 0.085,
-                  left: height * 0.0225,
-                  right: height * 0.0225),
+                top: _height * 0.085,
+                left: _height * 0.0225,
+                right: _height * 0.0225,
+              ),
               child: const Text(
                 "Sign up",
                 style: TextStyle(
@@ -62,92 +56,58 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                  left: height * 0.0213, right: height * 0.0213),
+                left: _height * 0.0213,
+                right: _height * 0.0213,
+              ),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    SizedBox(height: height * 0.06),
+                    SizedBox(height: _height * 0.06),
                     TextFieldLabel(
-                      height: height,
+                      height: _height,
                       label: "First Name",
                       top: 0,
-                      bottom: height * 0.01,
+                      bottom: _height * 0.01,
                       left: 0,
                       right: 0,
                     ),
                     TextFieldWidget(
-                      controller: fNameController,
+                      controller: _fNameController,
                       errorText: "Enter a valid first name",
                       hintText: "John",
                       inputType: TextInputType.name,
                     ),
                     TextFieldLabel(
-                        height: height,
-                        bottom: height * 0.01,
-                        top: height * 0.02,
-                        left: 0,
-                        right: 0,
-                        label: "Last Name"),
+                      height: _height,
+                      bottom: _height * 0.01,
+                      top: _height * 0.02,
+                      left: 0,
+                      right: 0,
+                      label: "Last Name",
+                    ),
                     TextFieldWidget(
-                      controller: lNameController,
+                      controller: _lNameController,
                       errorText: "Enter a valid last name",
                       hintText: "John",
                       inputType: TextInputType.name,
                     ),
                     EmailPasswordTextField(
-                      emailController: emailController,
-                      passController: passController,
-                      height: height,
+                      emailController: _emailController,
+                      passController: _passController,
+                      height: _height,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: height * 0.055),
+                      padding: EdgeInsets.only(top: _height * 0.055),
                       child: Material(
                         color: const Color(0xff152C5E),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(30.0)),
                         elevation: 5.0,
                         child: MaterialButton(
-                          onPressed: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            if (_formKey.currentState!.validate()) {
-                              final userCred = await context
-                                  .read<AuthProvider>()
-                                  .SignUpWithEmailPass(
-                                    fNameController.text,
-                                    lNameController.text,
-                                    emailController.text,
-                                    passController.text,
-                                  );
-
-                              AuthProvider authProvider = AuthProvider();
-
-                              // if(authProvider.hasError==true){
-
-                              //   return ;
-                              // }
-
-                              if (userCred != null && !authProvider.hasError) {
-                                SnackBarWidget.SnackBars("Signup Successful",
-                                    "assets/images/successImg.png",
-                                    context: context);
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ProfileCreation(),
-                                  ),
-                                );
-                              } else {
-                                SnackBarWidget.SnackBars(
-                                  authProvider.errorMsg,
-                                  "assets/images/errorImg.png",
-                                  context: context,
-                                );
-                              }
-                            }
-                          },
+                          onPressed: () async => _signUp(),
                           minWidth: 200.0,
                           height: 42.0,
                           child: context.watch<AuthProvider>().isLoading
@@ -178,9 +138,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                           onPressed: () {
                             Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
                           },
                           child: const Text(
                             "Sign in",
@@ -190,93 +152,43 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                       ],
                     ),
-                    DividerWidget(width: width, height: height),
+                    DividerWidget(
+                      width: _width,
+                      height: _height,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.only(left: width * 0.032),
+                            margin: EdgeInsets.only(left: _width * 0.032),
                             child: context.watch<AuthProvider>().isLoading
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
                                 : ImgButton(
-                                    height: height,
+                                    height: _height,
                                     img: "google_logo",
                                     text: "Google",
-                                    onPressed: () async {
-                                      AuthProvider authProvider =
-                                          AuthProvider();
-                                      if (authProvider.hasError) {
-                                        SnackBarWidget.SnackBars(
-                                            authProvider.errorMsg,
-                                            "assets/images/errorImg.png",
-                                            context: context);
-                                        return;
-                                      }
-                                      UserModel? userModel = await context
-                                          .read<AuthProvider>()
-                                          .FacebookSignUp();
-                                      if (userModel == null ||
-                                          userModel.CNIC == null) {
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ProfileCreation(),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const NavBar(),
-                                          ),
-                                        );
-                                        SnackBarWidget.SnackBars(
-                                            "Facebook Sign in successful",
-                                            "assets/images/successImg.png",
-                                            context: context);
-                                      }
-                                    },
+                                    onPressed: () async => _googleSignUp(),
                                   ),
                           ),
                         ),
                         SizedBox(
-                          width: width * 0.04,
+                          width: _width * 0.04,
                         ),
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.only(right: width * 0.032),
+                            margin: EdgeInsets.only(right: _width * 0.032),
                             child: context.watch<AuthProvider>().isLoading
                                 ? const CircularProgressIndicator(
                                     color: Color(0xff152C5E),
                                   )
                                 : ImgButton(
-                                    height: height,
+                                    height: _height,
                                     img: "facebook_logo",
                                     text: "Facebook",
-                                    onPressed: () async {
-                                      UserModel? userModel = await context
-                                          .read<AuthProvider>()
-                                          .FacebookSignUp();
-                                      if (userModel == null ||
-                                          userModel.CNIC == null) {
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ProfileCreation(),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const NavBar(),
-                                          ),
-                                        );
-                                      }
-                                    },
+                                    onPressed: () async => _facebookSignUp(),
                                   ),
                           ),
                         ),
@@ -292,5 +204,80 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  // Future<void> SignUp() async
+  Future<void> _signUp() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_formKey.currentState!.validate()) {
+      final userCred = await context.read<AuthProvider>().signUpWithEmailPass(
+            _fNameController.text,
+            _lNameController.text,
+            _emailController.text,
+            _passController.text,
+          );
+
+      AuthProvider authProvider = AuthProvider();
+
+      if (userCred != null && !authProvider.hasError) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ProfileCreation(),
+          ),
+        );
+        SnackBarWidget.SnackBars(
+          "Signup Successful",
+          "assets/images/successImg.png",
+          context: context,
+        );
+      } else {
+        SnackBarWidget.SnackBars(
+          authProvider.errorMsg,
+          "assets/images/errorImg.png",
+          context: context,
+        );
+      }
+    }
+  }
+
+  Future<void> _facebookSignUp() async {
+    UserModel? userModel = await context.read<AuthProvider>().facebookSignUp();
+    if (userModel == null || userModel.cnic == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ProfileCreation(),
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const NavBar(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _googleSignUp() async {
+    AuthProvider authProvider = AuthProvider();
+    if (authProvider.hasError) {
+      SnackBarWidget.SnackBars(
+          authProvider.errorMsg, "assets/images/errorImg.png",
+          context: context);
+      return;
+    }
+    UserModel? userModel = await context.read<AuthProvider>().facebookSignUp();
+    if (userModel == null || userModel.cnic == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ProfileCreation(),
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const NavBar(),
+        ),
+      );
+      SnackBarWidget.SnackBars(
+          "Sign up successful", "assets/images/successImg.png",
+          context: context);
+    }
+  }
 }

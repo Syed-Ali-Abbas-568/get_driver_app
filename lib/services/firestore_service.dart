@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
@@ -15,6 +17,39 @@ class UnkownFirestoreException implements Exception {
 
 class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
+  static final _auth = FirebaseAuth.instance;
+
+  Future<void> uploadSignUpInfo(UserModel userModel, String id) {
+    return _firestore.collection('Users').doc(id).set(userModel.toJson());
+  }
+
+  Future<void> postDetailsToFireStore(
+    String fName,
+    String lName,
+    String id,
+    String email,
+    String photoUrl,
+    bool firstTime,
+  ) async {
+    try {
+      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+      User? user = _auth.currentUser;
+      UserModel userModel = UserModel();
+      userModel.firstName = fName;
+      userModel.lastName = lName;
+      userModel.email = email;
+      userModel.id = id;
+      userModel.photoUrl = photoUrl;
+      userModel.firstTime = firstTime;
+
+      await firebaseFirestore
+          .collection('Users')
+          .doc(user?.uid)
+          .set(userModel.toJson());
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   Future<UserModel?> getData() async {
     User? user = FirebaseAuthService().firebaseUser;
@@ -36,10 +71,28 @@ class FirestoreService {
     return myUser;
   }
 
-//TODO: naming Convention not followed and Trailing commas not added :(
+  Future<bool> isPresent(String id) async {
+    bool isEmpty = false;
+    await _firestore
+        .collection('Users')
+        .doc(id)
+        .snapshots()
+        .first
+        .then((value) {
+      isEmpty = false;
+      isEmpty = value.exists;
+    });
+    return isEmpty;
+  }
 
-  Future<void> UpdateData(String photoUrl, String date, int experience,
-      int cnic, int license, String phone) async {
+  Future<void> updateData(
+    String photoUrl,
+    String date,
+    int experience,
+    int cnic,
+    int license,
+    String phone,
+  ) async {
     try {
       User? user = FirebaseAuthService().firebaseUser;
       String? id;
@@ -58,7 +111,7 @@ class FirestoreService {
       userModel.id = names.data()?['userId'];
       userModel.photoUrl = names.data()?['photoUrl'];
       userModel.firstTime = false;
-      userModel.CNIC = cnic;
+      userModel.cnic = cnic;
       userModel.phone = phone;
       userModel.license = license;
       userModel.experience = experience;

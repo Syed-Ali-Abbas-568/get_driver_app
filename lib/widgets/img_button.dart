@@ -5,14 +5,13 @@ class ImgButton extends StatelessWidget {
   final String img;
   final String text;
   final VoidCallback onPressed;
-  const ImgButton(
-      {Key? key,
-      required this.height,
-      required this.text,
-      required this.img,
-      required this.onPressed})
-      : super(key: key);
-//TODO:  Trailing commas not added :(
+  const ImgButton({
+    Key? key,
+    required this.height,
+    required this.text,
+    required this.img,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +19,11 @@ class ImgButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         padding: EdgeInsets.only(
-            top: height * 0.02,
-            bottom: height * 0.02,
-            left: height * 0.036,
-            right: height * 0.036),
+          top: height * 0.02,
+          bottom: height * 0.02,
+          left: height * 0.036,
+          right: height * 0.036,
+        ),
         height: height * 0.063,
         width: height * 0.17,
         decoration: BoxDecoration(
@@ -31,10 +31,11 @@ class ImgButton extends StatelessWidget {
             Radius.circular(100),
           ),
           border: Border.all(
-              color: const Color(0xff8893AC),
-              width: 1.0,
-              style: BorderStyle.solid,
-              strokeAlign: StrokeAlign.inside),
+            color: const Color(0xff8893AC),
+            width: 1.0,
+            style: BorderStyle.solid,
+            strokeAlign: StrokeAlign.inside,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -44,8 +45,7 @@ class ImgButton extends StatelessWidget {
               height: height * 0.1,
             ),
             const SizedBox(
-              width: 11,
-            ),
+                width: 11),
             Text(
               text,
               style: const TextStyle(

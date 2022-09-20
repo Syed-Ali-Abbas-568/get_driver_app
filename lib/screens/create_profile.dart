@@ -21,34 +21,20 @@ class ProfileCreation extends StatefulWidget {
 }
 
 class _ProfileCreationState extends State<ProfileCreation> {
-  double height = 0;
-
-  double width = 0;
+  double _height = 0;
+  double _width = 0;
   final _formKey = GlobalKey<FormState>();
+  final _cnicController = TextEditingController();
+  final _expController = TextEditingController();
+  final _licenseController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _dateController = TextEditingController();
+  String? _imagePath;
+  String _name = "";
+  String _email = "";
+  final String _pattern = '^(?:[+0]9)?[0-9]{11}\$';
 
-  final cnicController = TextEditingController();
-  final expController = TextEditingController();
-
-  final licenseController = TextEditingController();
-
-  final drivingExpController = TextEditingController();
-
-  final phoneController = TextEditingController();
-
-  final dateController = TextEditingController();
-  String? imagePath;
-
-  String name = "";
-  String email = "";
-
-  DateTime dateTime = DateTime.now();
-  String pattern = '^(?:[+0]9)?[0-9]{11}\$';
-//TODO: Global variables should be priavte. Still not Following :(
-
-//TODO: Naming convention not following :(
-//TODO: Functions should be private priavte. Still not Following :(
-
-  void DateOfBirthPicker() {
+  void _dateOfBirthPicker() {
     showDatePicker(
             builder: (context, child) {
               return Theme(
@@ -75,36 +61,35 @@ class _ProfileCreationState extends State<ProfileCreation> {
         return;
       }
       setState(() {
-        dateTime = pickedDate;
-        dateController.text = DateFormat.yMd().format(pickedDate);
+        _dateController.text = DateFormat.yMd().format(pickedDate);
       });
     });
   }
 
-  void getUserData() async {
+  void _getUserData() async {
     Future.delayed(Duration.zero, () async {
       final data = await context.read<FirestoreProvider>().getUserData();
       if (data == null) return;
       if (!mounted) return;
-      email = data.email ?? '';
-      name = "${data.firstName} ${data.lastName}";
+      _email = data.email ?? '';
+      _name = "${data.firstName} ${data.lastName}";
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getUserData();
+    _getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+    _width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(left: width * 0.044, right: width * 0.044),
+          padding: EdgeInsets.only(left: _width * 0.044, right: _width * 0.044),
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -113,7 +98,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
                 children: [
                   Container(
                     padding: EdgeInsets.only(
-                      top: height * 0.043,
+                      top: _height * 0.043,
                     ),
                     child: const Align(
                       alignment: Alignment.center,
@@ -133,8 +118,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
                   Center(
                     child: GestureDetector(
                       onTap: () async {
-                        imagePath = await getImage();
-                        if (imagePath != null) {
+                        _imagePath = await getImage();
+                        if (_imagePath != null) {
                           setState(() {});
                         }
                       },
@@ -149,10 +134,10 @@ class _ProfileCreationState extends State<ProfileCreation> {
                           ),
                           shape: BoxShape.circle,
                         ),
-                        child: (imagePath != null)
+                        child: (_imagePath != null)
                             ? CircleAvatar(
                                 backgroundColor: Colors.transparent,
-                                backgroundImage: FileImage(File(imagePath!)))
+                                backgroundImage: FileImage(File(_imagePath!)))
                             : Image.asset(
                                 'assets/images/edit_image.png',
                                 color: Colors.black,
@@ -161,9 +146,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: width * 0.045),
+                    padding: EdgeInsets.only(left: _width * 0.045),
                     child: Text(
-                      name,
+                      _name,
                       style: const TextStyle(
                         color: Color(0xff152C5E),
                         fontSize: 28,
@@ -173,9 +158,9 @@ class _ProfileCreationState extends State<ProfileCreation> {
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                        left: width * 0.045, top: height * 0.01),
+                        left: _width * 0.045, top: _height * 0.01),
                     child: Text(
-                      email,
+                      _email,
                       style: const TextStyle(
                         color: Color(0xff8D8E8D),
                         fontSize: 14,
@@ -183,13 +168,13 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     ),
                   ),
                   TextFieldLabel(
-                      height: height,
-                      top: height * 0.044,
-                      right: 0,
-                      left: 0,
-                      bottom: height * 0.01,
-                      label: "CNIC No"),
-//TODO: Trailing commans not added :(
+                    height: _height,
+                    top: _height * 0.044,
+                    right: 0,
+                    left: 0,
+                    bottom: _height * 0.01,
+                    label: "CNIC No",
+                  ),
 
                   TextFormField(
                     validator: (value) {
@@ -204,24 +189,25 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     cursorColor: const Color(0xff152C5E),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
-                    controller: cnicController,
+                    controller: _cnicController,
                     decoration: kMessageTextFieldDecoration.copyWith(
                       hintText: "xxxxxxxxxxxxx",
                     ),
                   ),
                   TextFieldLabel(
-                      height: height,
-                      top: height * 0.01,
-                      right: 0,
-                      left: 0,
-                      bottom: height * 0.01,
-                      label: "Phone Number"),
+                    height: _height,
+                    top: _height * 0.01,
+                    right: 0,
+                    left: 0,
+                    bottom: _height * 0.01,
+                    label: "Phone Number",
+                  ),
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Phone number required";
                       }
-                      if (!RegExp(pattern).hasMatch(value)) {
+                      if (!RegExp(_pattern).hasMatch(value)) {
                         return "Please enter a valid phone number";
                       }
                       return null;
@@ -229,20 +215,21 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     cursorColor: const Color(0xff152C5E),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.phone,
-                    controller: phoneController,
+                    controller: _phoneController,
                     decoration: kMessageTextFieldDecoration.copyWith(
                       hintText: "+92----------",
                     ),
                   ),
                   TextFieldLabel(
-                      height: height,
-                      top: height * 0.01,
-                      right: 0,
-                      left: 0,
-                      bottom: height * 0.01,
-                      label: "License number"),
+                    height: _height,
+                    top: _height * 0.01,
+                    right: 0,
+                    left: 0,
+                    bottom: _height * 0.01,
+                    label: "License number",
+                  ),
                   TextFieldWidget(
-                    controller: licenseController,
+                    controller: _licenseController,
                     hintText:
                         "Enter your 16 digit license number without dashes",
                     errorText: "16 digits of License number are required",
@@ -250,12 +237,13 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     length: 16,
                   ),
                   TextFieldLabel(
-                      height: height,
-                      top: height * 0.01,
-                      right: 0,
-                      left: 0,
-                      bottom: height * 0.01,
-                      label: "Date of birth"),
+                    height: _height,
+                    top: _height * 0.01,
+                    right: 0,
+                    left: 0,
+                    bottom: _height * 0.01,
+                    label: "Date of birth",
+                  ),
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -265,10 +253,10 @@ class _ProfileCreationState extends State<ProfileCreation> {
                       }
                     },
                     onTap: () {
-                      DateOfBirthPicker();
+                      _dateOfBirthPicker();
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
-                    controller: dateController,
+                    controller: _dateController,
                     keyboardType: TextInputType.none,
                     decoration: kMessageTextFieldDecoration.copyWith(
                         hintText: "MM/DD/YYYY",
@@ -276,20 +264,21 @@ class _ProfileCreationState extends State<ProfileCreation> {
                           icon: const Icon(Icons.date_range,
                               color: Color(0xff152C5E)),
                           onPressed: () {
-                            DateOfBirthPicker();
+                            _dateOfBirthPicker();
                             FocusManager.instance.primaryFocus?.unfocus();
                           },
                         )),
                   ),
                   TextFieldLabel(
-                      height: height,
-                      top: height * 0.01,
-                      right: 0,
-                      left: 0,
-                      bottom: height * 0.01,
-                      label: "Experience in years"),
+                    height: _height,
+                    top: _height * 0.01,
+                    right: 0,
+                    left: 0,
+                    bottom: _height * 0.01,
+                    label: "Experience in years",
+                  ),
                   TextFieldWidget(
-                    controller: expController,
+                    controller: _expController,
                     hintText: "Enter your Driving experience in years",
                     errorText: "Experience required",
                     inputType: TextInputType.number,
@@ -298,7 +287,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.only(top: height * 0.055),
+                      padding: EdgeInsets.only(top: _height * 0.055),
                       child: Material(
                         color: const Color(0xff152C5E),
                         borderRadius:
@@ -306,7 +295,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
                         elevation: 5.0,
                         child: MaterialButton(
                           onPressed: () {
-                            update();
+                            _update();
                           },
                           minWidth: 200.0,
                           height: 42.0,
@@ -317,9 +306,11 @@ class _ProfileCreationState extends State<ProfileCreation> {
                                   color: Colors.white,
                                 )
                               : const Text(
-                                  'Submit',
+                            'Submit',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
                                 ),
                         ),
                       ),
@@ -334,22 +325,25 @@ class _ProfileCreationState extends State<ProfileCreation> {
     );
   }
 
-  Future<void> update() async {
+  Future<void> _update() async {
     FocusManager.instance.primaryFocus?.unfocus();
     if (_formKey.currentState!.validate()) {
       await context.read<FirestoreProvider>().uploadRemainingData(
-          "null",
-          dateController.text,
-          int.parse(expController.text),
-          int.parse(cnicController.text),
-          int.parse(licenseController.text),
-          phoneController.text);
+            "null",
+            _dateController.text,
+            int.parse(_expController.text),
+            int.parse(_cnicController.text),
+            int.parse(_licenseController.text),
+            _phoneController.text,
+          );
 
       final firestoreProvider = context.read<FirestoreProvider>();
       if (firestoreProvider.hasFirestoreError) {
         SnackBarWidget.SnackBars(
-            firestoreProvider.FirestoreErrorMsg, "assets/images/errorImg.png",
-            context: context);
+          firestoreProvider.firestoreErrorMsg,
+          "assets/images/errorImg.png",
+          context: context,
+        );
       } else {
         SnackBarWidget.SnackBars(
           "Data Added successfully",

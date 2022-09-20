@@ -15,18 +15,21 @@ class DashBoard extends StatelessWidget {
                 FacebookAuth.instance.logOut();
                 FirebaseAuth.instance.signOut().then((value) {
                   SnackBarWidget.SnackBars(
-                      "Signout successful", "assets/images/successImg.png",
-                      context: context);
-//TODO: Trailing commas not use :(
+                "Signout successful",
+                "assets/images/successImg.png",
+                context: context,
+              );
 
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                  );
-                });
-              },
-              child: const Text("Logout"))),
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+              );
+            });
+          },
+          child: const Text("Logout"),
+        ),
+      ),
     );
   }
 }
