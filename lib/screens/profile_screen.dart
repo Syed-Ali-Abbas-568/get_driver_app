@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get_driver_app/providers/firestore_provider.dart';
-import 'package:get_driver_app/widgets/text_field_widget.dart';
-import 'package:get_driver_app/widgets/textfield_label.dart';
-import 'package:get_driver_app/widgets/toast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'package:get_driver_app/providers/firestore_provider.dart';
+import 'package:get_driver_app/widgets/snackbar_widget.dart';
+import 'package:get_driver_app/widgets/text_field_widget.dart';
+import 'package:get_driver_app/widgets/textfield_label.dart';
+import 'package:get_driver_app/widgets/toast.dart';
 import '../widgets/image_picker.dart';
 
 //const color variables for editable and non editable
@@ -34,21 +35,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _imageUrl;
   String _name = "";
 
-  Future<void> _getUserData() async {
-    final data = await context.read<FirestoreProvider>().getUserData();
-    if (data == null) return;
-    if (!mounted) return;
-    setState(() {
-      _firstNameController.text = data.firstName ?? '';
-      _lastNameController.text = data.lastName ?? '';
-      _imageUrl = data.photoUrl;
+  void _getUserData() {
+    Future.delayed(Duration.zero, () async {
+      final data = await context.read<FirestoreProvider>().getUserData();
+      FirestoreProvider firestoreProvider = FirestoreProvider();
+      if (firestoreProvider.hasFirestoreError) {
+        SnackBarWidget.SnackBars(
+          firestoreProvider.firestoreErrorMsg,
+          "assets/images/errorImg.png",
+          context: context,
+        );
+        return;
+      }
+      if (data == null) return;
 
-      _emailController.text = data.email ?? '';
-      _licenceNumController.text = data.license.toString();
-      _yearsOfExpController.text = data.experience.toString();
-      _cnicController.text = data.cnic.toString();
-      _dobController.text = data.date ?? " ";
-      _name = "${_firstNameController.text} ${_lastNameController.text}";
+      if (!mounted) return;
+      setState(() {
+        _firstNameController.text = data.firstName ?? '';
+        _lastNameController.text = data.lastName ?? '';
+        data.photoUrl == null
+            ? _imageUrl =
+                "https://github.com/Syed-Ali-Abbas-568/get_driver_app/blob/main/assets/images/profile.png"
+            : _imageUrl = data.photoUrl;
+        _emailController.text = data.email ?? '';
+        _licenceNumController.text = data.license.toString();
+        _yearsOfExpController.text = data.experience.toString();
+        _cnicController.text = data.cnic.toString();
+        _dobController.text = data.date ?? " ";
+        _name = "${_firstNameController.text} ${_lastNameController.text}";
+      });
     });
   }
 
@@ -260,28 +275,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  // Positioned(
-                  //   right: 16,
-                  //   top: 410,
-                  //   width: 79,
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //     children: [
-                  //       const Image(
-                  //         image: AssetImage("assets/images/location.png"),
-                  //       ),
-                  //       Text(
-                  //         "Lahore, PK",
-                  //         style: GoogleFonts.manrope(
-                  //           fontStyle: FontStyle.normal,
-                  //           color: const Color(0xFF8893AC),
-                  //           fontWeight: FontWeight.w800,
-                  //           fontSize: 10,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   Positioned(
                       top: 470,
                       left: 16,
@@ -403,16 +396,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onPressed: () {
                   _editable = false;
-
                   Toast.snackBars("Changes Applied Successfully",
                       const Color(0xFF2DD36F), context);
-
-                  // Toast.snackBars("Could Not Apply Changes ",
-                  //     const Color(0xFFFFC409), context);
-
-                  // Toast.snackBars(
-                  //     "Entry Unsuccessful", const Color(0xFFFF3939), context);
-
                   setState(() {});
                 },
               ),

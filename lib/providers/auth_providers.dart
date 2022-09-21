@@ -52,15 +52,15 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<UserModel?> googleSignUpFunc() async {
-    _isLoading = true;
+    _hasError = false;
     UserModel? userModel;
     try {
       userModel = await _firebaseAuthService.googleSignUp();
     } on UnkownException catch (e) {
+      log("exception thrown");
       _errorMsg = e.message;
       _hasError = true;
     }
-    _isLoading = false;
     notifyListeners();
     return userModel;
   }

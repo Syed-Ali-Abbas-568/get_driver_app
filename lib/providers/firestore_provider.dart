@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/services/firestore_service.dart';
 
@@ -15,7 +16,14 @@ class FirestoreProvider with ChangeNotifier {
   String get firestoreErrorMsg => _firestoreErrorMsg;
 
   Future<UserModel?> getUserData() async {
-    UserModel? userModel = await _firestoreService.getData();
+    UserModel? userModel;
+    try{
+      userModel = await _firestoreService.getData();
+    } on UnkownFirestoreException catch(e) {
+      _hasFirestoreError=true;
+      _firestoreErrorMsg=e.message;
+    }
+
     return userModel;
   }
 

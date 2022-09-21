@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+
 import 'package:get_driver_app/screens/dashboard_screen.dart';
 import 'package:get_driver_app/screens/profile_screen.dart';
 import 'package:get_driver_app/screens/report_screen.dart';
@@ -15,7 +16,7 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int _selectedIndex = 2;
   //TODO: fix this variable initialization. It should not be static const but final
-  //TODO: Read about when and why we should use STATIC keyword 
+  //TODO: Read about when and why we should use STATIC keyword
   static const List<Widget> _widgetOptions = <Widget>[
     DashBoard(),
     Report(),

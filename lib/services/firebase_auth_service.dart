@@ -1,13 +1,11 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:get_driver_app/models/user_model.dart';
-import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-//TODO: imports statements needs to be organized
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/services/firestore_service.dart';
 
 class WrongPasswordException implements Exception {
   final String message;
@@ -36,11 +34,7 @@ class UnkownException implements Exception {
 class FirebaseAuthService {
   static final _auth = FirebaseAuth.instance;
   final firebaseUser = _auth.currentUser;
-  //TODO:
-  //!ALERT: Do not use providers in services but use services in providers
-  //Instead of using the providers here use FirestoreService here
-  final FirestoreProvider _firestoreProvider = FirestoreProvider();
-  final _firestore = FirebaseFirestore.instance;
+  final FirestoreService _firestoreServices = FirestoreService();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
@@ -73,7 +67,7 @@ class FirebaseAuthService {
         email: email,
         password: password,
       );
-      _firestoreProvider.postDetails(
+      _firestoreServices.postDetailsToFireStore(
         fName,
         lName,
         userCredential.user!.uid,
@@ -102,7 +96,7 @@ class FirebaseAuthService {
         String? id = requestData['id'];
 
         bool isEmpty = false;
-        isEmpty = await _firestoreProvider.isDataPresent(id!);
+        isEmpty = await _firestoreServices.isPresent(id!);
         if (!isEmpty) {
           var n = requestData['name'].toString().split(" ");
           userModel.firstName = n[0];
@@ -110,9 +104,9 @@ class FirebaseAuthService {
           userModel.email = requestData['email'];
           userModel.id = id;
           userModel.photoUrl = requestData['picture']['data']['url'];
-          _firestoreProvider.uploadSignUpDetails(userModel, id);
+          _firestoreServices.uploadSignUpInfo(userModel, id);
         } else {
-          userModel = await _firestoreProvider.getUserData();
+          userModel = await _firestoreServices.getData();
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -137,7 +131,7 @@ class FirebaseAuthService {
       await FirebaseAuth.instance.signInWithCredential(credential);
       User? firebaseUser = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
-      isEmpty = await _firestoreProvider.isDataPresent(firebaseUser!.uid);
+      isEmpty = await _firestoreServices.isPresent(firebaseUser!.uid);
       final name = _user!.displayName?.split(" ");
       if (!isEmpty) {
         userModel.firstName = name?[0];
@@ -145,12 +139,15 @@ class FirebaseAuthService {
         userModel.email = _user?.email;
         userModel.id = firebaseUser.uid;
         userModel.photoUrl = _user?.photoUrl;
-        _firestoreProvider.uploadSignUpDetails(userModel, firebaseUser.uid);
+        _firestoreServices.uploadSignUpInfo(userModel, firebaseUser.uid);
       } else {
-        userModel = await _firestoreProvider.getUserData();
+        userModel = await _firestoreServices.getData();
       }
-    } catch (e) {
-      log(e.toString());
+    } on FirebaseAuthException catch (e) {
+      log("exception thrown");
+      throw UnkownException(
+        "Something went wrong, ${e.message} || ${e.code}",
+      );
     }
     return userModel;
   }

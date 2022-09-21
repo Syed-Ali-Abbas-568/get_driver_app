@@ -1,13 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
 import 'package:get_driver_app/models/user_model.dart';
-import 'package:get_driver_app/services/firebase_auth_service.dart';
 
 class UnkownFirestoreException implements Exception {
   final String message;
@@ -18,13 +17,17 @@ class UnkownFirestoreException implements Exception {
 class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
+  User? user = _auth.currentUser;
 
-  /*
-  TODO: This function needs be fixed
-  TODO: According to fun type it should not return anything but you are returning CollectionReference 
-  */
-  Future<void> uploadSignUpInfo(UserModel userModel, String id) {
-    return _firestore.collection('Users').doc(id).set(userModel.toJson());
+  Future<void> uploadSignUpInfo(
+    UserModel userModel,
+    String id,
+  ) async {
+    try {
+      _firestore.collection('Users').doc(id).set(userModel.toJson());
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   Future<void> postDetailsToFireStore(
@@ -35,46 +38,44 @@ class FirestoreService {
     String photoUrl,
     bool firstTime,
   ) async {
+    User? firebaseUser = _auth.currentUser;
     try {
-      //TODO: defined the firestore instance above not need to access it again here
-      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-      User? user = _auth.currentUser;
-      //*IMPORTANT: pass values in side the UserModel Constructor
-      //*IMPORTANT: not out of the constructor. It is bad practice
+      UserModel userModel = UserModel(
+        firstName: fName,
+        lastName: lName,
+        email: email,
+        id: id,
+        photoUrl: photoUrl,
+        firstTime: firstTime,
+      );
 
-      UserModel userModel = UserModel();
-      userModel.firstName = fName;
-      userModel.lastName = lName;
-      userModel.email = email;
-      userModel.id = id;
-      userModel.photoUrl = photoUrl;
-      userModel.firstTime = firstTime;
-
-      await firebaseFirestore
-          .collection('Users')
-          .doc(user?.uid)
-          .set(userModel.toJson());
+      await _firestore.collection('Users').doc(firebaseUser?.uid).set(
+            userModel.toJson(),
+          );
     } catch (e) {
       log(e.toString());
     }
   }
 
   Future<UserModel?> getData() async {
-    User? user = FirebaseAuthService().firebaseUser;
+    User? firebaseUser = _auth.currentUser;
     UserModel? myUser;
     String id;
     try {
-      if (user == null) {
+      if (firebaseUser == null) {
         final requestData = await FacebookAuth.instance.getUserData();
         id = requestData['id'];
       } else {
-        id = user.uid;
+        id = firebaseUser.uid;
       }
       final data = await _firestore.collection('Users').doc(id).get();
       var userInfo = UserModel.fromJson(data.data()!);
       myUser = userInfo;
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
+      throw UnkownFirestoreException(
+        "Something went wrong, ${e.message} || ${e.code}",
+      );
     }
     return myUser;
   }
@@ -101,38 +102,41 @@ class FirestoreService {
     int license,
     String phone,
   ) async {
+    User? firebaseUser = _auth.currentUser;
+
     try {
-      User? user = FirebaseAuthService().firebaseUser;
       String? id;
       if (user == null) {
         final requestData = await FacebookAuth.instance.getUserData();
         id = requestData['id'];
       } else {
-        id = user.uid;
+        id = firebaseUser?.uid;
       }
       var names =
           await FirebaseFirestore.instance.collection('Users').doc(id).get();
-      //*IMPORTANT: pass values in side the UserModel Constructor
-      //*IMPORTANT: not out of the constructor. It is bad practice
-      UserModel userModel = UserModel();
-      userModel.firstName = names.data()?['firstName'];
-      userModel.lastName = names.data()?['lastName'];
-      userModel.email = names.data()?['email'];
-      userModel.id = names.data()?['userId'];
-      userModel.photoUrl = names.data()?['photoUrl'];
-      userModel.firstTime = false;
-      userModel.cnic = cnic;
-      userModel.phone = phone;
-      userModel.license = license;
-      userModel.experience = experience;
-      userModel.date = date;
-
-      await _firestore.collection('Users').doc(id).update(userModel.toJson());
+      UserModel userModel = UserModel(
+        firstName: names.data()?['firstName'],
+        lastName: names.data()?['lastName'],
+        email: names.data()?['email'],
+        id: names.data()?['userId'],
+        photoUrl: names.data()?['photoUrl'],
+        firstTime: false,
+        cnic: cnic,
+        phone: phone,
+        license: license,
+        experience: experience,
+        date: date,
+      );
+      await _firestore.collection('Users').doc(id).update(
+            userModel.toJson(),
+          );
     } on FirebaseAuthException catch (e) {
-      debugPrint(e.message);
-      //TODO: Use Trailing commas here
+      debugPrint(
+        e.message,
+      );
       throw UnkownFirestoreException(
-          'Something went wrong ${e.code} ${e.message}');
+        'Something went wrong ${e.code} ${e.message}',
+      );
     }
   }
 }

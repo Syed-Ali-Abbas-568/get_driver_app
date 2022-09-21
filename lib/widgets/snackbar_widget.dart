@@ -3,7 +3,11 @@
 import 'package:flutter/material.dart';
 
 class SnackBarWidget {
-  static void SnackBars(String label, String img, {required BuildContext context}) {
+  static void SnackBars(
+    String label,
+    String img, {
+    required BuildContext context,
+  }) {
     final snackBar = SnackBar(
       content: Row(
         children: [

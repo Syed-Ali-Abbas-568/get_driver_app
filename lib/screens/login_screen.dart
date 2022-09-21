@@ -1,9 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:flutter/material.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
@@ -16,6 +14,7 @@ import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -105,7 +104,51 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           elevation: 5.0,
                           child: MaterialButton(
-                            onPressed: () =>_signInWithEmail(),
+                            onPressed: () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+
+                              if (_formKey.currentState!.validate()) {
+                                await context
+                                    .read<AuthProvider>()
+                                    .signInWithEmailPassword(
+                                      _emailController.text,
+                                      _passController.text,
+                                    );
+
+                                if (context.read<AuthProvider>().hasError) {
+                                  SnackBarWidget.SnackBars(
+                                    context.read<AuthProvider>().errorMsg,
+                                    "assets/images/errorImg.png",
+                                    context: context,
+                                  );
+                                  return;
+                                }
+
+                                SnackBarWidget.SnackBars(
+                                  "Sign in successful",
+                                  "assets/images/successImg.png",
+                                  context: context,
+                                );
+
+                                String? dataPresent;
+                                User? user = FirebaseAuthService().firebaseUser;
+
+                                UserModel? userModel = await context
+                                    .read<FirestoreProvider>()
+                                    .getUserData();
+                                dataPresent = userModel?.cnic.toString();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => user == null
+                                        ? const LoginScreen()
+                                        : dataPresent == null
+                                            ? const ProfileCreation()
+                                            : const NavBar(),
+                                  ),
+                                );
+                              }
+                            },
                             minWidth: 200.0,
                             height: 42.0,
                             child: context.watch<AuthProvider>().isLoading
@@ -113,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: Color(0xffFBFAFA),
                                   )
                                 : const Text(
-                              'Sign In',
+                                    'Sign In',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -165,36 +208,93 @@ class _LoginScreenState extends State<LoginScreen> {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.only(left: _width * 0.032),
-                              child: context.watch<AuthProvider>().isLoading
-                                  ? const SizedBox(
-                                      width: 50,
-                                      height: 50,
-                                      child: CircularProgressIndicator(
-                                        color: Color(0xff152C5E),
+                              child: ImgButton(
+                                height: _height,
+                                img: "google_logo",
+                                text: "Google",
+                                onPressed: () async {
+                                  AuthProvider authProvider = AuthProvider();
+                                  if (authProvider.hasError) {
+                                    SnackBarWidget.SnackBars(
+                                      authProvider.errorMsg,
+                                      "assets/images/errorImg.png",
+                                      context: context,
+                                    );
+                                    return;
+                                  }
+
+                                  UserModel? userModel = await context
+                                      .read<AuthProvider>()
+                                      .googleSignUpFunc();
+                                  if (userModel != null) {
+                                    Future.delayed(const Duration(seconds: 3));
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            FirebaseAuth.instance.currentUser ==
+                                                    null
+                                                ? const LoginScreen()
+                                                : userModel.cnic == null
+                                                    ? const ProfileCreation()
+                                                    : const NavBar(),
                                       ),
-                                    )
-                                  : ImgButton(
-                                      height: _height,
-                                      img: "google_logo",
-                                      text: "Google",
-                                      onPressed: () async => _googleButton(),
-                                    ),
+                                    );
+                                    SnackBarWidget.SnackBars(
+                                      "Sign in successful",
+                                      "assets/images/successImg.png",
+                                      context: context,
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(width: _width * 0.04),
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.only(right: _width * 0.032),
-                              child: context.watch<AuthProvider>().isLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Color(0xff152C5E),
-                                    )
-                                  : ImgButton(
-                                      height: _height,
-                                      img: "facebook_logo",
-                                      text: "Facebook",
-                                      onPressed: () => _facebookButton(),
-                                    ),
+                              child: ImgButton(
+                                height: _height,
+                                img: "facebook_logo",
+                                text: "Facebook",
+                                onPressed: () async {
+                                  AuthProvider authProvider = AuthProvider();
+                                  if (authProvider.hasError) {
+                                    SnackBarWidget.SnackBars(
+                                        authProvider.errorMsg,
+                                        "assets/images/errorImg.png",
+                                        context: context);
+                                    return;
+                                  }
+                                  UserModel? userModel = await context
+                                      .read<AuthProvider>()
+                                      .facebookSignUp();
+                                  if (userModel == null ||
+                                      userModel.cnic == null) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProfileCreation(),
+                                      ),
+                                    );
+                                    SnackBarWidget.SnackBars(
+                                        "Sign in successful",
+                                        "assets/images/successImg.png",
+                                        context: context);
+                                  } else {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => const NavBar(),
+                                      ),
+                                    );
+                                    SnackBarWidget.SnackBars(
+                                        "Sign in successful",
+                                        "assets/images/successImg.png",
+                                        context: context);
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -208,114 +308,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  void _signInWithEmail()async {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    if (_formKey.currentState!.validate()) {
-      await context
-          .read<AuthProvider>()
-          .signInWithEmailPassword(
-        _emailController.text,
-        _passController.text,
-      );
-
-      if (context.read<AuthProvider>().hasError) {
-        SnackBarWidget.SnackBars(
-          context.read<AuthProvider>().errorMsg,
-          "assets/images/errorImg.png",
-          context: context,
-        );
-        return;
-      }
-
-      SnackBarWidget.SnackBars(
-        "Sign in successful",
-        "assets/images/successImg.png",
-        context: context,
-      );
-
-      String? dataPresent;
-      User? user = FirebaseAuthService().firebaseUser;
-
-      UserModel? userModel = await context
-          .read<FirestoreProvider>()
-          .getUserData();
-      dataPresent = userModel?.cnic.toString();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => user == null
-              ? const LoginScreen()
-              : dataPresent == null
-              ? const ProfileCreation()
-              : const NavBar(),
-        ),
-      );
-    }
-  }
-
-  Future<void> _googleButton() async {
-    AuthProvider authProvider = AuthProvider();
-    if (authProvider.hasError) {
-      SnackBarWidget.SnackBars(
-        authProvider.errorMsg,
-        "assets/images/errorImg.png",
-        context: context,
-      );
-      return;
-    }
-
-    UserModel? userModel =
-        await context.read<AuthProvider>().googleSignUpFunc();
-    if (userModel != null) {
-      Future.delayed(const Duration(seconds: 3));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FirebaseAuth.instance.currentUser == null
-              ? const LoginScreen()
-              : userModel.cnic == null
-                  ? const ProfileCreation()
-                  : const NavBar(),
-        ),
-      );
-      SnackBarWidget.SnackBars(
-        "Sign in successful",
-        "assets/images/successImg.png",
-        context: context,
-      );
-    }
-  }
-
-  Future<void> _facebookButton() async {
-    AuthProvider authProvider = AuthProvider();
-    if (authProvider.hasError) {
-      SnackBarWidget.SnackBars(
-          authProvider.errorMsg, "assets/images/errorImg.png",
-          context: context);
-      return;
-    }
-    UserModel? userModel = await context.read<AuthProvider>().facebookSignUp();
-    if (userModel == null || userModel.cnic == null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ProfileCreation(),
-        ),
-      );
-      SnackBarWidget.SnackBars(
-          "Sign in successful", "assets/images/successImg.png",
-          context: context);
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(),
-        ),
-      );
-      SnackBarWidget.SnackBars(
-          "Sign in successful", "assets/images/successImg.png",
-          context: context);
-    }
   }
 }

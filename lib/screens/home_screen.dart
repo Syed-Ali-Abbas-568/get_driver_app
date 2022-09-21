@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
 import 'package:get_driver_app/screens/login_screen.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 
@@ -19,8 +20,11 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               FacebookAuth.instance.logOut();
               FirebaseAuth.instance.signOut();
-              SnackBarWidget.SnackBars("SignOut Successful",
-                  "assets/images/successImg.png",  context: context);
+              SnackBarWidget.SnackBars(
+                "SignOut Successful",
+                "assets/images/successImg.png",
+                context: context,
+              );
 
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
@@ -28,7 +32,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               );
             },
-            child: const Text("Press to go back and signout"),
+            child: const Text(
+              "Press to go back and signout",
+            ),
           ),
         ],
       ),

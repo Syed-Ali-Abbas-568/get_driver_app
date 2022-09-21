@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/screens/create_profile.dart';
@@ -10,8 +12,6 @@ import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
-import 'package:provider/provider.dart';
-
 import 'login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -107,7 +107,41 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             const BorderRadius.all(Radius.circular(30.0)),
                         elevation: 5.0,
                         child: MaterialButton(
-                          onPressed: () async => _signUp(),
+                          onPressed: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            if (_formKey.currentState!.validate()) {
+                              final userCred = await context
+                                  .read<AuthProvider>()
+                                  .signUpWithEmailPass(
+                                    _fNameController.text,
+                                    _lNameController.text,
+                                    _emailController.text,
+                                    _passController.text,
+                                  );
+
+                              AuthProvider authProvider = AuthProvider();
+
+                              if (userCred != null && !authProvider.hasError) {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ProfileCreation(),
+                                  ),
+                                );
+                                SnackBarWidget.SnackBars(
+                                  "Signup Successful",
+                                  "assets/images/successImg.png",
+                                  context: context,
+                                );
+                              } else {
+                                SnackBarWidget.SnackBars(
+                                  authProvider.errorMsg,
+                                  "assets/images/errorImg.png",
+                                  context: context,
+                                );
+                              }
+                            }
+                          },
                           minWidth: 200.0,
                           height: 42.0,
                           child: context.watch<AuthProvider>().isLoading
@@ -162,34 +196,75 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(left: _width * 0.032),
-                            child: context.watch<AuthProvider>().isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Color(0xff152C5E),
-                                  )
-                                : ImgButton(
-                                    height: _height,
-                                    img: "google_logo",
-                                    text: "Google",
-                                    onPressed: () async => _googleSignUp(),
-                                  ),
+                            child: ImgButton(
+                              height: _height,
+                              img: "google_logo",
+                              text: "Google",
+                              onPressed: () async {
+                                AuthProvider authProvider = AuthProvider();
+                                if (authProvider.hasError) {
+                                  SnackBarWidget.SnackBars(
+                                      authProvider.errorMsg,
+                                      "assets/images/errorImg.png",
+                                      context: context);
+                                  return;
+                                }
+                                UserModel? userModel = await context
+                                    .read<AuthProvider>()
+                                    .facebookSignUp();
+                                if (userModel == null ||
+                                    userModel.cnic == null) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProfileCreation(),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => const NavBar(),
+                                    ),
+                                  );
+                                  SnackBarWidget.SnackBars(
+                                    "Facebook Sign in successful",
+                                    "assets/images/successImg.png",
+                                    context: context,
+                                  );
+                                }
+                              },
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          width: _width * 0.04,
-                        ),
+                        SizedBox(width: _width * 0.04),
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(right: _width * 0.032),
-                            child: context.watch<AuthProvider>().isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Color(0xff152C5E),
-                                  )
-                                : ImgButton(
-                                    height: _height,
-                                    img: "facebook_logo",
-                                    text: "Facebook",
-                                    onPressed: () async => _facebookSignUp(),
-                                  ),
+                            child: ImgButton(
+                              height: _height,
+                              img: "facebook_logo",
+                              text: "Facebook",
+                              onPressed: () async {
+                                UserModel? userModel = await context
+                                    .read<AuthProvider>()
+                                    .facebookSignUp();
+                                if (userModel == null ||
+                                    userModel.cnic == null) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProfileCreation(),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => const NavBar(),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -202,82 +277,5 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _signUp() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    if (_formKey.currentState!.validate()) {
-      final userCred = await context.read<AuthProvider>().signUpWithEmailPass(
-            _fNameController.text,
-            _lNameController.text,
-            _emailController.text,
-            _passController.text,
-          );
-
-      AuthProvider authProvider = AuthProvider();
-
-      if (userCred != null && !authProvider.hasError) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const ProfileCreation(),
-          ),
-        );
-        SnackBarWidget.SnackBars(
-          "Signup Successful",
-          "assets/images/successImg.png",
-          context: context,
-        );
-      } else {
-        SnackBarWidget.SnackBars(
-          authProvider.errorMsg,
-          "assets/images/errorImg.png",
-          context: context,
-        );
-      }
-    }
-  }
-
-  Future<void> _facebookSignUp() async {
-    UserModel? userModel = await context.read<AuthProvider>().facebookSignUp();
-    if (userModel == null || userModel.cnic == null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ProfileCreation(),
-        ),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(),
-        ),
-      );
-    }
-  }
-
-  Future<void> _googleSignUp() async {
-    AuthProvider authProvider = AuthProvider();
-    if (authProvider.hasError) {
-      SnackBarWidget.SnackBars(
-          authProvider.errorMsg, "assets/images/errorImg.png",
-          context: context);
-      return;
-    }
-    UserModel? userModel = await context.read<AuthProvider>().facebookSignUp();
-    if (userModel == null || userModel.cnic == null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ProfileCreation(),
-        ),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(),
-        ),
-      );
-      SnackBarWidget.SnackBars(
-          "Sign up successful", "assets/images/successImg.png",
-          context: context);
-    }
   }
 }

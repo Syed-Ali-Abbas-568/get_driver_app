@@ -1,8 +1,10 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, use_build_context_synchronously
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
@@ -10,8 +12,6 @@ import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class ProfileCreation extends StatefulWidget {
   const ProfileCreation({Key? key}) : super(key: key);
@@ -66,9 +66,17 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
-  void _getUserData() async {
+  void _getUserData() {
     Future.delayed(Duration.zero, () async {
       final data = await context.read<FirestoreProvider>().getUserData();
+      FirestoreProvider firestoreProvider = FirestoreProvider();
+      if (firestoreProvider.hasFirestoreError) {
+        SnackBarWidget.SnackBars(
+          firestoreProvider.firestoreErrorMsg,
+          "assets/images/errorImg.png",
+          context: context,
+        );
+      }
       if (data == null) return;
       if (!mounted) return;
       _email = data.email ?? '';
@@ -175,7 +183,6 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     bottom: _height * 0.01,
                     label: "CNIC No",
                   ),
-
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -306,7 +313,7 @@ class _ProfileCreationState extends State<ProfileCreation> {
                                   color: Colors.white,
                                 )
                               : const Text(
-                            'Submit',
+                                  'Submit',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
