@@ -14,24 +14,38 @@ class FirestoreProvider with ChangeNotifier {
 
   String get firestoreErrorMsg => _firestoreErrorMsg;
 
-
   Future<UserModel?> getUserData() async {
-
-  UserModel? userModel= await _firestoreService.getData();
+    UserModel? userModel = await _firestoreService.getData();
     return userModel;
   }
 
-
-  Future<void> postDetails(String fName,String lName,String id,String email,String photoUrl,bool firstTime,){
-    return _firestoreService.postDetailsToFireStore(fName, lName, id, email, photoUrl, firstTime);
+  Future<void> postDetails(
+    String fName,
+    String lName,
+    String id,
+    String email,
+    String photoUrl,
+    bool firstTime,
+  ) {
+    return _firestoreService.postDetailsToFireStore(
+        fName, lName, id, email, photoUrl, firstTime);
   }
 
-  Future<void> uploadSignUpDetails(UserModel userModel,String id,){
+  Future<void> uploadSignUpDetails(
+    UserModel userModel,
+    String id,
+  ) {
     return _firestoreService.uploadSignUpInfo(userModel, id);
   }
 
-  Future<void> uploadRemainingData(String photoUrl, String date, int experience,
-      int cnic, int license, String phone,) async {
+  Future<void> uploadRemainingData(
+    String photoUrl,
+    String date,
+    int experience,
+    int cnic,
+    int license,
+    String phone,
+  ) async {
     try {
       _isProfileCreation = true;
       _firestoreService.updateData(
@@ -44,7 +58,7 @@ class FirestoreProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> isDataPresent(String id){
+  Future<bool> isDataPresent(String id) {
     return _firestoreService.isPresent(id);
   }
 }

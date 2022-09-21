@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//*IMPORTANT: Toast and Snackbars are two different ui elements. Fix the names :(
+//TODO: Toast and Snackbars are two different ui elements. Fix the names :(
 
 class Toast {
   static void snackBars(String label, Color? color, BuildContext context) {

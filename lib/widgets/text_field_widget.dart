@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
 
-// ignore: must_be_immutable
 class TextFieldWidget extends StatelessWidget {
   TextFieldWidget({
     Key? key,

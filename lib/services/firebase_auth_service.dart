@@ -1,16 +1,13 @@
-// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
-import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+//TODO: imports statements needs to be organized
 
 class WrongPasswordException implements Exception {
   final String message;
@@ -39,6 +36,9 @@ class UnkownException implements Exception {
 class FirebaseAuthService {
   static final _auth = FirebaseAuth.instance;
   final firebaseUser = _auth.currentUser;
+  //TODO:
+  //!ALERT: Do not use providers in services but use services in providers
+  //Instead of using the providers here use FirestoreService here
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
   final _firestore = FirebaseFirestore.instance;
 
@@ -137,7 +137,7 @@ class FirebaseAuthService {
       await FirebaseAuth.instance.signInWithCredential(credential);
       User? firebaseUser = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
-      isEmpty=await _firestoreProvider.isDataPresent(firebaseUser!.uid);
+      isEmpty = await _firestoreProvider.isDataPresent(firebaseUser!.uid);
       final name = _user!.displayName?.split(" ");
       if (!isEmpty) {
         userModel.firstName = name?[0];

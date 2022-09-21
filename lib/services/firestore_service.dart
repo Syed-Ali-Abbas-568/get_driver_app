@@ -19,6 +19,10 @@ class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
 
+  /*
+  TODO: This function needs be fixed
+  TODO: According to fun type it should not return anything but you are returning CollectionReference 
+  */
   Future<void> uploadSignUpInfo(UserModel userModel, String id) {
     return _firestore.collection('Users').doc(id).set(userModel.toJson());
   }
@@ -32,8 +36,12 @@ class FirestoreService {
     bool firstTime,
   ) async {
     try {
+      //TODO: defined the firestore instance above not need to access it again here
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
+      //*IMPORTANT: pass values in side the UserModel Constructor
+      //*IMPORTANT: not out of the constructor. It is bad practice
+
       UserModel userModel = UserModel();
       userModel.firstName = fName;
       userModel.lastName = lName;
@@ -104,6 +112,8 @@ class FirestoreService {
       }
       var names =
           await FirebaseFirestore.instance.collection('Users').doc(id).get();
+      //*IMPORTANT: pass values in side the UserModel Constructor
+      //*IMPORTANT: not out of the constructor. It is bad practice
       UserModel userModel = UserModel();
       userModel.firstName = names.data()?['firstName'];
       userModel.lastName = names.data()?['lastName'];
@@ -120,6 +130,7 @@ class FirestoreService {
       await _firestore.collection('Users').doc(id).update(userModel.toJson());
     } on FirebaseAuthException catch (e) {
       debugPrint(e.message);
+      //TODO: Use Trailing commas here
       throw UnkownFirestoreException(
           'Something went wrong ${e.code} ${e.message}');
     }
