@@ -60,13 +60,13 @@ class FirestoreService {
   Future<UserModel?> getData() async {
     User? firebaseUser = _auth.currentUser;
     UserModel? myUser;
-    String id;
+    String? id = firebaseUser?.uid;
     try {
       if (firebaseUser == null) {
         final requestData = await FacebookAuth.instance.getUserData();
         id = requestData['id'];
-      } else {
-        id = firebaseUser.uid;
+      } else if (id == null) {
+        return myUser;
       }
       final data = await _firestore.collection('Users').doc(id).get();
       var userInfo = UserModel.fromJson(data.data()!);

@@ -2,9 +2,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
@@ -12,6 +9,8 @@ import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ProfileCreation extends StatefulWidget {
   const ProfileCreation({Key? key}) : super(key: key);
@@ -188,8 +187,8 @@ class _ProfileCreationState extends State<ProfileCreation> {
                       if (value!.isEmpty) {
                         return "CNIC is required";
                       }
-                      if (value.length < 13) {
-                        return "Please enter a complete CNIC";
+                      if (value.length < 13 || value.length > 13) {
+                        return "Please enter a complete CNIC of 13 digits";
                       }
                       return null;
                     },
@@ -233,15 +232,26 @@ class _ProfileCreationState extends State<ProfileCreation> {
                     right: 0,
                     left: 0,
                     bottom: _height * 0.01,
-                    label: "License number",
+                    label: "License Number",
                   ),
-                  TextFieldWidget(
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "License is required";
+                      }
+                      if (value.length < 16 || value.length > 16) {
+                        return "Please enter a complete License number of 16 digits";
+                      }
+                      return null;
+                    },
+                    cursorColor: const Color(0xff152C5E),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
                     controller: _licenseController,
-                    hintText:
-                        "Enter your 16 digit license number without dashes",
-                    errorText: "16 digits of License number are required",
-                    inputType: TextInputType.number,
-                    length: 16,
+                    decoration: kMessageTextFieldDecoration.copyWith(
+                      hintText:
+                          "Enter your 16 digit license number without dashes",
+                    ),
                   ),
                   TextFieldLabel(
                     height: _height,
