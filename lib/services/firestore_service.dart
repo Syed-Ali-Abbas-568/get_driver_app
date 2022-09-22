@@ -25,6 +25,7 @@ class FirestoreService {
   ) async {
     try {
       _firestore.collection('Users').doc(id).set(userModel.toJson());
+      log(userModel.toJson().toString());
     } catch (e) {
       // log(e.toString());
     }
