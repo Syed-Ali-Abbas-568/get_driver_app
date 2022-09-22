@@ -33,7 +33,7 @@ class UnkownException implements Exception {
 
 class FirebaseAuthService {
   static final _auth = FirebaseAuth.instance;
-  final firebaseUser = _auth.currentUser;
+  User? firebaseUser = _auth.currentUser;
   final FirestoreService _firestoreServices = FirestoreService();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
@@ -93,16 +93,27 @@ class FirebaseAuthService {
       final credential = FacebookAuthProvider.credential(
         loginResult.accessToken!.token,
       );
-      await _auth.signInWithCredential(credential);
+
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      log(userCredential.credential.toString());
 
       if (loginResult.status == LoginStatus.success) {
-        final requestData = await FacebookAuth.instance.getUserData();
         String? id = firebaseUser?.uid;
         print(id);
 
-        bool isEmpty = false;
-        isEmpty = await _firestoreServices.isPresent(id!);
-        if (!isEmpty) {
+        bool isPresent = false;
+        if (firebaseUser == null) {
+          log("User null");
+          return null;
+        }
+        try {
+          isPresent = await _firestoreServices.isPresent(id!);
+        } catch (e) {
+          log(e.toString());
+        }
+
+        if (!isPresent) {
           final n = firebaseUser?.displayName;
           userModel = UserModel(
             firstName: n![0],
@@ -111,7 +122,7 @@ class FirebaseAuthService {
             id: firebaseUser?.uid,
             photoUrl: firebaseUser?.photoURL,
           );
-          _firestoreServices.uploadSignUpInfo(userModel, id);
+          _firestoreServices.uploadSignUpInfo(userModel, id!);
         } else {
           userModel = await _firestoreServices.getData();
         }

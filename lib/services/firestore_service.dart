@@ -1,10 +1,6 @@
-// ignore_for_file: non_constant_identifier_names
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
 
@@ -25,7 +21,6 @@ class FirestoreService {
   ) async {
     try {
       _firestore.collection('Users').doc(id).set(userModel.toJson());
-      log(userModel.toJson().toString());
     } catch (e) {
       // log(e.toString());
     }
@@ -78,17 +73,17 @@ class FirestoreService {
   }
 
   Future<bool> isPresent(String id) async {
-    bool isEmpty = false;
+    bool isPresent = false;
     await _firestore
         .collection('Users')
         .doc(id)
         .snapshots()
         .first
         .then((value) {
-      isEmpty = false;
-      isEmpty = value.exists;
+      isPresent = false;
+      isPresent = value.exists;
     });
-    return isEmpty;
+    return isPresent;
   }
 
   Future<void> updateData(
