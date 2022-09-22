@@ -1,4 +1,4 @@
-package com.example.get_driver_app
+package com.cybrnode.get_driver_app
 
 import io.flutter.embedding.android.FlutterActivity
 
