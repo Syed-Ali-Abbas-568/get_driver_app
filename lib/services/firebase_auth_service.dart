@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -95,35 +94,22 @@ class FirebaseAuthService {
         loginResult.accessToken!.token,
       );
 
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-      log(userCredential.credential.toString());
+      final userCred = await _auth.signInWithCredential(credential);
 
       if (loginResult.status == LoginStatus.success) {
-        String? id = firebaseUser?.uid;
-        debugPrint(id);
+        String? id = userCred.user!.uid;
 
-        bool isPresent = false;
-        if (firebaseUser == null) {
-          log("User null");
-          return null;
-        }
-        try {
-          isPresent = await _firestoreServices.isPresent(id!);
-        } catch (e) {
-          log(e.toString());
-        }
-
+        bool isPresent = await _firestoreServices.isPresent(id);
         if (!isPresent) {
-          final n = firebaseUser?.displayName;
+          final n = userCred.user?.displayName;
           userModel = UserModel(
             firstName: n![0],
             lastName: n[1],
-            email: firebaseUser?.email,
-            id: firebaseUser?.uid,
-            photoUrl: firebaseUser?.photoURL,
+            email: userCred.user?.email,
+            id: userCred.user?.uid,
+            photoUrl: userCred.user?.photoURL,
           );
-          _firestoreServices.uploadSignUpInfo(userModel, id!);
+          await _firestoreServices.uploadSignUpInfo(userModel, id);
         } else {
           userModel = await _firestoreServices.getData();
         }

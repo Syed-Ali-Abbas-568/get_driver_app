@@ -2,6 +2,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
@@ -14,7 +16,6 @@ import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
 import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -136,14 +137,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 UserModel? userModel = await context
                                     .read<FirestoreProvider>()
                                     .getUserData();
-                                dataPresent = userModel?.cnic.toString();
+
+                                if (userModel == null) return;
+
+                                dataPresent = userModel.cnic.toString();
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => user == null
                                         ? const LoginScreen()
                                         : dataPresent == null
-                                            ? const ProfileCreation()
+                                            ? const CreateProfile()
                                             : const NavBar(),
                                   ),
                                 );
@@ -236,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     null
                                                 ? const LoginScreen()
                                                 : userModel.cnic == null
-                                                    ? const ProfileCreation()
+                                                    ? const CreateProfile()
                                                     : const NavBar(),
                                       ),
                                     );
@@ -275,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const ProfileCreation(),
+                                            const CreateProfile(),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(

@@ -91,7 +91,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     TextFieldWidget(
                       controller: _lNameController,
                       errorText: "Enter a valid last name",
-                      hintText: "John",
+                      hintText: "Cena",
                       inputType: TextInputType.name,
                     ),
                     EmailPasswordTextField(
@@ -124,8 +124,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               if (userCred != null && !authProvider.hasError) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ProfileCreation(),
+                                    builder: (context) => const CreateProfile(),
                                   ),
                                 );
                                 SnackBarWidget.SnackBars(
@@ -202,6 +201,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               text: "Google",
                               onPressed: () async {
                                 AuthProvider authProvider = AuthProvider();
+
                                 if (authProvider.hasError) {
                                   SnackBarWidget.SnackBars(
                                       authProvider.errorMsg,
@@ -209,15 +209,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       context: context);
                                   return;
                                 }
+
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
                                     .facebookSignUp();
-                                if (userModel == null ||
-                                    userModel.cnic == null) {
+
+                                if (userModel == null) return;
+
+                                if (userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const ProfileCreation(),
+                                          const CreateProfile(),
                                     ),
                                   );
                                 } else {
@@ -253,7 +256,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const ProfileCreation(),
+                                          const CreateProfile(),
                                     ),
                                   );
                                 } else {

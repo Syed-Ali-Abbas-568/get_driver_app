@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/services/firebase_auth_service.dart';
 
 class UnkownFirestoreException implements Exception {
   final String message;
@@ -22,7 +25,7 @@ class FirestoreService {
     try {
       _firestore.collection('Users').doc(id).set(userModel.toJson());
     } catch (e) {
-      // log(e.toString());
+      log(e.toString());
     }
   }
 
@@ -34,7 +37,6 @@ class FirestoreService {
     String photoUrl,
     bool firstTime,
   ) async {
-    User? firebaseUser = _auth.currentUser;
     try {
       UserModel userModel = UserModel(
         firstName: fName,
@@ -45,24 +47,24 @@ class FirestoreService {
         firstTime: firstTime,
       );
 
-      await _firestore.collection('Users').doc(firebaseUser?.uid).set(
+      await _firestore
+          .collection('Users')
+          .doc(FirebaseAuthService().firebaseUser?.uid)
+          .set(
             userModel.toJson(),
           );
     } catch (e) {
-      // log(e.toString());
+      log(e.toString());
     }
   }
 
   Future<UserModel?> getData() async {
-    User? firebaseUser = _auth.currentUser;
     UserModel? myUser;
+    String? id = _auth.currentUser?.uid;
     try {
-      final data =
-          await _firestore.collection('Users').doc(firebaseUser?.uid).get();
-      print(firebaseUser);
-      print(data.data());
-      var userInfo = UserModel.fromJson(data.data()!);
-      myUser = userInfo;
+      final data = await _firestore.collection('Users').doc(id).get();
+      myUser = UserModel.fromJson(data.data()!);
+      Future.delayed(const Duration(seconds: 5));
     } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
       throw UnkownFirestoreException(
@@ -116,6 +118,7 @@ class FirestoreService {
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
           );
+      getData();
     } on FirebaseAuthException catch (e) {
       debugPrint(
         e.message,

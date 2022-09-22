@@ -2,6 +2,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
@@ -9,17 +12,17 @@ import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-class ProfileCreation extends StatefulWidget {
-  const ProfileCreation({Key? key}) : super(key: key);
+import '../models/user_model.dart';
+
+class CreateProfile extends StatefulWidget {
+  const CreateProfile({Key? key}) : super(key: key);
 
   @override
-  State<ProfileCreation> createState() => _ProfileCreationState();
+  State<CreateProfile> createState() => _CreateProfileState();
 }
 
-class _ProfileCreationState extends State<ProfileCreation> {
+class _CreateProfileState extends State<CreateProfile> {
   double _height = 0;
   double _width = 0;
   final _formKey = GlobalKey<FormState>();
@@ -65,311 +68,316 @@ class _ProfileCreationState extends State<ProfileCreation> {
     });
   }
 
-  void _getUserData() {
-    Future.delayed(Duration.zero, () async {
-      final data = await context.read<FirestoreProvider>().getUserData();
-      FirestoreProvider firestoreProvider = FirestoreProvider();
-      if (firestoreProvider.hasFirestoreError) {
-        SnackBarWidget.SnackBars(
-          firestoreProvider.firestoreErrorMsg,
-          "assets/images/errorImg.png",
-          context: context,
-        );
-      }
-      if (data == null) return;
-      if (!mounted) return;
-      _email = data.email ?? '';
-      _name = "${data.firstName} ${data.lastName}";
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserData();
-  }
-
   @override
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(left: _width * 0.044, right: _width * 0.044),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: _height * 0.043,
-                    ),
-                    child: const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Create Profile",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 32,
-                          color: Color(0xff152C5E),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () async {
-                        _imagePath = await getImage();
-                        if (_imagePath != null) {
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                        height: 125,
-                        width: 125,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 1.5,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: (_imagePath != null)
-                            ? CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                backgroundImage: FileImage(File(_imagePath!)))
-                            : Image.asset(
-                                'assets/images/edit_image.png',
-                                color: Colors.black,
-                              ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: _width * 0.045),
-                    child: Text(
-                      _name,
-                      style: const TextStyle(
-                        color: Color(0xff152C5E),
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: _width * 0.045, top: _height * 0.01),
-                    child: Text(
-                      _email,
-                      style: const TextStyle(
-                        color: Color(0xff8D8E8D),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  TextFieldLabel(
-                    height: _height,
-                    top: _height * 0.044,
-                    right: 0,
-                    left: 0,
-                    bottom: _height * 0.01,
-                    label: "CNIC No",
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "CNIC is required";
-                      }
-                      if (value.length < 13 || value.length > 13) {
-                        return "Please enter a complete CNIC of 13 digits";
-                      }
-                      return null;
-                    },
-                    cursorColor: const Color(0xff152C5E),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    controller: _cnicController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText: "xxxxxxxxxxxxx",
-                    ),
-                  ),
-                  TextFieldLabel(
-                    height: _height,
-                    top: _height * 0.01,
-                    right: 0,
-                    left: 0,
-                    bottom: _height * 0.01,
-                    label: "Phone Number",
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Phone number required";
-                      }
-                      if (!RegExp(_pattern).hasMatch(value)) {
-                        return "Please enter a valid phone number";
-                      }
-                      return null;
-                    },
-                    cursorColor: const Color(0xff152C5E),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.phone,
-                    controller: _phoneController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText: "+92----------",
-                    ),
-                  ),
-                  TextFieldLabel(
-                    height: _height,
-                    top: _height * 0.01,
-                    right: 0,
-                    left: 0,
-                    bottom: _height * 0.01,
-                    label: "License Number",
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "License is required";
-                      }
-                      if (value.length < 16 || value.length > 16) {
-                        return "Please enter a complete License number of 16 digits";
-                      }
-                      return null;
-                    },
-                    cursorColor: const Color(0xff152C5E),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    controller: _licenseController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText:
-                          "Enter your 16 digit license number without dashes",
-                    ),
-                  ),
-                  TextFieldLabel(
-                    height: _height,
-                    top: _height * 0.01,
-                    right: 0,
-                    left: 0,
-                    bottom: _height * 0.01,
-                    label: "Date of birth",
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Date of Birth is required";
-                      } else {
-                        return null;
-                      }
-                    },
-                    onTap: () {
-                      _dateOfBirthPicker();
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    controller: _dateController,
-                    keyboardType: TextInputType.none,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                        hintText: "MM/DD/YYYY",
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.date_range,
-                              color: Color(0xff152C5E)),
-                          onPressed: () {
-                            _dateOfBirthPicker();
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                        )),
-                  ),
-                  TextFieldLabel(
-                    height: _height,
-                    top: _height * 0.01,
-                    right: 0,
-                    left: 0,
-                    bottom: _height * 0.01,
-                    label: "Experience in years",
-                  ),
-                  TextFieldWidget(
-                    controller: _expController,
-                    hintText: "Enter your Driving experience in years",
-                    errorText: "Experience required",
-                    inputType: TextInputType.number,
-                    length: 1,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: _height * 0.055),
-                      child: Material(
-                        color: const Color(0xff152C5E),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(30.0)),
-                        elevation: 5.0,
-                        child: MaterialButton(
-                          onPressed: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            if (_formKey.currentState!.validate()) {
-                              await context.read<FirestoreProvider>().uploadRemainingData(
-                                "null",
-                                _dateController.text,
-                                int.parse(_expController.text),
-                                int.parse(_cnicController.text),
-                                int.parse(_licenseController.text),
-                                _phoneController.text,
-                              );
+    return FutureBuilder<UserModel?>(
+      future: context.read<FirestoreProvider>().getUserData(),
+      builder: (BuildContext context, AsyncSnapshot<UserModel?> snapshot) {
+        if (snapshot.hasError) {
+          SnackBarWidget.SnackBars(
+            "Something went wrong try again",
+            "assets/images/errorImg.png",
+            context: context,
+          );
+          return const Text("Something went wrong try again");
+        }
 
-                              final firestoreProvider = context.read<FirestoreProvider>();
-                              if (firestoreProvider.hasFirestoreError) {
-                                SnackBarWidget.SnackBars(
-                                  firestoreProvider.firestoreErrorMsg,
-                                  "assets/images/errorImg.png",
-                                  context: context,
-                                );
-                              } else {
-                                SnackBarWidget.SnackBars(
-                                  "Data Added successfully",
-                                  "assets/images/successImg.png",
-                                  context: context,
-                                );
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const NavBar(),
-                                  ),
-                                );
-                              }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(
+            semanticsLabel: "Loading",
+            color: Color(0xFF152C5E),
+          );
+        }
+        _email = snapshot.data?.email ?? '';
+        _name = "${snapshot.data?.firstName} ${snapshot.data?.lastName}";
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding:
+                  EdgeInsets.only(left: _width * 0.044, right: _width * 0.044),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(
+                          top: _height * 0.043,
+                        ),
+                        child: const Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Create Profile",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 32,
+                              color: Color(0xff152C5E),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () async {
+                            _imagePath = await getImage();
+                            if (_imagePath != null) {
+                              setState(() {});
                             }
                           },
-                          minWidth: 200.0,
-                          height: 42.0,
-                          child: context
-                                  .watch<FirestoreProvider>()
-                                  .isProfileCreation
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : const Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                          child: Container(
+                            height: 125,
+                            width: 125,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 1.5,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: (_imagePath != null)
+                                ? CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    backgroundImage:
+                                        FileImage(File(_imagePath!)))
+                                : Image.asset(
+                                    'assets/images/edit_image.png',
+                                    color: Colors.black,
                                   ),
-                                ),
+                          ),
                         ),
                       ),
-                    ),
+                      Container(
+                        padding: EdgeInsets.only(left: _width * 0.045),
+                        child: Text(
+                          _name,
+                          style: const TextStyle(
+                            color: Color(0xff152C5E),
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: _width * 0.045, top: _height * 0.01),
+                        child: Text(
+                          _email,
+                          style: const TextStyle(
+                            color: Color(0xff8D8E8D),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      TextFieldLabel(
+                        height: _height,
+                        top: _height * 0.044,
+                        right: 0,
+                        left: 0,
+                        bottom: _height * 0.01,
+                        label: "CNIC No",
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "CNIC is required";
+                          }
+                          if (value.length < 13 || value.length > 13) {
+                            return "Please enter a complete CNIC of 13 digits";
+                          }
+                          return null;
+                        },
+                        cursorColor: const Color(0xff152C5E),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        controller: _cnicController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+                          hintText: "xxxxxxxxxxxxx",
+                        ),
+                      ),
+                      TextFieldLabel(
+                        height: _height,
+                        top: _height * 0.01,
+                        right: 0,
+                        left: 0,
+                        bottom: _height * 0.01,
+                        label: "Phone Number",
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Phone number required";
+                          }
+                          if (!RegExp(_pattern).hasMatch(value)) {
+                            return "Please enter a valid phone number";
+                          }
+                          return null;
+                        },
+                        cursorColor: const Color(0xff152C5E),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.phone,
+                        controller: _phoneController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+                          hintText: "+92----------",
+                        ),
+                      ),
+                      TextFieldLabel(
+                        height: _height,
+                        top: _height * 0.01,
+                        right: 0,
+                        left: 0,
+                        bottom: _height * 0.01,
+                        label: "License Number",
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "License is required";
+                          }
+                          if (value.length < 16 || value.length > 16) {
+                            return "Please enter a complete License number of 16 digits";
+                          }
+                          return null;
+                        },
+                        cursorColor: const Color(0xff152C5E),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        controller: _licenseController,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+                          hintText:
+                              "Enter your 16 digit license number without dashes",
+                        ),
+                      ),
+                      TextFieldLabel(
+                        height: _height,
+                        top: _height * 0.01,
+                        right: 0,
+                        left: 0,
+                        bottom: _height * 0.01,
+                        label: "Date of birth",
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Date of Birth is required";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onTap: () {
+                          _dateOfBirthPicker();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        controller: _dateController,
+                        keyboardType: TextInputType.none,
+                        decoration: kMessageTextFieldDecoration.copyWith(
+                            hintText: "MM/DD/YYYY",
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.date_range,
+                                  color: Color(0xff152C5E)),
+                              onPressed: () {
+                                _dateOfBirthPicker();
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
+                            )),
+                      ),
+                      TextFieldLabel(
+                        height: _height,
+                        top: _height * 0.01,
+                        right: 0,
+                        left: 0,
+                        bottom: _height * 0.01,
+                        label: "Experience in years",
+                      ),
+                      TextFieldWidget(
+                        controller: _expController,
+                        hintText: "Enter your Driving experience in years",
+                        errorText: "Experience required",
+                        inputType: TextInputType.number,
+                        length: 1,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: _height * 0.055),
+                          child: Material(
+                            color: const Color(0xff152C5E),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(30.0)),
+                            elevation: 5.0,
+                            child: MaterialButton(
+                              onPressed: () async {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                if (_formKey.currentState!.validate()) {
+                                  await context
+                                      .read<FirestoreProvider>()
+                                      .uploadRemainingData(
+                                        "null",
+                                        _dateController.text,
+                                        int.parse(_expController.text),
+                                        int.parse(_cnicController.text),
+                                        int.parse(_licenseController.text),
+                                        _phoneController.text,
+                                      );
+
+                                  final firestoreProvider =
+                                      context.read<FirestoreProvider>();
+                                  if (firestoreProvider.hasFirestoreError) {
+                                    SnackBarWidget.SnackBars(
+                                      firestoreProvider.firestoreErrorMsg,
+                                      "assets/images/errorImg.png",
+                                      context: context,
+                                    );
+                                  } else {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const NavBar(),
+                                      ),
+                                    );
+                                    SnackBarWidget.SnackBars(
+                                      "Data Added successfully",
+                                      "assets/images/successImg.png",
+                                      context: context,
+                                    );
+                                    await context
+                                        .read<FirestoreProvider>()
+                                        .getUserData();
+                                  }
+                                }
+                              },
+                              minWidth: 200.0,
+                              height: 42.0,
+                              child: context
+                                      .watch<FirestoreProvider>()
+                                      .isProfileCreation
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Text(
+                                      'Submit',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
-
 }
