@@ -86,24 +86,32 @@ class FirebaseAuthService {
   }
 
   Future<UserModel?> facebookSignUp() async {
-    UserModel? userModel = UserModel();
+    UserModel? userModel;
     try {
-      LoginResult result = await FacebookAuth.instance.login();
+      final LoginResult result = await FacebookAuth.instance.login();
 
-      if (result.status == LoginStatus.success) {
-        final requestData = await FacebookAuth.instance.getUserData();
+      if (result.accessToken == null) return null;
 
-        String? id = requestData['id'];
+      final credential = FacebookAuthProvider.credential(
+        result.accessToken!.token,
+      );
+
+      await _auth.signInWithCredential(credential);
+      log(firebaseUser.toString());
+      if (result.status == LoginStatus.success && firebaseUser != null) {
+        String? id = firebaseUser!.uid;
 
         bool isEmpty = false;
-        isEmpty = await _firestoreServices.isPresent(id!);
+        isEmpty = await _firestoreServices.isPresent(id);
         if (!isEmpty) {
-          var n = requestData['name'].toString().split(" ");
-          userModel.firstName = n[0];
-          userModel.lastName = n[1];
-          userModel.email = requestData['email'];
-          userModel.id = id;
-          userModel.photoUrl = requestData['picture']['data']['url'];
+          final n = firebaseUser?.displayName;
+          userModel = UserModel(
+            firstName: n![0],
+            lastName: n[1],
+            email: firebaseUser?.email,
+            id: firebaseUser?.uid,
+            photoUrl: firebaseUser?.photoURL,
+          );
           _firestoreServices.uploadSignUpInfo(userModel, id);
         } else {
           userModel = await _firestoreServices.getData();

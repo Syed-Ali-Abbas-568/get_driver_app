@@ -25,6 +25,7 @@ class FirestoreService {
   ) async {
     try {
       _firestore.collection('Users').doc(id).set(userModel.toJson());
+      log(userModel.toJson().toString());
     } catch (e) {
       log(e.toString());
     }
@@ -62,15 +63,8 @@ class FirestoreService {
     UserModel? myUser;
     String? id = firebaseUser?.uid;
     try {
-      if (firebaseUser == null) {
-        final requestData = await FacebookAuth.instance.getUserData();
-        id = requestData['id'];
-      } else if (id == null) {
-        return myUser;
-      }
       final data = await _firestore.collection('Users').doc(id).get();
-      var userInfo = UserModel.fromJson(data.data()!);
-      myUser = userInfo;
+      myUser = UserModel.fromJson(data.data()!);
     } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
       throw UnkownFirestoreException(
