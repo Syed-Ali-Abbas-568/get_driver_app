@@ -26,7 +26,7 @@ class FirestoreService {
     try {
       _firestore.collection('Users').doc(id).set(userModel.toJson());
     } catch (e) {
-      log(e.toString());
+      // log(e.toString());
     }
   }
 
@@ -53,22 +53,18 @@ class FirestoreService {
             userModel.toJson(),
           );
     } catch (e) {
-      log(e.toString());
+      // log(e.toString());
     }
   }
 
   Future<UserModel?> getData() async {
     User? firebaseUser = _auth.currentUser;
     UserModel? myUser;
-    String? id = firebaseUser?.uid;
     try {
-      if (firebaseUser == null) {
-        final requestData = await FacebookAuth.instance.getUserData();
-        id = requestData['id'];
-      } else if (id == null) {
-        return myUser;
-      }
-      final data = await _firestore.collection('Users').doc(id).get();
+      final data =
+          await _firestore.collection('Users').doc(firebaseUser?.uid).get();
+      print(firebaseUser);
+      print(data.data());
       var userInfo = UserModel.fromJson(data.data()!);
       myUser = userInfo;
     } on FirebaseAuthException catch (e) {
@@ -103,23 +99,17 @@ class FirestoreService {
     String phone,
   ) async {
     User? firebaseUser = _auth.currentUser;
-
     try {
-      String? id;
-      if (user == null) {
-        final requestData = await FacebookAuth.instance.getUserData();
-        id = requestData['id'];
-      } else {
-        id = firebaseUser?.uid;
-      }
-      var names =
-          await FirebaseFirestore.instance.collection('Users').doc(id).get();
+      var data = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(firebaseUser?.uid)
+          .get();
       UserModel userModel = UserModel(
-        firstName: names.data()?['firstName'],
-        lastName: names.data()?['lastName'],
-        email: names.data()?['email'],
-        id: names.data()?['userId'],
-        photoUrl: names.data()?['photoUrl'],
+        firstName: data.data()?['firstName'],
+        lastName: data.data()?['lastName'],
+        email: data.data()?['email'],
+        id: data.data()?['userId'],
+        photoUrl: data.data()?['photoUrl'],
         firstTime: false,
         cnic: cnic,
         phone: phone,
@@ -127,7 +117,7 @@ class FirestoreService {
         experience: experience,
         date: date,
       );
-      await _firestore.collection('Users').doc(id).update(
+      await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
           );
     } on FirebaseAuthException catch (e) {

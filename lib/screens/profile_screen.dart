@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/models/user_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _getUserData() {
     Future.delayed(Duration.zero, () async {
-      final data = await context.read<FirestoreProvider>().getUserData();
+      UserModel? data = await context.read<FirestoreProvider>().getUserData();
+
       FirestoreProvider firestoreProvider = FirestoreProvider();
       if (firestoreProvider.hasFirestoreError) {
         SnackBarWidget.SnackBars(
@@ -50,7 +52,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (data == null) return;
 
       if (!mounted) return;
-      setState(() {
         _firstNameController.text = data.firstName ?? '';
         _lastNameController.text = data.lastName ?? '';
         data.photoUrl == null
@@ -63,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _cnicController.text = data.cnic.toString();
         _dobController.text = data.date ?? " ";
         _name = "${_firstNameController.text} ${_lastNameController.text}";
-      });
     });
   }
 
