@@ -65,6 +65,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'get-driver-app.appspot.com',
     iosClientId:
         '213412000717-eg2khirc0jktmkifokkmhto9add7rfhh.apps.googleusercontent.com',
-    iosBundleId: 'com.example.getDriverApp',
+    iosBundleId: 'com.cybrnode.getDriverApp',
   );
 }

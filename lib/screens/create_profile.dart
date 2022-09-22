@@ -311,8 +311,38 @@ class _ProfileCreationState extends State<ProfileCreation> {
                             const BorderRadius.all(Radius.circular(30.0)),
                         elevation: 5.0,
                         child: MaterialButton(
-                          onPressed: () {
-                            _update();
+                          onPressed: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            if (_formKey.currentState!.validate()) {
+                              await context.read<FirestoreProvider>().uploadRemainingData(
+                                "null",
+                                _dateController.text,
+                                int.parse(_expController.text),
+                                int.parse(_cnicController.text),
+                                int.parse(_licenseController.text),
+                                _phoneController.text,
+                              );
+
+                              final firestoreProvider = context.read<FirestoreProvider>();
+                              if (firestoreProvider.hasFirestoreError) {
+                                SnackBarWidget.SnackBars(
+                                  firestoreProvider.firestoreErrorMsg,
+                                  "assets/images/errorImg.png",
+                                  context: context,
+                                );
+                              } else {
+                                SnackBarWidget.SnackBars(
+                                  "Data Added successfully",
+                                  "assets/images/successImg.png",
+                                  context: context,
+                                );
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const NavBar(),
+                                  ),
+                                );
+                              }
+                            }
                           },
                           minWidth: 200.0,
                           height: 42.0,
@@ -342,37 +372,4 @@ class _ProfileCreationState extends State<ProfileCreation> {
     );
   }
 
-  Future<void> _update() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    if (_formKey.currentState!.validate()) {
-      await context.read<FirestoreProvider>().uploadRemainingData(
-            "null",
-            _dateController.text,
-            int.parse(_expController.text),
-            int.parse(_cnicController.text),
-            int.parse(_licenseController.text),
-            _phoneController.text,
-          );
-
-      final firestoreProvider = context.read<FirestoreProvider>();
-      if (firestoreProvider.hasFirestoreError) {
-        SnackBarWidget.SnackBars(
-          firestoreProvider.firestoreErrorMsg,
-          "assets/images/errorImg.png",
-          context: context,
-        );
-      } else {
-        SnackBarWidget.SnackBars(
-          "Data Added successfully",
-          "assets/images/successImg.png",
-          context: context,
-        );
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const NavBar(),
-          ),
-        );
-      }
-    }
-  }
 }

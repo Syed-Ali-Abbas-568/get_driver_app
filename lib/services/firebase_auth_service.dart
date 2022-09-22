@@ -88,21 +88,20 @@ class FirebaseAuthService {
   Future<UserModel?> facebookSignUp() async {
     UserModel? userModel;
     try {
-      final LoginResult result = await FacebookAuth.instance.login();
-
-      if (result.accessToken == null) return null;
-
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      if (loginResult.accessToken == null) return null;
       final credential = FacebookAuthProvider.credential(
-        result.accessToken!.token,
+        loginResult.accessToken!.token,
       );
-
       await _auth.signInWithCredential(credential);
-      log(firebaseUser.toString());
-      if (result.status == LoginStatus.success && firebaseUser != null) {
-        String? id = firebaseUser!.uid;
+
+      if (loginResult.status == LoginStatus.success) {
+        final requestData = await FacebookAuth.instance.getUserData();
+        String? id = firebaseUser?.uid;
+        print(id);
 
         bool isEmpty = false;
-        isEmpty = await _firestoreServices.isPresent(id);
+        isEmpty = await _firestoreServices.isPresent(id!);
         if (!isEmpty) {
           final n = firebaseUser?.displayName;
           userModel = UserModel(
