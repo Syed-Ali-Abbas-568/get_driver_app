@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/services/firebase_auth_service.dart';
 
 class UnkownFirestoreException implements Exception {
   final String message;
@@ -39,7 +40,6 @@ class FirestoreService {
     String photoUrl,
     bool firstTime,
   ) async {
-    User? firebaseUser = _auth.currentUser;
     try {
       UserModel userModel = UserModel(
         firstName: fName,
@@ -50,7 +50,10 @@ class FirestoreService {
         firstTime: firstTime,
       );
 
-      await _firestore.collection('Users').doc(firebaseUser?.uid).set(
+      await _firestore
+          .collection('Users')
+          .doc(FirebaseAuthService().firebaseUser?.uid)
+          .set(
             userModel.toJson(),
           );
     } catch (e) {
@@ -59,9 +62,8 @@ class FirestoreService {
   }
 
   Future<UserModel?> getData() async {
-    User? firebaseUser = _auth.currentUser;
     UserModel? myUser;
-    String? id = firebaseUser?.uid;
+    String? id = _auth.currentUser?.uid;
     try {
       final data = await _firestore.collection('Users').doc(id).get();
       myUser = UserModel.fromJson(data.data()!);

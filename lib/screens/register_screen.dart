@@ -202,6 +202,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               text: "Google",
                               onPressed: () async {
                                 AuthProvider authProvider = AuthProvider();
+
                                 if (authProvider.hasError) {
                                   SnackBarWidget.SnackBars(
                                       authProvider.errorMsg,
@@ -209,11 +210,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       context: context);
                                   return;
                                 }
+
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
                                     .facebookSignUp();
-                                if (userModel == null ||
-                                    userModel.cnic == null) {
+
+                                if (userModel == null) return;
+
+                                if (userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>

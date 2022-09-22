@@ -136,7 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 UserModel? userModel = await context
                                     .read<FirestoreProvider>()
                                     .getUserData();
-                                dataPresent = userModel?.cnic.toString();
+
+                                if (userModel == null) return;
+
+                                dataPresent = userModel.cnic.toString();
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(

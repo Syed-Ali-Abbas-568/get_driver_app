@@ -11,7 +11,6 @@ import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:get_driver_app/widgets/toast.dart';
 import '../widgets/image_picker.dart';
 
-//const color variables for editable and non editable
 Color readOnly = const Color(0xFF152C5E);
 
 class ProfileScreen extends StatefulWidget {
@@ -58,7 +57,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 "https://github.com/Syed-Ali-Abbas-568/get_driver_app/blob/main/assets/images/profile.png"
             : _imageUrl = data.photoUrl;
         _emailController.text = data.email ?? '';
-        _licenceNumController.text = data.license.toString();
+        _licenceNumController.text =
+            data.license != null ? '' : data.license.toString();
         _yearsOfExpController.text = data.experience.toString();
         _cnicController.text = data.cnic.toString();
         _dobController.text = data.date ?? " ";
@@ -82,7 +82,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _licenceNumController.dispose();
     _yearsOfExpController.dispose();
     _dobController.dispose();
-
     super.dispose();
   }
 

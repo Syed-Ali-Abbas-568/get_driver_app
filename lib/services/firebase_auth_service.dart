@@ -96,23 +96,24 @@ class FirebaseAuthService {
         result.accessToken!.token,
       );
 
-      await _auth.signInWithCredential(credential);
-      log(firebaseUser.toString());
-      if (result.status == LoginStatus.success && firebaseUser != null) {
-        String? id = firebaseUser!.uid;
+      final usercred = await _auth.signInWithCredential(credential);
+      log(usercred.toString());
+
+      if (result.status == LoginStatus.success) {
+        String? id = usercred.user!.uid;
 
         bool isEmpty = false;
         isEmpty = await _firestoreServices.isPresent(id);
         if (!isEmpty) {
-          final n = firebaseUser?.displayName;
+          final n = usercred.user?.displayName;
           userModel = UserModel(
             firstName: n![0],
             lastName: n[1],
-            email: firebaseUser?.email,
-            id: firebaseUser?.uid,
-            photoUrl: firebaseUser?.photoURL,
+            email: usercred.user?.email,
+            id: usercred.user?.uid,
+            photoUrl: usercred.user?.photoURL,
           );
-          _firestoreServices.uploadSignUpInfo(userModel, id);
+          await _firestoreServices.uploadSignUpInfo(userModel, id);
         } else {
           userModel = await _firestoreServices.getData();
         }
