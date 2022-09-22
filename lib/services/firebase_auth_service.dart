@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -100,7 +101,7 @@ class FirebaseAuthService {
 
       if (loginResult.status == LoginStatus.success) {
         String? id = firebaseUser?.uid;
-        print(id);
+        debugPrint(id);
 
         bool isPresent = false;
         if (firebaseUser == null) {
