@@ -60,6 +60,7 @@ class FirebaseAuthService {
     String lName,
     String email,
     String password,
+    String userType,
   ) async {
     UserCredential? userCredential;
     try {
@@ -73,7 +74,7 @@ class FirebaseAuthService {
         userCredential.user!.uid,
         email,
         "null",
-        true,
+        userType,
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -98,16 +99,16 @@ class FirebaseAuthService {
 
       if (loginResult.status == LoginStatus.success) {
         String? id = userCred.user!.uid;
-
         bool isPresent = await _firestoreServices.isPresent(id);
         if (!isPresent) {
-          final n = userCred.user?.displayName;
+          final n = userCred.user?.displayName?.split(' ');
           userModel = UserModel(
             firstName: n![0],
             lastName: n[1],
             email: userCred.user?.email,
             id: userCred.user?.uid,
             photoUrl: userCred.user?.photoURL,
+            userType: 'null',
           );
           await _firestoreServices.uploadSignUpInfo(userModel, id);
         } else {
@@ -144,6 +145,7 @@ class FirebaseAuthService {
         userModel.email = _user?.email;
         userModel.id = firebaseUser.uid;
         userModel.photoUrl = _user?.photoUrl;
+        userModel.userType = "";
         _firestoreServices.uploadSignUpInfo(userModel, firebaseUser.uid);
       } else {
         userModel = await _firestoreServices.getData();

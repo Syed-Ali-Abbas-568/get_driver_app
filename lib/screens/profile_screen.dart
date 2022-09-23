@@ -62,7 +62,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return const Text("Something went wrong try again");
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting && snapshot.data?.cnic==null) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            snapshot.data?.cnic == null) {
           return const CircularProgressIndicator(
             semanticsLabel: "Loading",
             color: Color(0xFF152C5E),

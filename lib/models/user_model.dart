@@ -10,20 +10,21 @@ class UserModel {
   int? cnic;
   int? license;
   String? phone;
+  String? userType;
 
-  UserModel(
-      {this.id,
-      this.email,
-      this.firstName,
-      this.lastName,
-      this.photoUrl,
-      this.firstTime,
-      this.date,
-      this.experience,
-      this.cnic,
-      this.license,
-      this.phone});
-
+  UserModel({
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.photoUrl,
+    this.date,
+    this.experience,
+    this.cnic,
+    this.license,
+    this.phone,
+    this.userType,
+  });
 
   factory UserModel.fromJson(
     Map<String, dynamic> json,
@@ -34,12 +35,12 @@ class UserModel {
       lastName: json['lastName'],
       id: json['userId'],
       photoUrl: json['photoUrl'],
-      firstTime: json['firstTime'],
       date: json['date'],
       experience: json['experience'],
       cnic: json['CNIC'],
       license: json['license'],
       phone: json['phone'],
+      userType: json['userType'],
     );
   }
 
@@ -50,12 +51,12 @@ class UserModel {
       'email': email,
       'userId': id,
       'photoUrl': photoUrl,
-      'firstTime': firstTime,
       'date': date,
       'experience': experience,
       'CNIC': cnic,
       'license': license,
       'phone': phone,
+      'userType': userType,
     };
   }
 }

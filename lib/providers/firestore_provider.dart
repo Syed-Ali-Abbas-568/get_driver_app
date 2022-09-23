@@ -17,11 +17,11 @@ class FirestoreProvider with ChangeNotifier {
 
   Future<UserModel?> getUserData() async {
     UserModel? userModel;
-    try{
+    try {
       userModel = await _firestoreService.getData();
-    } on UnkownFirestoreException catch(e) {
-      _hasFirestoreError=true;
-      _firestoreErrorMsg=e.message;
+    } on UnkownFirestoreException catch (e) {
+      _hasFirestoreError = true;
+      _firestoreErrorMsg = e.message;
     }
 
     return userModel;
@@ -33,10 +33,16 @@ class FirestoreProvider with ChangeNotifier {
     String id,
     String email,
     String photoUrl,
-    bool firstTime,
+    String userType,
   ) {
     return _firestoreService.postDetailsToFireStore(
-        fName, lName, id, email, photoUrl, firstTime);
+      fName,
+      lName,
+      id,
+      email,
+      photoUrl,
+      userType,
+    );
   }
 
   Future<void> uploadSignUpDetails(
@@ -57,7 +63,13 @@ class FirestoreProvider with ChangeNotifier {
     try {
       _isProfileCreation = true;
       _firestoreService.updateData(
-          photoUrl, date, experience, cnic, license, phone);
+        photoUrl,
+        date,
+        experience,
+        cnic,
+        license,
+        phone,
+      );
     } on UnkownFirestoreException {
       _firestoreErrorMsg = 'Something went wrong';
       _hasFirestoreError = true;
