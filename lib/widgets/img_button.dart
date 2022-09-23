@@ -44,8 +44,7 @@ class ImgButton extends StatelessWidget {
               "assets/images/$img.png",
               height: height * 0.1,
             ),
-            const SizedBox(
-                width: 11),
+            const SizedBox(width: 11),
             Text(
               text,
               style: const TextStyle(

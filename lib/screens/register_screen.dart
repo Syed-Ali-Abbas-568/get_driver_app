@@ -117,6 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     _lNameController.text,
                                     _emailController.text,
                                     _passController.text,
+                                    "null",
                                   );
 
                               AuthProvider authProvider = AuthProvider();

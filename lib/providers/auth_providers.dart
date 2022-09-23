@@ -70,6 +70,7 @@ class AuthProvider with ChangeNotifier {
     String lName,
     String email,
     String password,
+    String userType,
   ) async {
     UserCredential? userCredentials;
     try {
@@ -79,6 +80,7 @@ class AuthProvider with ChangeNotifier {
         lName,
         email,
         password,
+        userType,
       );
     } on EmailAlreadyExistException catch (e) {
       _errorMsg = e.message;

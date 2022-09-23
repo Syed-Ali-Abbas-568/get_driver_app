@@ -37,7 +37,7 @@ class FirestoreService {
     String id,
     String email,
     String photoUrl,
-    bool firstTime,
+    String userType,
   ) async {
     try {
       UserModel userModel = UserModel(
@@ -46,7 +46,7 @@ class FirestoreService {
         email: email,
         id: id,
         photoUrl: photoUrl,
-        firstTime: firstTime,
+        userType: userType,
       );
 
       await _firestore
@@ -123,12 +123,12 @@ class FirestoreService {
         email: data.data()?['email'],
         id: data.data()?['userId'],
         photoUrl: data.data()?['photoUrl'],
-        firstTime: false,
         cnic: cnic,
         phone: phone,
         license: license,
         experience: experience,
         date: date,
+        userType: data.data()?['userType']
       );
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
