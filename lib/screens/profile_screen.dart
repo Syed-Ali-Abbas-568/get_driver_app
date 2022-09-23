@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
@@ -51,9 +52,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return FutureBuilder<UserModel?>(
-      future: context.read<FirestoreProvider>().getUserData(),
-      builder: (BuildContext context, AsyncSnapshot<UserModel?> snapshot) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
           SnackBarWidget.SnackBars(
             "Something went wrong try again",
@@ -63,37 +68,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return const Text("Something went wrong try again");
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            snapshot.data?.cnic == null) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(
             semanticsLabel: "Loading",
             color: Color(0xFF152C5E),
           );
         }
-        _firstNameController.text = snapshot.data?.firstName ?? '';
-        _lastNameController.text = snapshot.data?.lastName ?? '';
 
-        snapshot.data?.photoUrl == null
+        _firstNameController.text = snapshot.data?.get('firstName') ?? '';
+        _lastNameController.text = snapshot.data?.get('lastName') ?? '';
+
+        snapshot.data?.get('photoUrl') == null
             ? _imageUrl =
                 "https://github.com/Syed-Ali-Abbas-568/get_driver_app/blob/main/assets/images/profile.png"
-            : _imageUrl = snapshot.data?.photoUrl;
+            : _imageUrl = snapshot.data?.get('photoUrl');
 
-        _emailController.text = snapshot.data?.email ?? '';
-        _licenceNumController.text = (snapshot.data?.license != null
-            ? snapshot.data?.license.toString()
+        _emailController.text = snapshot.data?.get('email') ?? '';
+        _licenceNumController.text = (snapshot.data?.get('license') != null
+            ? snapshot.data?.get('license').toString()
             : '')!;
-        _yearsOfExpController.text = (snapshot.data?.experience != null
-            ? snapshot.data?.experience.toString()
+        _yearsOfExpController.text = (snapshot.data?.get('experience') != null
+            ? snapshot.data?.get('experience').toString()
             : " ")!;
-        _cnicController.text = (snapshot.data?.cnic != null
-            ? snapshot.data?.cnic.toString()
+        _cnicController.text = (snapshot.data?.get('CNIC') != null
+            ? snapshot.data?.get('CNIC').toString()
             : " ")!;
 
-        _phone = (snapshot.data?.phone != null
-            ? snapshot.data?.phone.toString()
+        _phone = (snapshot.data?.get('phone') != null
+            ? snapshot.data?.get('phone').toString()
             : '0000');
 
-        _dobController.text = snapshot.data?.date ?? " ";
+        _dobController.text = snapshot.data?.get('date') ?? " ";
         _name = "${_firstNameController.text} ${_lastNameController.text}";
 
         return Scaffold(
