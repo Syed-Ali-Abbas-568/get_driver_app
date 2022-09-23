@@ -15,12 +15,11 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int _selectedIndex = 2;
-  //TODO: fix this variable initialization. It should not be static const but final
-  //TODO: Read about when and why we should use STATIC keyword
-  static const List<Widget> _widgetOptions = <Widget>[
-    DashBoard(),
-    Report(),
-    ProfileScreen(),
+
+  final List<Widget> _widgetOptions = <Widget>[
+    const DashBoard(),
+    const Report(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

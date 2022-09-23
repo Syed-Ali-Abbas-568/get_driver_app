@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
@@ -102,6 +104,19 @@ class FirestoreService {
           .collection('Users')
           .doc(firebaseUser?.uid)
           .get();
+
+      if (photoUrl != "null") {
+        var file = File(photoUrl);
+
+        Reference refRoot = FirebaseStorage.instance.ref();
+        Reference referenceDir = refRoot.child('images');
+        Reference imgToUpload = referenceDir.child(DateTime.now().toString());
+
+        await imgToUpload.putFile(file);
+        photoUrl = await imgToUpload.getDownloadURL();
+        log("The uploaded Image URL is $photoUrl");
+      }
+
       UserModel userModel = UserModel(
         firstName: data.data()?['firstName'],
         lastName: data.data()?['lastName'],

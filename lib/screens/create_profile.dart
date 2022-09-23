@@ -318,7 +318,7 @@ class _CreateProfileState extends State<CreateProfile> {
                                   await context
                                       .read<FirestoreProvider>()
                                       .uploadRemainingData(
-                                        "null",
+                                        _imagePath ?? "null",
                                         _dateController.text,
                                         int.parse(_expController.text),
                                         int.parse(_cnicController.text),
