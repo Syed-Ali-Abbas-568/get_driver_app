@@ -30,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _yearsOfExpController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _cnicController = TextEditingController();
+  String? _phone;
   bool _editable = false;
   String? _imagePath;
   String? _imageUrl;
@@ -71,10 +72,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
         _firstNameController.text = snapshot.data?.firstName ?? '';
         _lastNameController.text = snapshot.data?.lastName ?? '';
+
         snapshot.data?.photoUrl == null
             ? _imageUrl =
                 "https://github.com/Syed-Ali-Abbas-568/get_driver_app/blob/main/assets/images/profile.png"
             : _imageUrl = snapshot.data?.photoUrl;
+
         _emailController.text = snapshot.data?.email ?? '';
         _licenceNumController.text = (snapshot.data?.license != null
             ? snapshot.data?.license.toString()
@@ -85,8 +88,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _cnicController.text = (snapshot.data?.cnic != null
             ? snapshot.data?.cnic.toString()
             : " ")!;
+
+        _phone = (snapshot.data?.phone != null
+            ? snapshot.data?.phone.toString()
+            : '0000');
+
         _dobController.text = snapshot.data?.date ?? " ";
         _name = "${_firstNameController.text} ${_lastNameController.text}";
+
         return Scaffold(
           appBar: _editable
               ? AppBar(
@@ -165,13 +174,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: CircleAvatar(
                               backgroundColor: Colors.transparent,
-                              backgroundImage: (_imagePath != null)
-                                  ? FileImage(File(_imagePath!))
-                                  : (_imageUrl != null && _imagePath != "null")
+                              backgroundImage:
+                                  (_imageUrl != null && _imagePath == null)
                                       ? NetworkImage(_imageUrl!)
-                                      : const AssetImage(
-                                              'assets/images/profile.png')
-                                          as ImageProvider,
+                                      : (_imagePath != null)
+                                          ? FileImage(File(_imagePath!))
+                                          : const AssetImage(
+                                                  'assets/images/profile.png')
+                                              as ImageProvider,
                             ),
                           ),
                         ),
@@ -393,10 +403,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontWeight: FontWeight.w600,
                           fontSize: 16),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       _editable = false;
-                      Toast.snackBars("Changes Applied Successfully",
+
+                      bool flag = true;
+                      if (_imagePath != null) {
+                        flag = false;
+                      }
+
+                      await context.read<FirestoreProvider>().uploadProfileData(
+                            _imagePath ?? _imageUrl!,
+                            _dobController.text,
+                            int.parse(_yearsOfExpController.text),
+                            int.parse(_cnicController.text),
+                            int.parse(_licenceNumController.text),
+                            _phone!,
+                            flag,
+                          );
+                      _imagePath = null;
+
+                      Toast.toasts("Changes Applied Successfully",
                           const Color(0xFF2DD36F), context);
+
                       setState(() {});
                     },
                   ),

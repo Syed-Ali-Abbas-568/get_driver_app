@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//TODO: Toast and Snackbars are two different ui elements. Fix the names :(
 
 class Toast {
-  static void snackBars(String label, Color? color, BuildContext context) {
+  static void toasts(String label, Color? color, BuildContext context) {
     final snackBar = SnackBar(
       backgroundColor: color,
       dismissDirection: DismissDirection.horizontal,
@@ -35,7 +34,6 @@ class Toast {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       margin: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height - 150,
         right: MediaQuery.of(context).size.width * 0.055,
         left: MediaQuery.of(context).size.width * 0.055,
       ),

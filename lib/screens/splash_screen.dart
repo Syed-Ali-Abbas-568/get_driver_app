@@ -28,7 +28,9 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => firebaseAuthService.firebaseUser != null
-              ? const NavBar()
+              ? const NavBar(
+                  userType: 1,
+                )
               : const LoginScreen(),
         ),
       );

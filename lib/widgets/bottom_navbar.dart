@@ -7,7 +7,8 @@ import 'package:get_driver_app/screens/profile_screen.dart';
 import 'package:get_driver_app/screens/report_screen.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({Key? key}) : super(key: key);
+  final int userType;
+  const NavBar({required this.userType, Key? key}) : super(key: key);
 
   @override
   State<NavBar> createState() => _NavBarState();
@@ -15,12 +16,11 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int _selectedIndex = 2;
-  //TODO: fix this variable initialization. It should not be static const but final
-  //TODO: Read about when and why we should use STATIC keyword
-  static const List<Widget> _widgetOptions = <Widget>[
-    DashBoard(),
-    Report(),
-    ProfileScreen(),
+
+  final List<Widget> _widgetOptions = <Widget>[
+    const DashBoard(),
+    const Report(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

@@ -32,3 +32,8 @@ const kMessageTextFieldDecoration = InputDecoration(
 );
 
 Color primaryColor = const Color(0xFF152C5E);
+const selectStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 12,
+  fontWeight: FontWeight.w400,
+);
