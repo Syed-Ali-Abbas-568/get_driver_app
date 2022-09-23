@@ -78,6 +78,34 @@ class FirestoreProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> uploadProfileData(
+    String photoUrl,
+    String date,
+    int experience,
+    int cnic,
+    int license,
+    String phone,
+    bool flag,
+  ) async {
+    try {
+      _isProfileCreation = true;
+      _firestoreService.updateProfileData(
+        photoUrl,
+        date,
+        experience,
+        cnic,
+        license,
+        phone,
+        flag,
+      );
+    } on UnkownFirestoreException {
+      _firestoreErrorMsg = 'Something went wrong';
+      _hasFirestoreError = true;
+    }
+    _isProfileCreation = false;
+    notifyListeners();
+  }
+
   Future<bool> isDataPresent(String id) {
     return _firestoreService.isPresent(id);
   }

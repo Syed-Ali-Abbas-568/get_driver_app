@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 
 class CreateProfile extends StatefulWidget {
-  const CreateProfile({Key? key}) : super(key: key);
+  final int userType;
+  const CreateProfile({Key? key, required this.userType}) : super(key: key);
 
   @override
   State<CreateProfile> createState() => _CreateProfileState();
@@ -340,7 +341,9 @@ class _CreateProfileState extends State<CreateProfile> {
                                 } else {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const NavBar(),
+                                      builder: (context) => NavBar(
+                                        userType: widget.userType,
+                                      ),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(

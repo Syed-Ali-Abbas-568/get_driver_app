@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/widgets/user_selection.dart';
 import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
@@ -30,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   double _height = 0;
   double _width = 0;
+  int userType = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                top: _height * 0.085,
+                left: 10,
+                right: 10,
+              ),
+              child: UserSelector(
+                mode: "Sign In",
+                userType: userType,
               ),
             ),
             Padding(
@@ -147,8 +160,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (context) => user == null
                                         ? const LoginScreen()
                                         : dataPresent == null
-                                            ? const CreateProfile()
-                                            : const NavBar(),
+                                            ? CreateProfile(
+                                                userType: userType,
+                                              )
+                                            : NavBar(
+                                                userType: userType,
+                                              ),
                                   ),
                                 );
                               }
@@ -240,8 +257,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     null
                                                 ? const LoginScreen()
                                                 : userModel.cnic == null
-                                                    ? const CreateProfile()
-                                                    : const NavBar(),
+                                                    ? CreateProfile(
+                                                        userType: userType,
+                                                      )
+                                                    : NavBar(
+                                                        userType: userType,
+                                                      ),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(
@@ -278,8 +299,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       userModel.cnic == null) {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CreateProfile(),
+                                        builder: (context) => CreateProfile(
+                                          userType: userType,
+                                        ),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(
@@ -289,7 +311,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (context) => const NavBar(),
+                                        builder: (context) => NavBar(
+                                          userType: userType,
+                                        ),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(

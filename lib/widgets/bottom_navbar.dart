@@ -7,7 +7,8 @@ import 'package:get_driver_app/screens/profile_screen.dart';
 import 'package:get_driver_app/screens/report_screen.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({Key? key}) : super(key: key);
+  final int userType;
+  const NavBar({required this.userType, Key? key}) : super(key: key);
 
   @override
   State<NavBar> createState() => _NavBarState();

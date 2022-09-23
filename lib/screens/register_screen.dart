@@ -12,6 +12,7 @@ import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
+import '../widgets/user_selection.dart';
 import 'login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -27,6 +28,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _fNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  //user type here
+  int userType = 0;
+
   double _height = 0;
   double _width = 0;
 
@@ -52,6 +57,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                top: _height * 0.085,
+                left: _height * 0.0225,
+                right: _height * 0.0225,
+              ),
+              child: UserSelector(
+                mode: "Sign Up",
+                userType: userType,
               ),
             ),
             Padding(
@@ -125,7 +141,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               if (userCred != null && !authProvider.hasError) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (context) => const CreateProfile(),
+                                    builder: (context) => CreateProfile(
+                                      userType: userType,
+                                    ),
                                   ),
                                 );
                                 SnackBarWidget.SnackBars(
@@ -220,14 +238,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 if (userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CreateProfile(),
+                                      builder: (context) => CreateProfile(
+                                        userType: userType,
+                                      ),
                                     ),
                                   );
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => const NavBar(),
+                                      builder: (context) =>
+                                          NavBar(userType: userType),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(
@@ -256,14 +276,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CreateProfile(),
+                                      builder: (context) => CreateProfile(
+                                        userType: userType,
+                                      ),
                                     ),
                                   );
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => const NavBar(),
+                                      builder: (context) => NavBar(
+                                        userType: userType,
+                                      ),
                                     ),
                                   );
                                 }

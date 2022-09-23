@@ -118,18 +118,71 @@ class FirestoreService {
       }
 
       UserModel userModel = UserModel(
-        firstName: data.data()?['firstName'],
-        lastName: data.data()?['lastName'],
-        email: data.data()?['email'],
-        id: data.data()?['userId'],
-        photoUrl: data.data()?['photoUrl'],
-        cnic: cnic,
-        phone: phone,
-        license: license,
-        experience: experience,
-        date: date,
-        userType: data.data()?['userType']
+          firstName: data.data()?['firstName'],
+          lastName: data.data()?['lastName'],
+          email: data.data()?['email'],
+          id: data.data()?['userId'],
+          photoUrl: data.data()?['photoUrl'],
+          cnic: cnic,
+          phone: phone,
+          license: license,
+          experience: experience,
+          date: date,
+          userType: data.data()?['userType']);
+      await _firestore.collection('Users').doc(firebaseUser?.uid).update(
+            userModel.toJson(),
+          );
+      getData();
+    } on FirebaseAuthException catch (e) {
+      debugPrint(
+        e.message,
       );
+      throw UnkownFirestoreException(
+        'Something went wrong ${e.code} ${e.message}',
+      );
+    }
+  }
+
+  Future<void> updateProfileData(
+    String photoUrl,
+    String date,
+    int experience,
+    int cnic,
+    int license,
+    String phone,
+    bool flag,
+  ) async {
+    User? firebaseUser = _auth.currentUser;
+    try {
+      var data = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(firebaseUser?.uid)
+          .get();
+
+      if (flag) {
+        var file = File(photoUrl);
+
+        Reference refRoot = FirebaseStorage.instance.ref();
+        Reference referenceDir = refRoot.child('images');
+        Reference imgToUpload = referenceDir.child(DateTime.now().toString());
+
+        await imgToUpload.putFile(file);
+        photoUrl = await imgToUpload.getDownloadURL();
+        log("The uploaded Image URL is $photoUrl");
+      }
+
+      UserModel userModel = UserModel(
+          firstName: data.data()?['firstName'],
+          lastName: data.data()?['lastName'],
+          email: data.data()?['email'],
+          id: data.data()?['userId'],
+          photoUrl: data.data()?['photoUrl'],
+          cnic: cnic,
+          phone: phone,
+          license: license,
+          experience: experience,
+          date: date,
+          userType: data.data()?['userType']);
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
           );

@@ -406,16 +406,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () async {
                       _editable = false;
 
-                      await context
-                          .read<FirestoreProvider>()
-                          .uploadRemainingData(
-                            _imagePath ?? _imageUrl ?? "null",
+                      bool flag = true;
+                      if (_imagePath != null) {
+                        flag = false;
+                      }
+
+                      await context.read<FirestoreProvider>().uploadProfileData(
+                            _imagePath ?? _imageUrl!,
                             _dobController.text,
                             int.parse(_yearsOfExpController.text),
                             int.parse(_cnicController.text),
                             int.parse(_licenceNumController.text),
                             _phone!,
+                            flag,
                           );
+                      _imagePath = null;
 
                       Toast.toasts("Changes Applied Successfully",
                           const Color(0xFF2DD36F), context);
