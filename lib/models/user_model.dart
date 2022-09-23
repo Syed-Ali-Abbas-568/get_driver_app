@@ -4,7 +4,6 @@ class UserModel {
   String? lastName;
   String? id;
   String? photoUrl;
-  bool? firstTime;
   String? date;
   int? experience;
   int? cnic;

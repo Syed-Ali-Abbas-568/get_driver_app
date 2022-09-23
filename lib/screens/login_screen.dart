@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (context) => user == null
                                         ? const LoginScreen()
                                         : dataPresent == null
-                                            ? const CreateProfile()
+                                            ? CreateProfile(userModel.firstName.toString(),userModel.lastName.toString(),userModel.email.toString(),)
                                             : const NavBar(),
                                   ),
                                 );
@@ -240,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     null
                                                 ? const LoginScreen()
                                                 : userModel.cnic == null
-                                                    ? const CreateProfile()
+                                                    ? CreateProfile(userModel.firstName.toString(),userModel.lastName.toString(),userModel.email.toString(),)
                                                     : const NavBar(),
                                       ),
                                     );
@@ -279,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const CreateProfile(),
+                                            CreateProfile(userModel!.firstName.toString(),userModel.lastName.toString(),userModel.email.toString(),),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(

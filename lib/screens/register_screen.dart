@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/screens/create_profile.dart';
@@ -12,6 +10,8 @@ import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
+import 'package:provider/provider.dart';
+
 import 'login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -125,7 +125,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               if (userCred != null && !authProvider.hasError) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (context) => const CreateProfile(),
+                                    builder: (context) => CreateProfile(
+                                      _fNameController.text,
+                                      _emailController.text,
+                                      _lNameController.text,
+                                    ),
                                   ),
                                 );
                                 SnackBarWidget.SnackBars(
@@ -220,8 +224,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 if (userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CreateProfile(),
+                                      builder: (context) => CreateProfile(
+                                        _fNameController.text,
+                                        _emailController.text,
+                                        _lNameController.text,
+                                      ),
                                     ),
                                   );
                                 } else {
@@ -256,8 +263,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CreateProfile(),
+                                      builder: (context) => CreateProfile(
+                                        _fNameController.text,
+                                        _emailController.text,
+                                        _lNameController.text,
+                                      ),
                                     ),
                                   );
                                 } else {
