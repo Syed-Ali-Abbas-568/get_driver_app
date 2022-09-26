@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:213412000717:android:cd40fc1c49aa8026f50a84",
+        "mobilesdk_app_id": "1:213412000717:android:ce7634967df6eaf7f50a84",
         "android_client_info": {
           "package_name": "com.cybrnode.get_driver_app"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "213412000717-olks7dt2emtmqth2fo12b4add6jou4ss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cybrnode.get_driver_app",
+            "certificate_hash": "9d2be2b2fd528157e23698657d0cf43982405007"
+          }
+        },
         {
           "client_id": "213412000717-8o4mmt68mq4ajn08qhhmlnmp1o4iji84.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +37,13 @@
             {
               "client_id": "213412000717-8o4mmt68mq4ajn08qhhmlnmp1o4iji84.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "213412000717-eg2khirc0jktmkifokkmhto9add7rfhh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.getDriverApp"
+              }
             }
           ]
         }
