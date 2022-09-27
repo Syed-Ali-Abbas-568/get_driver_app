@@ -2,9 +2,15 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/providers/firestore_provider.dart';
+import 'package:get_driver_app/screens/client_createProfile.dart';
+import 'package:get_driver_app/screens/client_home.dart';
+import 'package:get_driver_app/screens/driver_create_profile.dart';
 
 import 'package:get_driver_app/services/firebase_auth_service.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
+import 'package:provider/provider.dart';
 import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -25,12 +31,18 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       log("Going to Switch");
       FirebaseAuthService firebaseAuthService = FirebaseAuthService();
+      UserModel? userModel =
+          await context.read<FirestoreProvider>().getUserData();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => firebaseAuthService.firebaseUser != null
-              ? const NavBar(
-                  userType: 1,
-                )
+              ? userModel?.cnic == null
+                  ? userModel?.userType == "client"
+                      ? const ClientCreateProfile()
+                      : const DriverCreateProfile()
+                  : userModel?.userType == "client"
+                      ? const ClientHome()
+                      : const NavBar()
               : const LoginScreen(),
         ),
       );

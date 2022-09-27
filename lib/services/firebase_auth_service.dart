@@ -60,7 +60,7 @@ class FirebaseAuthService {
     String lName,
     String email,
     String password,
-    String userType,
+    String? userType,
   ) async {
     UserCredential? userCredential;
     try {
@@ -86,7 +86,7 @@ class FirebaseAuthService {
     return userCredential;
   }
 
-  Future<UserModel?> facebookSignUp() async {
+  Future<UserModel?> facebookSignUp(String? userType) async {
     UserModel? userModel;
     try {
       final LoginResult loginResult = await FacebookAuth.instance.login();
@@ -108,7 +108,7 @@ class FirebaseAuthService {
             email: userCred.user?.email,
             id: userCred.user?.uid,
             photoUrl: userCred.user?.photoURL,
-            userType: 'null',
+            userType: userType,
           );
           await _firestoreServices.uploadSignUpInfo(userModel, id);
         } else {
@@ -121,7 +121,7 @@ class FirebaseAuthService {
     return userModel;
   }
 
-  Future<UserModel?> googleSignUp() async {
+  Future<UserModel?> googleSignUp(String? userType) async {
     UserModel? userModel = UserModel();
     try {
       final googleUser = await _googleSignIn.signIn();
@@ -145,7 +145,7 @@ class FirebaseAuthService {
         userModel.email = _user?.email;
         userModel.id = firebaseUser.uid;
         userModel.photoUrl = _user?.photoUrl;
-        userModel.userType = "";
+        userModel.userType = userType;
         _firestoreServices.uploadSignUpInfo(userModel, firebaseUser.uid);
       } else {
         userModel = await _firestoreServices.getData();

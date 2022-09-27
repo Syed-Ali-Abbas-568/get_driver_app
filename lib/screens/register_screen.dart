@@ -1,10 +1,13 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/screens/client_createProfile.dart';
+import 'package:get_driver_app/screens/client_home.dart';
 import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
-import 'package:get_driver_app/screens/create_profile.dart';
+import 'package:get_driver_app/screens/driver_create_profile.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
 import 'package:get_driver_app/widgets/divider_widget.dart';
 import 'package:get_driver_app/widgets/email_password_textfields.dart';
@@ -12,8 +15,9 @@ import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
-import '../widgets/user_selection.dart';
 import 'login_screen.dart';
+
+enum UserType { driver, client }
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -28,12 +32,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _fNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  //user type here
-  int userType = 0;
-
+  int _selectedUserIndex = 0;
+  String _selectedUserType = UserType.values[0].name;
   double _height = 0;
   double _width = 0;
+
+  Color _selectButtonColor(int index) {
+    if (_selectedUserIndex == index) {
+      return const Color(0xff152C5E);
+    } else {
+      return Colors.white;
+    }
+  }
+
+  Color _selectButtonTextColor(int index) {
+    if (_selectedUserIndex != index) {
+      return const Color(0xff152C5E);
+    } else {
+      return Colors.white;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +79,64 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                top: _height * 0.085,
-                left: _height * 0.0225,
-                right: _height * 0.0225,
+                top: _height * 0.06,
+                left: _width * 0.16,
+                right: _width * 0.16,
               ),
-              child: UserSelector(
-                mode: "Sign Up",
-                userType: userType,
+              child: SizedBox(
+                width: _width * 0.66,
+                child: Row(
+                  children: [
+                    Material(
+                      color: _selectButtonColor(UserType.client.index),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(30.0),
+                      ),
+                      child: MaterialButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedUserType = UserType.values[1].name;
+                            _selectedUserIndex = UserType.client.index;
+                          });
+                        },
+                        height: 42.0,
+                        child: Text(
+                          'Signup as ${UserType.values[1].name}',
+                          style: TextStyle(
+                            color:
+                                _selectButtonTextColor(UserType.client.index),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Material(
+                      color: _selectButtonColor(UserType.driver.index),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(30.0),
+                      ),
+                      child: MaterialButton(
+                        splashColor: null,
+                        onPressed: () {
+                          setState(() {
+                            _selectedUserType = UserType.values[0].name;
+                            _selectedUserIndex = UserType.driver.index;
+                          });
+                        },
+                        minWidth: 112.0,
+                        height: 42.0,
+                        child: Text(
+                          'Signup as ${UserType.values[0].name}',
+                          style: TextStyle(
+                            color:
+                                _selectButtonTextColor(UserType.driver.index),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Padding(
@@ -81,7 +150,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    SizedBox(height: _height * 0.06),
+                    SizedBox(height: _height * 0.03),
                     TextFieldLabel(
                       height: _height,
                       label: "First Name",
@@ -99,7 +168,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     TextFieldLabel(
                       height: _height,
                       bottom: _height * 0.01,
-                      top: _height * 0.02,
+                      top: _height * 0.015,
                       left: 0,
                       right: 0,
                       label: "Last Name",
@@ -116,11 +185,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       height: _height,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: _height * 0.055),
+                      padding: EdgeInsets.only(top: _height * 0.026),
                       child: Material(
                         color: const Color(0xff152C5E),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(30.0)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(30.0),
+                        ),
                         elevation: 5.0,
                         child: MaterialButton(
                           onPressed: () async {
@@ -133,7 +203,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     _lNameController.text,
                                     _emailController.text,
                                     _passController.text,
-                                    "null",
+                                    _selectedUserType,
                                   );
 
                               AuthProvider authProvider = AuthProvider();
@@ -141,9 +211,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               if (userCred != null && !authProvider.hasError) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (context) => CreateProfile(
-                                      userType: userType,
-                                    ),
+                                    builder: (context) =>
+                                    _selectedUserType == "client"
+                                        ? const ClientCreateProfile()
+                                        : const DriverCreateProfile(),
                                   ),
                                 );
                                 SnackBarWidget.SnackBars(
@@ -199,7 +270,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           child: const Text(
                             "Sign in",
                             style: TextStyle(
-                                color: Color(0xff152C5E), fontSize: 14),
+                              color: Color(0xff152C5E),
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ],
@@ -231,23 +304,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
-                                    .facebookSignUp();
+                                    .googleSignUpFunc(
+                                      _selectedUserType,
+                                    );
 
                                 if (userModel == null) return;
 
                                 if (userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => CreateProfile(
-                                        userType: userType,
-                                      ),
+                                      builder: (context) =>
+                                      userModel.userType == "client"
+                                          ? const ClientCreateProfile()
+                                          : const DriverCreateProfile(),
                                     ),
                                   );
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          NavBar(userType: userType),
+                                      builder: (context) =>  userModel.userType == "client"
+                                          ? const ClientHome()
+                                          : const NavBar(),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(
@@ -271,22 +348,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               onPressed: () async {
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
-                                    .facebookSignUp();
+                                    .facebookSignUp(
+                                      _selectedUserType,
+                                    );
                                 if (userModel == null ||
                                     userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => CreateProfile(
-                                        userType: userType,
-                                      ),
+                                      builder: (context) =>
+                                      userModel?.userType == "client"
+                                          ? const ClientCreateProfile()
+                                          : const DriverCreateProfile(),
                                     ),
                                   );
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => NavBar(
-                                        userType: userType,
-                                      ),
+                                      builder: (context) =>  userModel.userType == "client"
+                                          ? const ClientHome()
+                                          : const NavBar(),
                                     ),
                                   );
                                 }

@@ -14,15 +14,14 @@ import 'package:provider/provider.dart';
 
 import '../models/user_model.dart';
 
-class CreateProfile extends StatefulWidget {
-  final int userType;
-  const CreateProfile({Key? key, required this.userType}) : super(key: key);
+class DriverCreateProfile extends StatefulWidget {
+  const DriverCreateProfile({Key? key}) : super(key: key);
 
   @override
-  State<CreateProfile> createState() => _CreateProfileState();
+  State<DriverCreateProfile> createState() => _DriverCreateProfileState();
 }
 
-class _CreateProfileState extends State<CreateProfile> {
+class _DriverCreateProfileState extends State<DriverCreateProfile> {
   double _height = 0;
   double _width = 0;
   final _formKey = GlobalKey<FormState>();
@@ -74,14 +73,19 @@ class _CreateProfileState extends State<CreateProfile> {
     _width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.only(left: _width * 0.044, right: _width * 0.044),
+        padding: EdgeInsets.only(
+          left: _width * 0.044,
+          right: _width * 0.044,
+        ),
         child: SingleChildScrollView(
           child: Column(
             children: [
               FutureBuilder<UserModel?>(
                 future: context.read<FirestoreProvider>().getUserData(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<UserModel?> snapshot) {
+                builder: (
+                  BuildContext context,
+                  AsyncSnapshot<UserModel?> snapshot,
+                ) {
                   if (snapshot.hasError) {
                     return const Text("Something went wrong try again");
                   }
@@ -139,8 +143,12 @@ class _CreateProfileState extends State<CreateProfile> {
                             child: (_imagePath != null)
                                 ? CircleAvatar(
                                     backgroundColor: Colors.transparent,
-                                    backgroundImage:
-                                        FileImage(File(_imagePath!)))
+                                    backgroundImage: FileImage(
+                                      File(
+                                        _imagePath!,
+                                      ),
+                                    ),
+                                  )
                                 : Image.asset(
                                     'assets/images/edit_image.png',
                                     color: Colors.black,
@@ -149,6 +157,7 @@ class _CreateProfileState extends State<CreateProfile> {
                         ),
                       ),
                       Container(
+                        alignment:Alignment.center,
                         padding: EdgeInsets.only(left: _width * 0.045),
                         child: Text(
                           _name,
@@ -160,8 +169,11 @@ class _CreateProfileState extends State<CreateProfile> {
                         ),
                       ),
                       Container(
+                        alignment:Alignment.center,
                         margin: EdgeInsets.only(
-                            left: _width * 0.045, top: _height * 0.01),
+                          left: _width * 0.045,
+                          top: _height * 0.01,
+                        ),
                         child: Text(
                           _email,
                           style: const TextStyle(
@@ -192,8 +204,11 @@ class _CreateProfileState extends State<CreateProfile> {
                         if (value!.isEmpty) {
                           return "CNIC is required";
                         }
-                        if (value.length < 13 || value.length > 13) {
-                          return "Please enter a complete CNIC of 13 digits";
+                        if (value.length < 13) {
+                          return "Enter a CNIC of 13 digits ${13 - value.length} digits remaining";
+                        }
+                        if (value.length > 13) {
+                          return "Enter CNIC of 13 digits ${value.length - 13} digits are extra";
                         }
                         return null;
                       },
@@ -244,8 +259,11 @@ class _CreateProfileState extends State<CreateProfile> {
                         if (value!.isEmpty) {
                           return "License is required";
                         }
-                        if (value.length < 16 || value.length > 16) {
-                          return "Please enter a complete License number of 16 digits";
+                        if (value.length < 16) {
+                          return "Enter License number of 16 digits ${16 - value.length} digits remaining";
+                        }
+                        if (value.length > 16) {
+                          return "Enter License number of 16 digits ${value.length - 16} digits are extra";
                         }
                         return null;
                       },
@@ -341,9 +359,7 @@ class _CreateProfileState extends State<CreateProfile> {
                                 } else {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => NavBar(
-                                        userType: widget.userType,
-                                      ),
+                                      builder: (context) => const NavBar(),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(

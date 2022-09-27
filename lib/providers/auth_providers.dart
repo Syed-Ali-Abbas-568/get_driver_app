@@ -17,7 +17,10 @@ class AuthProvider with ChangeNotifier {
   bool get hasError => _hasError;
   String get errorMsg => _errorMsg;
 
-  Future<void> signInWithEmailPassword(String email, String password) async {
+  Future<void> signInWithEmailPassword(
+    String email,
+    String password,
+  ) async {
     _isLoading = true;
     _hasError = false;
     try {
@@ -36,11 +39,11 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<UserModel?> facebookSignUp() async {
+  Future<UserModel?> facebookSignUp(String userType) async {
     _isLoading = true;
     UserModel? userModel;
     try {
-      userModel = await _firebaseAuthService.facebookSignUp();
+      userModel = await _firebaseAuthService.facebookSignUp(userType);
     } on UnkownException catch (e) {
       log(e.toString());
       _errorMsg = e.message;
@@ -51,11 +54,13 @@ class AuthProvider with ChangeNotifier {
     return userModel;
   }
 
-  Future<UserModel?> googleSignUpFunc() async {
+  Future<UserModel?> googleSignUpFunc(
+    String? userType,
+  ) async {
     _hasError = false;
     UserModel? userModel;
     try {
-      userModel = await _firebaseAuthService.googleSignUp();
+      userModel = await _firebaseAuthService.googleSignUp(userType);
     } on UnkownException catch (e) {
       log("exception thrown");
       _errorMsg = e.message;
@@ -70,7 +75,7 @@ class AuthProvider with ChangeNotifier {
     String lName,
     String email,
     String password,
-    String userType,
+    String? userType,
   ) async {
     UserCredential? userCredentials;
     try {

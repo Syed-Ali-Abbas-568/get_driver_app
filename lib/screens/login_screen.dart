@@ -2,13 +2,14 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_driver_app/widgets/user_selection.dart';
+import 'package:get_driver_app/screens/client_createProfile.dart';
+import 'package:get_driver_app/screens/client_home.dart';
 import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
-import 'package:get_driver_app/screens/create_profile.dart';
+import 'package:get_driver_app/screens/driver_create_profile.dart';
 import 'package:get_driver_app/screens/forgot_password.dart';
 import 'package:get_driver_app/screens/register_screen.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
@@ -55,17 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: _height * 0.085,
-                left: 10,
-                right: 10,
-              ),
-              child: UserSelector(
-                mode: "Sign In",
-                userType: userType,
               ),
             ),
             Padding(
@@ -160,12 +150,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (context) => user == null
                                         ? const LoginScreen()
                                         : dataPresent == null
-                                            ? CreateProfile(
-                                                userType: userType,
-                                              )
-                                            : NavBar(
-                                                userType: userType,
-                                              ),
+                                            ? userModel.userType == "client"
+                                                ? const ClientCreateProfile()
+                                                : const DriverCreateProfile()
+                                            : userModel.userType == "client"
+                                                ? const ClientHome()
+                                                : const NavBar(),
                                   ),
                                 );
                               }
@@ -246,23 +236,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   UserModel? userModel = await context
                                       .read<AuthProvider>()
-                                      .googleSignUpFunc();
+                                      .googleSignUpFunc(null);
                                   if (userModel != null) {
                                     Future.delayed(const Duration(seconds: 3));
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            FirebaseAuth.instance.currentUser ==
-                                                    null
-                                                ? const LoginScreen()
-                                                : userModel.cnic == null
-                                                    ? CreateProfile(
-                                                        userType: userType,
-                                                      )
-                                                    : NavBar(
-                                                        userType: userType,
-                                                      ),
+                                        builder: (context) => FirebaseAuth
+                                                    .instance.currentUser ==
+                                                null
+                                            ? const LoginScreen()
+                                            : userModel.cnic == null
+                                                ? userModel.userType == "client"
+                                                    ? const ClientCreateProfile()
+                                                    : const DriverCreateProfile()
+                                                : userModel.userType == "client"
+                                                    ? const ClientHome()
+                                                    : const NavBar(),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(
@@ -294,14 +284,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                   UserModel? userModel = await context
                                       .read<AuthProvider>()
-                                      .facebookSignUp();
+                                      .facebookSignUp(
+                                        userType == 0 ? "client" : "driver",
+                                      );
                                   if (userModel == null ||
                                       userModel.cnic == null) {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (context) => CreateProfile(
-                                          userType: userType,
-                                        ),
+                                        builder: (context) =>
+                                            userModel?.userType == "client"
+                                                ? const ClientCreateProfile()
+                                                : const DriverCreateProfile(),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(
@@ -311,9 +304,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (context) => NavBar(
-                                          userType: userType,
-                                        ),
+                                        builder: (context) =>
+                                            userModel.userType == "client"
+                                                ? const ClientHome()
+                                                : const NavBar(),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(

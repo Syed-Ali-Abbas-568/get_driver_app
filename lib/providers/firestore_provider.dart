@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
@@ -54,10 +55,10 @@ class FirestoreProvider with ChangeNotifier {
 
   Future<void> uploadRemainingData(
     String photoUrl,
-    String date,
-    int experience,
+    String? date,
+    int? experience,
     int cnic,
-    int license,
+    int? license,
     String phone,
   ) async {
     try {
@@ -108,5 +109,9 @@ class FirestoreProvider with ChangeNotifier {
 
   Future<bool> isDataPresent(String id) {
     return _firestoreService.isPresent(id);
+  }
+
+  Stream<DocumentSnapshot> getUserStream() {
+    return _firestoreService.getStream();
   }
 }

@@ -18,7 +18,7 @@ class UnkownFirestoreException implements Exception {
 class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
-  User? user = _auth.currentUser;
+  final User? _user = _auth.currentUser;
 
   Future<void> uploadSignUpInfo(
     UserModel userModel,
@@ -37,7 +37,7 @@ class FirestoreService {
     String id,
     String email,
     String photoUrl,
-    String userType,
+    String? userType,
   ) async {
     try {
       UserModel userModel = UserModel(
@@ -64,6 +64,9 @@ class FirestoreService {
     UserModel? myUser;
     String? id = _auth.currentUser?.uid;
     try {
+      if(id==null){
+        return myUser;
+      }
       final data = await _firestore.collection('Users').doc(id).get();
       myUser = UserModel.fromJson(data.data()!);
       Future.delayed(const Duration(seconds: 5));
@@ -92,10 +95,10 @@ class FirestoreService {
 
   Future<void> updateData(
     String photoUrl,
-    String date,
-    int experience,
+    String? date,
+    int? experience,
     int cnic,
-    int license,
+    int? license,
     String phone,
   ) async {
     User? firebaseUser = _auth.currentUser;
@@ -195,5 +198,10 @@ class FirestoreService {
         'Something went wrong ${e.code} ${e.message}',
       );
     }
+  }
+
+  Stream<DocumentSnapshot> getStream() {
+    User? user=_auth.currentUser;
+    return _firestore.collection("Users").doc(user?.uid).snapshots();
   }
 }

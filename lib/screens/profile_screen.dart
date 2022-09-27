@@ -1,16 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:get_driver_app/widgets/toast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
 import '../widgets/image_picker.dart';
 
 Color readOnly = const Color(0xFF152C5E);
@@ -53,10 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .snapshots(),
+      stream: context.read<FirestoreProvider>().getUserStream(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -426,9 +424,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             flag,
                           );
                       _imagePath = null;
-
-                      Toast.toasts("Changes Applied Successfully",
-                          const Color(0xFF2DD36F), context);
+                      Toast.toasts(
+                        "Changes Applied Successfully",
+                        const Color(0xFF2DD36F),
+                        context,
+                      );
 
                       setState(() {});
                     },
