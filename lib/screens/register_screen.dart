@@ -212,9 +212,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                    _selectedUserType == "client"
-                                        ? const ClientCreateProfile()
-                                        : const DriverCreateProfile(),
+                                        _selectedUserType == "client"
+                                            ? const ClientCreateProfile()
+                                            : const DriverCreateProfile(),
                                   ),
                                 );
                                 SnackBarWidget.SnackBars(
@@ -314,17 +314,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                      userModel.userType == "client"
-                                          ? const ClientCreateProfile()
-                                          : const DriverCreateProfile(),
+                                          userModel.userType == "client"
+                                              ? const ClientCreateProfile()
+                                              : const DriverCreateProfile(),
                                     ),
                                   );
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>  userModel.userType == "client"
-                                          ? const ClientHome()
-                                          : const NavBar(),
+                                      builder: (context) =>
+                                          userModel.userType == "client"
+                                              ? const ClientHome()
+                                              : const NavBar(),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(
@@ -356,17 +357,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                      userModel?.userType == "client"
-                                          ? const ClientCreateProfile()
-                                          : const DriverCreateProfile(),
+                                          userModel?.userType == "client"
+                                              ? const ClientCreateProfile()
+                                              : const DriverCreateProfile(),
                                     ),
                                   );
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>  userModel.userType == "client"
-                                          ? const ClientHome()
-                                          : const NavBar(),
+                                      builder: (context) =>
+                                          userModel.userType == "client"
+                                              ? const ClientHome()
+                                              : const NavBar(),
                                     ),
                                   );
                                 }

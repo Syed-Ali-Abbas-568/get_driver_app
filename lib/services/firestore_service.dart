@@ -64,7 +64,7 @@ class FirestoreService {
     UserModel? myUser;
     String? id = _auth.currentUser?.uid;
     try {
-      if(id==null){
+      if (id == null) {
         return myUser;
       }
       final data = await _firestore.collection('Users').doc(id).get();
@@ -201,7 +201,7 @@ class FirestoreService {
   }
 
   Stream<DocumentSnapshot> getStream() {
-    User? user=_auth.currentUser;
+    User? user = _auth.currentUser;
     return _firestore.collection("Users").doc(user?.uid).snapshots();
   }
 }

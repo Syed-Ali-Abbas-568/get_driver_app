@@ -121,7 +121,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                         ),
                       ),
                       Container(
-                        alignment:Alignment.center,
+                        alignment: Alignment.center,
                         padding: EdgeInsets.only(left: _width * 0.045),
                         child: Text(
                           _name,
@@ -133,7 +133,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                         ),
                       ),
                       Container(
-                        alignment:Alignment.center,
+                        alignment: Alignment.center,
                         margin: EdgeInsets.only(
                           left: _width * 0.045,
                           top: _height * 0.01,
