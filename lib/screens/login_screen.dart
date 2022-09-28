@@ -154,7 +154,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 ? const ClientCreateProfile()
                                                 : const DriverCreateProfile()
                                             : userModel.userType == "client"
-                                                ? const ClientHome()
+                                                ? ClientHome(
+                                                    name:
+                                                        "${userModel.firstName} ${userModel.lastName}")
                                                 : const NavBar(),
                                   ),
                                 );
@@ -251,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     ? const ClientCreateProfile()
                                                     : const DriverCreateProfile()
                                                 : userModel.userType == "client"
-                                                    ? const ClientHome()
+                                            ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
                                                     : const NavBar(),
                                       ),
                                     );
@@ -306,7 +308,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             userModel.userType == "client"
-                                                ? const ClientHome()
+                                                ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
                                                 : const NavBar(),
                                       ),
                                     );

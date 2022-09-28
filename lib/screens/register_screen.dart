@@ -324,7 +324,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           userModel.userType == "client"
-                                              ? const ClientHome()
+                                              ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
                                               : const NavBar(),
                                     ),
                                   );
@@ -367,7 +367,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           userModel.userType == "client"
-                                              ? const ClientHome()
+                                              ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
                                               : const NavBar(),
                                     ),
                                   );

@@ -41,7 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
                       ? const ClientCreateProfile()
                       : const DriverCreateProfile()
                   : userModel?.userType == "client"
-                      ? const ClientHome()
+                      ? ClientHome(
+                          name:
+                              "${userModel?.firstName} ${userModel?.lastName}")
                       : const NavBar()
               : const LoginScreen(),
         ),

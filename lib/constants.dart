@@ -37,3 +37,39 @@ const selectStyle = TextStyle(
   fontSize: 12,
   fontWeight: FontWeight.w400,
 );
+
+
+//Positioned(
+//                       left: 16,
+//                       top: 409,
+//                       width: 113,
+//                       height: 24,
+//                       child: Container(
+//                         decoration: const BoxDecoration(
+//                           color: Color(0xFFE4FAE6),
+//                           shape: BoxShape.rectangle,
+//                           borderRadius: BorderRadius.all(
+//                             Radius.circular(5),
+//                           ),
+//                         ),
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.start,
+//                           children: [
+//                             const Icon(
+//                               Icons.circle,
+//                               color: Color(0xFF7AE582),
+//                               size: 17,
+//                             ),
+//                             Text(
+//                               "Available for hire",
+//                               style: GoogleFonts.manrope(
+//                                 fontStyle: FontStyle.normal,
+//                                 color: const Color(0xFF152C5E),
+//                                 fontWeight: FontWeight.w800,
+//                                 fontSize: 10,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),

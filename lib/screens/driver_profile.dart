@@ -6,13 +6,14 @@ class DriverProfile extends StatelessWidget {
   final String phone;
   final int license;
   final int experience;
-  const DriverProfile({
+  DriverProfile({
     required this.imageUrl,
     required this.name,
     required this.phone,
     required this.license,
     required this.experience,
   });
+  Image img=Image.asset("assets/images/profile.png");
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +40,19 @@ class DriverProfile extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 10),
             width: width,
             height: height * 0.18,
-            decoration: const BoxDecoration(
-                color: Color(0xffEEF3FF),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Image.network(imageUrl),
+            color: const Color(0xffEEF3FF),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: imageUrl=="null"?img.image:NetworkImage(
+                    imageUrl,
+                  ),
+                  fit: BoxFit.contain
+                ),
+              ),
+            ),
           ),
           ListTile(
             tileColor: const Color(0xffEEF3FF),

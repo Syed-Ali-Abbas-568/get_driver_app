@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Inter",
       ),
       debugShowCheckedModeBanner: false,
-      home: const ClientHome(),
+      home: const SplashScreen(),
     );
   }
 }
