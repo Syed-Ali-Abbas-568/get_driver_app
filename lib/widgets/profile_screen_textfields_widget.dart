@@ -3,7 +3,6 @@ import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 
-
 class ProfileScreenTextFields extends StatelessWidget {
   const ProfileScreenTextFields({
     Key? key,
@@ -18,7 +17,17 @@ class ProfileScreenTextFields extends StatelessWidget {
     required TextEditingController yearsOfExpController,
     required TextEditingController dobController,
     required TextEditingController cnicController,
-  }) : _firstNameController = firstNameController, _lastNameController = lastNameController, _editable = editable, _pattern = pattern, _phoneController = phoneController, _userType = userType, _licenceNumController = licenceNumController, _yearsOfExpController = yearsOfExpController, _dobController = dobController, _cnicController = cnicController, super(key: key);
+  })  : _firstNameController = firstNameController,
+        _lastNameController = lastNameController,
+        _editable = editable,
+        _pattern = pattern,
+        _phoneController = phoneController,
+        _userType = userType,
+        _licenceNumController = licenceNumController,
+        _yearsOfExpController = yearsOfExpController,
+        _dobController = dobController,
+        _cnicController = cnicController,
+        super(key: key);
 
   final double height;
   final TextEditingController _firstNameController;

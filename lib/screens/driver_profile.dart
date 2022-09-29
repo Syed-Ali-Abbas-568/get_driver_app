@@ -13,7 +13,7 @@ class DriverProfile extends StatelessWidget {
     required this.license,
     required this.experience,
   });
-  Image img=Image.asset("assets/images/profile.png");
+  Image img = Image.asset("assets/images/profile.png");
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +46,12 @@ class DriverProfile extends StatelessWidget {
                 color: Colors.white,
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: imageUrl=="null"?img.image:NetworkImage(
-                    imageUrl,
-                  ),
-                  fit: BoxFit.contain
-                ),
+                    image: imageUrl == "null"
+                        ? img.image
+                        : NetworkImage(
+                            imageUrl,
+                          ),
+                    fit: BoxFit.contain),
               ),
             ),
           ),

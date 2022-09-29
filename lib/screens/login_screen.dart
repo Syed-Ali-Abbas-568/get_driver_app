@@ -253,7 +253,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     ? const ClientCreateProfile()
                                                     : const DriverCreateProfile()
                                                 : userModel.userType == "client"
-                                            ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
+                                                    ? ClientHome(
+                                                        name:
+                                                            "${userModel.firstName} ${userModel.lastName}")
                                                     : const NavBar(),
                                       ),
                                     );
@@ -306,10 +308,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            userModel.userType == "client"
-                                                ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
-                                                : const NavBar(),
+                                        builder: (context) => userModel
+                                                    .userType ==
+                                                "client"
+                                            ? ClientHome(
+                                                name:
+                                                    "${userModel.firstName} ${userModel.lastName}")
+                                            : const NavBar(),
                                       ),
                                     );
                                     SnackBarWidget.SnackBars(

@@ -44,9 +44,14 @@ class DriverListTile extends StatelessWidget {
         ),
       ),
       leading: data?.get('photoUrl') == "null"
-          ? Image.asset("assets/images/profile.png")
-          : Image.network(
-              data?.get('photoUrl'),
+          ? Container(
+              color: Colors.white,
+              child: Image.asset("assets/images/profile.png"))
+          : Container(
+              color: Colors.white,
+              child: Image.network(
+                data?.get('photoUrl'),
+              ),
             ),
       trailing: Material(
         color: const Color(0xff152C5E),

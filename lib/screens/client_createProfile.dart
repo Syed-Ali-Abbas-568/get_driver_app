@@ -246,7 +246,9 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                                 } else {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => ClientHome(name:_name,),
+                                      builder: (context) => ClientHome(
+                                        name: _name,
+                                      ),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(

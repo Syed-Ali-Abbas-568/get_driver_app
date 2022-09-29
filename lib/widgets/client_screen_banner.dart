@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ClientScreenBanner extends StatelessWidget {
   const ClientScreenBanner({
     Key? key,

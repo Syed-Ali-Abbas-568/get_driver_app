@@ -206,9 +206,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     _selectedUserType,
                                   );
 
-                              AuthProvider authProvider = AuthProvider();
-
-                              if (userCred != null && !authProvider.hasError) {
+                              if (userCred != null &&
+                                  context.read<AuthProvider>().hasError) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) =>
@@ -224,7 +223,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 );
                               } else {
                                 SnackBarWidget.SnackBars(
-                                  authProvider.errorMsg,
+                                  context.read<AuthProvider>().errorMsg,
                                   "assets/images/errorImg.png",
                                   context: context,
                                 );
@@ -322,10 +321,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          userModel.userType == "client"
-                                              ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
-                                              : const NavBar(),
+                                      builder: (context) => userModel
+                                                  .userType ==
+                                              "client"
+                                          ? ClientHome(
+                                              name:
+                                                  "${userModel.firstName} ${userModel.lastName}")
+                                          : const NavBar(),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(
@@ -365,10 +367,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          userModel.userType == "client"
-                                              ? ClientHome(name: "${userModel.firstName} ${userModel.lastName}")
-                                              : const NavBar(),
+                                      builder: (context) => userModel
+                                                  .userType ==
+                                              "client"
+                                          ? ClientHome(
+                                              name:
+                                                  "${userModel.firstName} ${userModel.lastName}")
+                                          : const NavBar(),
                                     ),
                                   );
                                 }

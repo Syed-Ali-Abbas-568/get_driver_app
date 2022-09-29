@@ -87,6 +87,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       _showSpinner = true;
                     });
                     _resetPassword(_emailController.text);
+                    _emailController.clear();
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                   minWidth: 200.0,
