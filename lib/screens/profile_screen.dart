@@ -28,17 +28,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _licenceNumController = TextEditingController();
   final TextEditingController _yearsOfExpController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _cnicController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  String? _phone;
   bool _editable = false;
   String? _imagePath;
   String? _imageUrl;
   String _name = "";
+  final appBar=AppBar(
+    backgroundColor: const Color(0xFF152C5E),
+    title: const Text("Profile"),
+  );
   final String _pattern = '^(?:[+0]9)?[0-9]{11}\$';
   final _formKey = GlobalKey<FormState>();
   @override
@@ -85,32 +87,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             : _imageUrl = snapshot.data?.get('photoUrl');
 
         _emailController.text = snapshot.data?.get('email') ?? '';
-        _licenceNumController.text = (snapshot.data?.get('license') != null
-            ? snapshot.data?.get('license').toString()
+        _licenceNumController.text = (snapshot.data?.get('licenseNO') != null
+            ? snapshot.data?.get('licenseNO').toString()
             : '')!;
         _yearsOfExpController.text = (snapshot.data?.get('experience') != null
             ? snapshot.data?.get('experience').toString()
             : " ")!;
-        _cnicController.text = (snapshot.data?.get('CNIC') != null
-            ? snapshot.data?.get('CNIC').toString()
+        _cnicController.text = (snapshot.data?.get('cnic') != null
+            ? snapshot.data?.get('cnic').toString()
             : " ")!;
 
-        _phoneController.text = (snapshot.data?.get('phone') != null
-            ? snapshot.data?.get('phone').toString()
+        _phoneController.text = (snapshot.data?.get('phoneNO') != null
+            ? snapshot.data?.get('phoneNO').toString()
             : 'null')!;
 
-        _dobController.text = snapshot.data?.get('date') ?? " ";
+        _dobController.text = snapshot.data?.get('dateOfBirth') ?? " ";
         _name = "${_firstNameController.text} ${_lastNameController.text}";
 
         return Scaffold(
           appBar: _editable
-              ? AppBar(
+              ? snapshot.data?.get('userType') == 'client'?appBar:AppBar(
                   title: const Text("Edit Mode"),
                   centerTitle: true,
                   backgroundColor: readOnly,
                   automaticallyImplyLeading: false,
                 )
-              : null,
+              : appBar,
           body: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -363,6 +365,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       errorText: "Invalid or Empty Value",
                                       inputType: TextInputType.number,
                                       enabled: _editable,
+                                      length: 1,
                                     ),
                                     TextFieldLabel(
                                       height: height,
@@ -437,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 int.parse(_yearsOfExpController.text),
                                 int.parse(_cnicController.text),
                                 int.parse(_licenceNumController.text),
-                                _phone!,
+                                _phoneController.text,
                                 flag,
                               );
                           _imagePath = null;

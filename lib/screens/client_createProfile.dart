@@ -227,7 +227,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                                 await context
                                     .read<FirestoreProvider>()
                                     .uploadRemainingData(
-                                      _imagePath ?? "null",
+                                      _imagePath,
                                       null,
                                       null,
                                       int.parse(_cnicController.text),

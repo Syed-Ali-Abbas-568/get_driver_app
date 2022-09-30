@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => user == null
                                         ? const LoginScreen()
-                                        : dataPresent == null
+                                        : dataPresent!.isNotEmpty
                                             ? userModel.userType == "client"
                                                 ? const ClientCreateProfile()
                                                 : const DriverCreateProfile()

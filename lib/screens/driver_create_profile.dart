@@ -340,7 +340,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                                 await context
                                     .read<FirestoreProvider>()
                                     .uploadRemainingData(
-                                      _imagePath ?? "null",
+                                      _imagePath,
                                       _dateController.text,
                                       int.parse(_expController.text),
                                       int.parse(_cnicController.text),

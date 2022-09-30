@@ -54,7 +54,7 @@ class FirestoreProvider with ChangeNotifier {
   }
 
   Future<void> uploadRemainingData(
-    String photoUrl,
+    String? photoUrl,
     String? date,
     int? experience,
     int cnic,

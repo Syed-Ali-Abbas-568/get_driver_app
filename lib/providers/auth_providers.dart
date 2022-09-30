@@ -41,6 +41,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<UserModel?> facebookSignUp(String userType) async {
     _isLoading = true;
+    _hasError = false;
     UserModel? userModel;
     try {
       userModel = await _firebaseAuthService.facebookSignUp(userType);
@@ -62,7 +63,6 @@ class AuthProvider with ChangeNotifier {
     try {
       userModel = await _firebaseAuthService.googleSignUp(userType);
     } on UnkownException catch (e) {
-      log("exception thrown");
       _errorMsg = e.message;
       _hasError = true;
     }
@@ -80,6 +80,7 @@ class AuthProvider with ChangeNotifier {
     UserCredential? userCredentials;
     try {
       _isLoading = true;
+      _hasError = false;
       userCredentials = await _firebaseAuthService.signUp(
         fName,
         lName,

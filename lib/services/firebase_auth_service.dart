@@ -73,7 +73,7 @@ class FirebaseAuthService {
         lName,
         userCredential.user!.uid,
         email,
-        "null",
+        null,
         userType,
       );
     } on FirebaseAuthException catch (e) {
@@ -151,7 +151,6 @@ class FirebaseAuthService {
         userModel = await _firestoreServices.getData();
       }
     } on FirebaseAuthException catch (e) {
-      log("exception thrown");
       throw UnkownException(
         "Something went wrong, ${e.message} || ${e.code}",
       );

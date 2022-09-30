@@ -1,11 +1,18 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/screens/profile_screen.dart';
 
 import 'package:get_driver_app/widgets/clientHome_stream.dart';
 import 'package:get_driver_app/widgets/client_screen_banner.dart';
 import 'package:get_driver_app/widgets/signout_alert.dart';
+import 'package:provider/provider.dart';
 
 class ClientHome extends StatefulWidget {
   ClientHome({super.key, this.name = "John"});
@@ -15,6 +22,19 @@ class ClientHome extends StatefulWidget {
 }
 
 class _ClientHomeState extends State<ClientHome> {
+  String? imageUrl;
+  Image img = Image.asset("assets/images/profile.png",width: 29,height: 29,);
+  void getImage() async {
+    UserModel? userModel =
+        await context.read<FirestoreProvider>().getUserData();
+    imageUrl = userModel?.photoUrl;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -29,12 +49,17 @@ class _ClientHomeState extends State<ClientHome> {
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const ProfileScreen()));
           },
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            child: Image.asset(
-              "assets/images/profile.png",
-              width: width * 0.08,
-              height: height * 0.036,
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: imageUrl == null
+                      ? img.image
+                      : NetworkImage(
+                          imageUrl.toString(),
+                        ),
+                  fit: BoxFit.contain,
+              ),
+              shape: BoxShape.circle,
             ),
           ),
         ),

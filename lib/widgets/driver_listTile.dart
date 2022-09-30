@@ -43,10 +43,11 @@ class DriverListTile extends StatelessWidget {
           fontSize: 10,
         ),
       ),
-      leading: data?.get('photoUrl') == "null"
+      leading: data?.get('photoUrl') == null
           ? Container(
               color: Colors.white,
-              child: Image.asset("assets/images/profile.png"))
+              child: Image.asset("assets/images/profile.png"),
+            )
           : Container(
               color: Colors.white,
               child: Image.network(
@@ -64,10 +65,10 @@ class DriverListTile extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => DriverProfile(
-                  imageUrl: data?.get('photoUrl'),
+                  imageUrl: data?.get('photoUrl')??"null",
                   name: "${data?.get('firstName')} ${data?.get("lastName")}",
-                  phone: data?.get('phone'),
-                  license: data?.get('license'),
+                  phone: data?.get('phoneNO'),
+                  license: data?.get('licenseNO'),
                   experience: data?.get('experience'),
                 ),
               ),

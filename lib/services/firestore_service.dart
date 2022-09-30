@@ -36,7 +36,7 @@ class FirestoreService {
     String lName,
     String id,
     String email,
-    String photoUrl,
+    String? photoUrl,
     String? userType,
   ) async {
     try {
@@ -94,7 +94,7 @@ class FirestoreService {
   }
 
   Future<void> updateData(
-    String photoUrl,
+    String? photoUrl,
     String? date,
     int? experience,
     int cnic,
@@ -108,7 +108,7 @@ class FirestoreService {
           .doc(firebaseUser?.uid)
           .get();
 
-      if (photoUrl != "null") {
+      if (photoUrl != null) {
         var file = File(photoUrl);
 
         Reference refRoot = FirebaseStorage.instance.ref();
@@ -130,7 +130,7 @@ class FirestoreService {
           phone: phone,
           license: license,
           experience: experience,
-          date: date,
+          dateOfBirth: date,
           userType: data.data()?['userType']);
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
@@ -184,7 +184,7 @@ class FirestoreService {
           phone: phone,
           license: license,
           experience: experience,
-          date: date,
+          dateOfBirth: date,
           userType: data.data()?['userType']);
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),

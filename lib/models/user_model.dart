@@ -4,7 +4,7 @@ class UserModel {
   String? lastName;
   String? id;
   String? photoUrl;
-  String? date;
+  String? dateOfBirth;
   int? experience;
   int? cnic;
   int? license;
@@ -17,7 +17,7 @@ class UserModel {
     this.firstName,
     this.lastName,
     this.photoUrl,
-    this.date,
+    this.dateOfBirth,
     this.experience,
     this.cnic,
     this.license,
@@ -34,11 +34,11 @@ class UserModel {
       lastName: json['lastName'],
       id: json['userId'],
       photoUrl: json['photoUrl'],
-      date: json['date'],
+      dateOfBirth: json['dateOfBirth'],
       experience: json['experience'],
-      cnic: json['CNIC'],
-      license: json['license'],
-      phone: json['phone'],
+      cnic: json['cnic'],
+      license: json['licenseNO'],
+      phone: json['phoneNO'],
       userType: json['userType'],
     );
   }
@@ -50,11 +50,11 @@ class UserModel {
       'email': email,
       'userId': id,
       'photoUrl': photoUrl,
-      'date': date,
+      'dateOfBirth': dateOfBirth,
       'experience': experience,
-      'CNIC': cnic,
-      'license': license,
-      'phone': phone,
+      'cnic': cnic,
+      'licenseNO': license,
+      'phoneNO': phone,
       'userType': userType,
     };
   }
