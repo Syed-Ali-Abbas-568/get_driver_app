@@ -1,14 +1,11 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_driver_app/screens/profile_screen.dart';
 
 import 'package:get_driver_app/widgets/clientHome_stream.dart';
 import 'package:get_driver_app/widgets/client_screen_banner.dart';
-import 'package:get_driver_app/widgets/snackbar_widget.dart';
-import 'login_screen.dart';
+import 'package:get_driver_app/widgets/signout_alert.dart';
 
 class ClientHome extends StatefulWidget {
   ClientHome({super.key, this.name = "John"});
@@ -44,20 +41,7 @@ class _ClientHomeState extends State<ClientHome> {
         actions: [
           IconButton(
             onPressed: () {
-              FacebookAuth.instance.logOut();
-              FirebaseAuth.instance.signOut().then((value) {
-                SnackBarWidget.SnackBars(
-                  "Signout successful",
-                  "assets/images/successImg.png",
-                  context: context,
-                );
-
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
-              });
+              signOutAlertDialog(context);
             },
             icon: const Icon(Icons.logout),
           ),

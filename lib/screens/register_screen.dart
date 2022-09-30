@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/screens/client_createProfile.dart';
 import 'package:get_driver_app/screens/client_home.dart';
@@ -57,6 +59,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
+    log(_selectedUserType);
+    log(_selectedUserIndex.toString());
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -77,66 +81,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ),
             ),
-            Padding(
+            Container(
               padding: EdgeInsets.only(
                 top: _height * 0.06,
                 left: _width * 0.16,
                 right: _width * 0.16,
               ),
-              child: SizedBox(
-                width: _width * 0.66,
-                child: Row(
-                  children: [
-                    Material(
-                      color: _selectButtonColor(UserType.client.index),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(30.0),
-                      ),
-                      child: MaterialButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedUserType = UserType.values[1].name;
-                            _selectedUserIndex = UserType.client.index;
-                          });
-                        },
-                        height: 42.0,
-                        child: Text(
-                          'Signup as ${UserType.values[1].name}',
-                          style: TextStyle(
-                            color:
-                                _selectButtonTextColor(UserType.client.index),
-                            fontSize: 12,
-                          ),
+              child: Row(
+                children: [
+                  Material(
+                    color: _selectButtonColor(UserType.client.index),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(30.0),
+                    ),
+                    child: MaterialButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedUserType = UserType.values[1].name;
+                          _selectedUserIndex = UserType.client.index;
+                        });
+                      },
+                      height: 42.0,
+                      child: Text(
+                        'Signup as ${UserType.values[1].name}',
+                        style: TextStyle(
+                          color: _selectButtonTextColor(UserType.client.index),
+                          fontSize: 12,
                         ),
                       ),
                     ),
-                    Material(
-                      color: _selectButtonColor(UserType.driver.index),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(30.0),
-                      ),
-                      child: MaterialButton(
-                        splashColor: null,
-                        onPressed: () {
-                          setState(() {
-                            _selectedUserType = UserType.values[0].name;
-                            _selectedUserIndex = UserType.driver.index;
-                          });
-                        },
-                        minWidth: 112.0,
-                        height: 42.0,
-                        child: Text(
-                          'Signup as ${UserType.values[0].name}',
-                          style: TextStyle(
-                            color:
-                                _selectButtonTextColor(UserType.driver.index),
-                            fontSize: 12,
-                          ),
+                  ),
+                  Material(
+                    color: _selectButtonColor(UserType.driver.index),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(30.0),
+                    ),
+                    child: MaterialButton(
+                      splashColor: null,
+                      onPressed: () {
+                        setState(() {
+                          _selectedUserType = UserType.values[0].name;
+                          _selectedUserIndex = UserType.driver.index;
+                        });
+                      },
+                      minWidth: 112.0,
+                      height: 42.0,
+                      child: Text(
+                        'Signup as ${UserType.values[0].name}',
+                        style: TextStyle(
+                          color: _selectButtonTextColor(UserType.driver.index),
+                          fontSize: 12,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -205,9 +204,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     _passController.text,
                                     _selectedUserType,
                                   );
+                              if (context.read<AuthProvider>().hasError) {
+                                SnackBarWidget.SnackBars(
+                                  context.read<AuthProvider>().errorMsg,
+                                  "assets/images/errorImg.png",
+                                  context: context,
+                                );
+                                log("Error found");
+                                return;
+                              }
 
-                              if (userCred != null &&
-                                  context.read<AuthProvider>().hasError) {
+                              if (userCred != null) {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) =>
@@ -219,12 +226,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 SnackBarWidget.SnackBars(
                                   "Signup Successful",
                                   "assets/images/successImg.png",
-                                  context: context,
-                                );
-                              } else {
-                                SnackBarWidget.SnackBars(
-                                  context.read<AuthProvider>().errorMsg,
-                                  "assets/images/errorImg.png",
                                   context: context,
                                 );
                               }
@@ -291,11 +292,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               img: "google_logo",
                               text: "Google",
                               onPressed: () async {
-                                AuthProvider authProvider = AuthProvider();
-
-                                if (authProvider.hasError) {
+                                if (context.watch<AuthProvider>().hasError) {
                                   SnackBarWidget.SnackBars(
-                                      authProvider.errorMsg,
+                                      context.watch<AuthProvider>().errorMsg,
                                       "assets/images/errorImg.png",
                                       context: context);
                                   return;

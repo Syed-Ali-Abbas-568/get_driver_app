@@ -34,7 +34,6 @@ class ClientScreenBanner extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
-                softWrap: false,
                 text: TextSpan(
                   style: const TextStyle(
                     fontSize: 21,
