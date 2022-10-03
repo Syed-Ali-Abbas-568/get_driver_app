@@ -69,7 +69,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
-                decoration: kMessageTextFieldDecoration.copyWith(
+                decoration: constants.kMessageTextFieldDecoration.copyWith(
                   hintText: 'example@gmail.com',
                 ),
               ),

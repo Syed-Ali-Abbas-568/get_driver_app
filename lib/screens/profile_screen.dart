@@ -322,7 +322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 keyboardType: TextInputType.phone,
                                 controller: _phoneController,
                                 decoration:
-                                    kMessageTextFieldDecoration.copyWith(
+                                constants.kMessageTextFieldDecoration.copyWith(
                                   hintText: "+92----------",
                                 ),
                               ),
