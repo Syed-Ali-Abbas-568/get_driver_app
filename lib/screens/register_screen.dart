@@ -59,8 +59,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
-    log(_selectedUserType);
-    log(_selectedUserIndex.toString());
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -195,14 +193,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           onPressed: () async {
                             FocusManager.instance.primaryFocus?.unfocus();
                             if (_formKey.currentState!.validate()) {
+                              UserModel modelToPassData = UserModel(
+                                firstName: _fNameController.text,
+                                lastName: _lNameController.text,
+                                email: _emailController.text,
+                                userType: _selectedUserType,
+                              );
                               final userCred = await context
                                   .read<AuthProvider>()
                                   .signUpWithEmailPass(
-                                    _fNameController.text,
-                                    _lNameController.text,
-                                    _emailController.text,
+                                    modelToPassData,
                                     _passController.text,
-                                    _selectedUserType,
                                   );
                               if (context.read<AuthProvider>().hasError) {
                                 SnackBarWidget.SnackBars(

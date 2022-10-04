@@ -18,15 +18,16 @@ class UnkownFirestoreException implements Exception {
 }
 
 class FirestoreService {
-  final _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance.collection('Users');
   static final _auth = FirebaseAuth.instance;
+  final User? _firebaseUser = _auth.currentUser;
 
   Future<void> uploadSignUpInfo(
     UserModel userModel,
     String id,
   ) async {
     try {
-      _firestore.collection('Users').doc(id).set(userModel.toJson());
+      _firestore.doc(id).set(userModel.toJson());
     } catch (e) {
       log(e.toString());
     }
@@ -36,10 +37,7 @@ class FirestoreService {
     UserModel modelToPassData,
   ) async {
     try {
-      await _firestore
-          .collection('Users')
-          .doc(FirebaseAuthService().firebaseUser?.uid)
-          .set(
+      await _firestore.doc(FirebaseAuthService().firebaseUser?.uid).set(
             modelToPassData.toJson(),
           );
     } catch (e) {
@@ -49,12 +47,12 @@ class FirestoreService {
 
   Future<UserModel?> getData() async {
     UserModel? myUser;
-    String? id = _auth.currentUser?.uid;
+    String? id = _firebaseUser?.uid;
     try {
       if (id == null) {
         return myUser;
       }
-      final data = await _firestore.collection('Users').doc(id).get();
+      final data = await _firestore.doc(id).get();
       myUser = UserModel.fromJson(data.data()!);
       Future.delayed(const Duration(seconds: 5));
     } on FirebaseAuthException catch (e) {
@@ -68,12 +66,7 @@ class FirestoreService {
 
   Future<bool> isPresent(String id) async {
     bool isPresent = false;
-    await _firestore
-        .collection('Users')
-        .doc(id)
-        .snapshots()
-        .first
-        .then((value) {
+    await _firestore.doc(id).snapshots().first.then((value) {
       isPresent = false;
       isPresent = value.exists;
     });
@@ -81,12 +74,8 @@ class FirestoreService {
   }
 
   Future<void> updateData(UserModel modelToPassData) async {
-    User? firebaseUser = _auth.currentUser;
     try {
-      var data = await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(firebaseUser?.uid)
-          .get();
+      var data = await _firestore.doc(_firebaseUser?.uid).get();
       String? photoUrl = modelToPassData.photoUrl;
 
       if (photoUrl != null) {
@@ -113,7 +102,7 @@ class FirestoreService {
             experience: modelToPassData.experience,
             dateOfBirth: modelToPassData.dateOfBirth,
             userType: data.data()?['userType']);
-        await _firestore.collection('Users').doc(firebaseUser?.uid).update(
+        await _firestore.doc(_firebaseUser?.uid).update(
               userModel.toJson(),
             );
       }
@@ -131,12 +120,8 @@ class FirestoreService {
     UserModel modelToPassData,
     bool flag,
   ) async {
-    User? firebaseUser = _auth.currentUser;
     try {
-      var data = await FirebaseFirestore.instance //initialise only on
-          .collection('Users')
-          .doc(firebaseUser?.uid)
-          .get();
+      var data = await _firestore.doc(_firebaseUser?.uid).get();
       String photoUrl = modelToPassData.photoUrl.toString();
       if (flag) {
         var file = File(photoUrl);
@@ -163,7 +148,7 @@ class FirestoreService {
           dateOfBirth: modelToPassData.dateOfBirth,
           userType: data.data()?['userType']);
 
-      await _firestore.collection('Users').doc(firebaseUser?.uid).update(
+      await _firestore.doc(_firebaseUser?.uid).update(
             userModel.toJson(),
           );
     } on FirebaseAuthException catch (e) {
@@ -178,13 +163,12 @@ class FirestoreService {
 
   Stream<DocumentSnapshot> getStream() {
     User? user = _auth.currentUser;
-    return _firestore.collection("Users").doc(user?.uid).snapshots();
+    return _firestore.doc(user?.uid).snapshots();
   }
 
   Stream<List<UserModel>> getSearchStream() {
     UserModel userModel = UserModel();
     return _firestore
-        .collection('Users')
         .where('userType', isEqualTo: UserType.driver.name)
         .snapshots()
         .map(

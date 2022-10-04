@@ -69,22 +69,16 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<UserCredential?> signUpWithEmailPass(
-    String fName,
-    String lName,
-    String email,
+    UserModel modelToPassData,
     String password,
-    String? userType,
   ) async {
     UserCredential? userCredentials;
     try {
       _isLoading = true;
       _hasError = false;
       userCredentials = await _firebaseAuthService.signUp(
-        fName,
-        lName,
-        email,
+        modelToPassData,
         password,
-        userType,
       );
     } on EmailAlreadyExistException catch (e) {
       _errorMsg = e.message;

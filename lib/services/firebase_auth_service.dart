@@ -55,24 +55,21 @@ class FirebaseAuthService {
   }
 
   Future<UserCredential?> signUp(
-    String fName,
-    String lName,
-    String email,
+      UserModel modelToPassData,
     String password,
-    String? userType,
   ) async {
     UserCredential? userCredential;
     try {
       userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
+        email: modelToPassData.email.toString(),
         password: password,
       );
       UserModel userModel = UserModel(
-        firstName: fName,
-        lastName: lName,
+        firstName: modelToPassData.firstName,
+        lastName: modelToPassData.lastName,
         id: userCredential.user!.uid,
-        email: email,
-        userType: userType,
+        email: modelToPassData.email,
+        userType: modelToPassData.userType,
         photoUrl: null,
       );
       _firestoreServices.postDetailsToFireStore(

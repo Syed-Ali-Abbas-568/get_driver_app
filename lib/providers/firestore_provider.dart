@@ -49,6 +49,7 @@ class FirestoreProvider with ChangeNotifier {
       _firestoreService.updateData(
         modelToPassData,
       );
+      print(modelToPassData);
     } on UnkownFirestoreException {
       _firestoreErrorMsg = 'Something went wrong';
       _hasFirestoreError = true;

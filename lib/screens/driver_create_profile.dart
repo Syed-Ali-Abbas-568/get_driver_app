@@ -354,6 +354,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                                     .uploadRemainingData(
                                       modelToPassData,
                                     );
+                                print(modelToPassData);
 
                                 final firestoreProvider =
                                     context.read<FirestoreProvider>();
