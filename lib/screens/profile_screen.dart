@@ -64,11 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
-          SnackBarWidget.SnackBars(
-            "Something went wrong try again",
-            "assets/images/errorImg.png",
-            context: context,
-          );
           return const Text("Something went wrong try again");
         }
 
@@ -321,8 +316,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.phone,
                                 controller: _phoneController,
-                                decoration:
-                                constants.kMessageTextFieldDecoration.copyWith(
+                                decoration: constants
+                                    .kMessageTextFieldDecoration
+                                    .copyWith(
                                   hintText: "+92----------",
                                 ),
                               ),
@@ -427,11 +423,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (_formKey.currentState!.validate()) {
                           _editable = false;
 
-                          bool flag = false;
-                          if (_imagePath != null) {
-                            flag = true;
-                          }
-
                           await context
                               .read<FirestoreProvider>()
                               .uploadProfileData(
@@ -441,10 +432,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 int.parse(_cnicController.text),
                                 int.parse(_licenceNumController.text),
                                 _phoneController.text,
-                                flag,
+                                (_imagePath != null) ? true : false,
                               );
                           _imagePath = null;
-                          log("Value of image url = $_imageUrl");
+
                           Toast.toasts(
                             "Changes Applied Successfully",
                             const Color(0xFF2DD36F),

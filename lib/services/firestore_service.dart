@@ -119,23 +119,23 @@ class FirestoreService {
         photoUrl = await imgToUpload.getDownloadURL();
         log("The uploaded Image URL is $photoUrl");
       }
-
-      UserModel userModel = UserModel(
-          firstName: data.data()?['firstName'],
-          lastName: data.data()?['lastName'],
-          email: data.data()?['email'],
-          id: data.data()?['userId'],
-          photoUrl: data.data()?['photoUrl'],
-          cnic: cnic,
-          phone: phone,
-          license: license,
-          experience: experience,
-          dateOfBirth: date,
-          userType: data.data()?['userType']);
-      await _firestore.collection('Users').doc(firebaseUser?.uid).update(
-            userModel.toJson(),
-          );
-      getData();
+      if (photoUrl != null) {
+        UserModel userModel = UserModel(
+            firstName: data.data()?['firstName'],
+            lastName: data.data()?['lastName'],
+            email: data.data()?['email'],
+            id: data.data()?['userId'],
+            photoUrl: data.data()?['photoUrl'],
+            cnic: cnic,
+            phone: phone,
+            license: license,
+            experience: experience,
+            dateOfBirth: date,
+            userType: data.data()?['userType']);
+        await _firestore.collection('Users').doc(firebaseUser?.uid).update(
+              userModel.toJson(),
+            );
+      }
     } on FirebaseAuthException catch (e) {
       debugPrint(
         e.message,
@@ -157,7 +157,7 @@ class FirestoreService {
   ) async {
     User? firebaseUser = _auth.currentUser;
     try {
-      var data = await FirebaseFirestore.instance
+      var data = await FirebaseFirestore.instance //initalise only on
           .collection('Users')
           .doc(firebaseUser?.uid)
           .get();
@@ -190,7 +190,6 @@ class FirestoreService {
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
           );
-      await getData();
     } on FirebaseAuthException catch (e) {
       debugPrint(
         e.message,

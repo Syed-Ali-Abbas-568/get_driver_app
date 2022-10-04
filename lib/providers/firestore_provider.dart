@@ -78,6 +78,7 @@ class FirestoreProvider with ChangeNotifier {
     _isProfileCreation = false;
     notifyListeners();
   }
+  //pass models here
 
   Future<void> uploadProfileData(
     String photoUrl,
@@ -90,7 +91,7 @@ class FirestoreProvider with ChangeNotifier {
   ) async {
     try {
       _isProfileCreation = true;
-      _firestoreService.updateProfileData(
+      await _firestoreService.updateProfileData(
         photoUrl,
         date,
         experience,
