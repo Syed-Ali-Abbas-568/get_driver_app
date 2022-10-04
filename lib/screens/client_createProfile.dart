@@ -180,7 +180,8 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       controller: _cnicController,
-                      decoration: constants.kMessageTextFieldDecoration.copyWith(
+                      decoration:
+                          Constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "xxxxxxxxxxxxx",
                       ),
                     ),
@@ -206,7 +207,8 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
                       controller: _phoneController,
-                      decoration: constants.kMessageTextFieldDecoration.copyWith(
+                      decoration:
+                          Constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "+92----------",
                       ),
                     ),
@@ -224,15 +226,17 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                             onPressed: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (_formKey.currentState!.validate()) {
+                                UserModel modelToPassData = UserModel(
+                                  photoUrl: _imagePath,
+                                  dateOfBirth: null,
+                                  experience: null,
+                                  cnic: int.parse(_cnicController.text),
+                                  phone: _phoneController.text,
+                                );
                                 await context
                                     .read<FirestoreProvider>()
                                     .uploadRemainingData(
-                                      _imagePath,
-                                      null,
-                                      null,
-                                      int.parse(_cnicController.text),
-                                      null,
-                                      _phoneController.text,
+                                      modelToPassData,
                                     );
 
                                 final firestoreProvider =

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -46,7 +44,7 @@ class AuthProvider with ChangeNotifier {
     try {
       userModel = await _firebaseAuthService.facebookSignUp(userType);
     } on UnkownException catch (e) {
-      log(e.toString());
+      debugPrint(e.toString());
       _errorMsg = e.message;
       _hasError = true;
     }
@@ -98,5 +96,20 @@ class AuthProvider with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
     return userCredentials;
+  }
+
+  Future<List<String>> forgotPassword(String email) async {
+    var result;
+    _isLoading = true;
+    _hasError = false;
+    try {
+      result = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+    } on UnkownException catch (e) {
+      _errorMsg = e.message;
+      _hasError = true;
+    }
+    _isLoading = false;
+    notifyListeners();
+    return result;
   }
 }

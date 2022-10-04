@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class constants{
+class Constants {
   static const kMessageTextFieldDecoration = InputDecoration(
     hintText: 'Enter a value',
     contentPadding: EdgeInsets.symmetric(
@@ -32,7 +32,7 @@ class constants{
     ),
   );
 
-  static const searchFieldDecoration= InputDecoration(
+  static const searchFieldDecoration = InputDecoration(
     prefixIconColor: Colors.grey,
     prefixIcon: Icon(
       Icons.search,

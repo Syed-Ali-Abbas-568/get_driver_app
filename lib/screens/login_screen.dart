@@ -134,7 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context: context,
                                 );
 
-                                String? dataPresent;
                                 User? user = FirebaseAuthService().firebaseUser;
 
                                 UserModel? userModel = await context
@@ -143,13 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 if (userModel == null) return;
 
-                                dataPresent = userModel.cnic.toString();
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => user == null
                                         ? const LoginScreen()
-                                        : dataPresent!.isNotEmpty
+                                        : userModel.cnic == null
                                             ? userModel.userType == "client"
                                                 ? const ClientCreateProfile()
                                                 : const DriverCreateProfile()

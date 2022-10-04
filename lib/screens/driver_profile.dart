@@ -8,7 +8,8 @@ class DriverProfile extends StatelessWidget {
   final String phone;
   final int license;
   final int experience;
-  DriverProfile({super.key,
+  DriverProfile({
+    super.key,
     required this.imageUrl,
     required this.name,
     required this.phone,
@@ -79,7 +80,8 @@ class DriverProfile extends StatelessWidget {
             margin: const EdgeInsets.only(top: 10),
             child: ListTile(
               tileColor: const Color(0xffEEF3FF),
-              leading: const ImageIcon(AssetImage("assets/images/license_icon.png")),
+              leading:
+                  const ImageIcon(AssetImage("assets/images/license_icon.png")),
               title: const Text(
                 "License Number",
                 style: TextStyle(
@@ -100,7 +102,8 @@ class DriverProfile extends StatelessWidget {
             margin: const EdgeInsets.only(top: 10),
             child: ListTile(
               tileColor: const Color(0xffEEF3FF),
-              leading: const ImageIcon(AssetImage("assets/images/experience_icon.png")),
+              leading: const ImageIcon(
+                  AssetImage("assets/images/experience_icon.png")),
               title: const Text(
                 "Experience",
                 style: TextStyle(

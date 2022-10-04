@@ -2,6 +2,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/bottom_navbar.dart';
@@ -9,9 +12,6 @@ import 'package:get_driver_app/widgets/image_picker.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
 import '../models/user_model.dart';
 
 class DriverCreateProfile extends StatefulWidget {
@@ -41,13 +41,13 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
               return Theme(
                   data: Theme.of(context).copyWith(
                     colorScheme: const ColorScheme.light(
-                      primary: constants.primaryColor,
+                      primary: Constants.primaryColor,
                       onPrimary: Colors.white,
                       onSurface: Colors.black,
                     ),
                     textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
-                          backgroundColor: constants.primaryColor,
+                          backgroundColor: Constants.primaryColor,
                           foregroundColor: Colors.white),
                     ),
                   ),
@@ -216,7 +216,8 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       controller: _cnicController,
-                      decoration: constants.kMessageTextFieldDecoration.copyWith(
+                      decoration:
+                          Constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "xxxxxxxxxxxxx",
                       ),
                     ),
@@ -242,7 +243,8 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
                       controller: _phoneController,
-                      decoration: constants.kMessageTextFieldDecoration.copyWith(
+                      decoration:
+                          Constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "+92----------",
                       ),
                     ),
@@ -271,7 +273,8 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       controller: _licenseController,
-                      decoration: constants.kMessageTextFieldDecoration.copyWith(
+                      decoration:
+                          Constants.kMessageTextFieldDecoration.copyWith(
                         hintText:
                             "Enter your 16 digit license number without dashes",
                       ),
@@ -298,16 +301,17 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       },
                       controller: _dateController,
                       keyboardType: TextInputType.none,
-                      decoration: constants.kMessageTextFieldDecoration.copyWith(
-                          hintText: "MM/DD/YYYY",
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.date_range,
-                                color: Color(0xff152C5E)),
-                            onPressed: () {
-                              _dateOfBirthPicker();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                          )),
+                      decoration:
+                          Constants.kMessageTextFieldDecoration.copyWith(
+                              hintText: "MM/DD/YYYY",
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.date_range,
+                                    color: Color(0xff152C5E)),
+                                onPressed: () {
+                                  _dateOfBirthPicker();
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                              )),
                     ),
                     TextFieldLabel(
                       height: _height,
@@ -337,15 +341,18 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                             onPressed: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (_formKey.currentState!.validate()) {
+                                UserModel modelToPassData = UserModel(
+                                  photoUrl: _imagePath,
+                                  dateOfBirth: _dateController.text,
+                                  experience: int.parse(_expController.text),
+                                  cnic: int.parse(_cnicController.text),
+                                  license: int.parse(_licenseController.text),
+                                  phone: _phoneController.text,
+                                );
                                 await context
                                     .read<FirestoreProvider>()
                                     .uploadRemainingData(
-                                      _imagePath,
-                                      _dateController.text,
-                                      int.parse(_expController.text),
-                                      int.parse(_cnicController.text),
-                                      int.parse(_licenseController.text),
-                                      _phoneController.text,
+                                      modelToPassData,
                                     );
 
                                 final firestoreProvider =

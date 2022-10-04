@@ -29,21 +29,9 @@ class FirestoreProvider with ChangeNotifier {
   }
 
   Future<void> postDetails(
-    String fName,
-    String lName,
-    String id,
-    String email,
-    String photoUrl,
-    String userType,
+    UserModel modelToPassData,
   ) {
-    return _firestoreService.postDetailsToFireStore(
-      fName,
-      lName,
-      id,
-      email,
-      photoUrl,
-      userType,
-    );
+    return _firestoreService.postDetailsToFireStore(modelToPassData);
   }
 
   Future<void> uploadSignUpDetails(
@@ -54,22 +42,12 @@ class FirestoreProvider with ChangeNotifier {
   }
 
   Future<void> uploadRemainingData(
-    String? photoUrl,
-    String? date,
-    int? experience,
-    int cnic,
-    int? license,
-    String phone,
+    UserModel modelToPassData,
   ) async {
     try {
       _isProfileCreation = true;
       _firestoreService.updateData(
-        photoUrl,
-        date,
-        experience,
-        cnic,
-        license,
-        phone,
+        modelToPassData,
       );
     } on UnkownFirestoreException {
       _firestoreErrorMsg = 'Something went wrong';
@@ -81,23 +59,13 @@ class FirestoreProvider with ChangeNotifier {
   //pass models here
 
   Future<void> uploadProfileData(
-    String photoUrl,
-    String date,
-    int experience,
-    int cnic,
-    int license,
-    String phone,
+    UserModel modelToPassData,
     bool flag,
   ) async {
     try {
       _isProfileCreation = true;
       await _firestoreService.updateProfileData(
-        photoUrl,
-        date,
-        experience,
-        cnic,
-        license,
-        phone,
+        modelToPassData,
         flag,
       );
     } on UnkownFirestoreException {
@@ -114,5 +82,9 @@ class FirestoreProvider with ChangeNotifier {
 
   Stream<DocumentSnapshot> getUserStream() {
     return _firestoreService.getStream();
+  }
+
+  Stream<List<UserModel>> getSearchStream() {
+    return _firestoreService.getSearchStream();
   }
 }

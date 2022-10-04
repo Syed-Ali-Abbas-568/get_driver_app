@@ -1,14 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/models/user_model.dart';
 import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/providers/firestore_provider.dart';
-import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 import 'package:get_driver_app/widgets/toast.dart';
@@ -117,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.width,
                     height: snapshot.data?.get('userType') == 'client'
                         ? height - 15
-                        : 1000, //increase heres
+                        : 1000, //increase here
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -316,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.phone,
                                 controller: _phoneController,
-                                decoration: constants
+                                decoration: Constants
                                     .kMessageTextFieldDecoration
                                     .copyWith(
                                   hintText: "+92----------",
@@ -422,16 +421,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           _editable = false;
+                          UserModel modelToPassData = UserModel(
+                            photoUrl: _imagePath ?? _imageUrl!,
+                            dateOfBirth: _dobController.text,
+                            experience: int.parse(_yearsOfExpController.text),
+                            cnic: int.parse(_cnicController.text),
+                            license: int.parse(_licenceNumController.text),
+                            phone: _phoneController.text,
+                          );
 
                           await context
                               .read<FirestoreProvider>()
                               .uploadProfileData(
-                                _imagePath ?? _imageUrl!,
-                                _dobController.text,
-                                int.parse(_yearsOfExpController.text),
-                                int.parse(_cnicController.text),
-                                int.parse(_licenceNumController.text),
-                                _phoneController.text,
+                                modelToPassData,
                                 (_imagePath != null) ? true : false,
                               );
                           _imagePath = null;

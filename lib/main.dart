@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:get_driver_app/screens/client_home.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/auth_providers.dart';
+import 'package:get_driver_app/providers/auth_providers.dart';
 import 'firebase_options.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/screens/splash_screen.dart';

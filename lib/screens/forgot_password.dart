@@ -1,7 +1,11 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/constants.dart';
+import 'package:get_driver_app/providers/auth_providers.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
 
@@ -17,7 +21,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   double _width = 0;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  bool _showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
-                decoration: constants.kMessageTextFieldDecoration.copyWith(
+                decoration: Constants.kMessageTextFieldDecoration.copyWith(
                   hintText: 'example@gmail.com',
                 ),
               ),
@@ -83,16 +86,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 elevation: 5.0,
                 child: MaterialButton(
                   onPressed: () {
-                    setState(() {
-                      _showSpinner = true;
-                    });
                     _resetPassword(_emailController.text);
                     _emailController.clear();
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                   minWidth: 200.0,
                   height: 42.0,
-                  child: _showSpinner
+                  child: context.watch<AuthProvider>().isLoading
                       ? const CircularProgressIndicator(
                           color: Color(0xffFBFAFA),
                         )
@@ -114,44 +114,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void _resetPassword(String email) async {
     if (_formKey.currentState!.validate()) {
-      try {
-        var result =
-            await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-        if (result.isEmpty) {
-          SnackBarWidget.SnackBars(
-            "Account not found",
-            "assets/images/errorImg.png",
-            context: context,
-          );
-          setState(() {
-            _showSpinner = false;
-          });
-        } else {
-          FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-          SnackBarWidget.SnackBars(
-            "Email Sent",
-            "assets/images/successImg.png",
-            context: context,
-          );
-          setState(() {
-            _showSpinner = false;
-          });
-        }
-      } catch (e) {
+      var result = context.read<AuthProvider>().forgotPassword(email);
+      if (result == null) {
         SnackBarWidget.SnackBars(
-          e.toString(),
+          "Account not found",
+          "assets/images/errorImg.png",
+          context: context,
+        );
+      } else {
+        FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        SnackBarWidget.SnackBars(
+          "Email Sent",
           "assets/images/successImg.png",
           context: context,
         );
-
-        setState(() {
-          _showSpinner = false;
-        });
       }
-    } else {
-      setState(() {
-        _showSpinner = false;
-      });
     }
   }
 }

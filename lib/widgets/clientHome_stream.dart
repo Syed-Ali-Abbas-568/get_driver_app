@@ -1,5 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/driver_listTile.dart';
 
 class ClientHomeStream extends StatelessWidget {
@@ -14,12 +17,9 @@ class ClientHomeStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("Users")
-            .where('userType', isEqualTo: 'driver')
-            .snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    return StreamBuilder<List<UserModel>>(
+        stream: context.read<FirestoreProvider>().getSearchStream(),
+        builder: (context, AsyncSnapshot<List<UserModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
@@ -54,9 +54,9 @@ class ClientHomeStream extends StatelessWidget {
             );
           }
           return ListView.builder(
-            itemCount: snapshot.data?.size,
+            itemCount: snapshot.data?.length,
             itemBuilder: (BuildContext context, int index) {
-              final data = snapshot.data?.docs[index];
+              final data = snapshot.data![index];
               return Container(
                 margin: EdgeInsets.only(
                   top: height * 0.025,

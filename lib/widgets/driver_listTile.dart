@@ -1,5 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
+
+import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/screens/driver_profile.dart';
 
 class DriverListTile extends StatelessWidget {
@@ -10,7 +13,7 @@ class DriverListTile extends StatelessWidget {
     required this.height,
   }) : super(key: key);
 
-  final QueryDocumentSnapshot<Object?>? data;
+  final UserModel data;
   final double width;
   final double height;
 
@@ -29,7 +32,7 @@ class DriverListTile extends StatelessWidget {
       ),
       tileColor: const Color(0xffEEF3FF),
       title: Text(
-        "${data?.get('firstName')}${data?.get('lastName')}",
+        "${data.firstName}${data.lastName}",
         style: const TextStyle(
           color: Color(0xff152C5E),
           fontSize: 15,
@@ -37,13 +40,13 @@ class DriverListTile extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        "${data?.get('email')}",
+        "${data.email}",
         style: const TextStyle(
           color: Color(0xff8893AC),
           fontSize: 10,
         ),
       ),
-      leading: data?.get('photoUrl') == null
+      leading: data.photoUrl == null
           ? Container(
               color: Colors.white,
               child: Image.asset("assets/images/profile.png"),
@@ -51,7 +54,7 @@ class DriverListTile extends StatelessWidget {
           : Container(
               color: Colors.white,
               child: Image.network(
-                data?.get('photoUrl'),
+                data.photoUrl.toString(),
               ),
             ),
       trailing: Material(
@@ -65,11 +68,11 @@ class DriverListTile extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => DriverProfile(
-                  imageUrl: data?.get('photoUrl')??"null",
-                  name: "${data?.get('firstName')} ${data?.get("lastName")}",
-                  phone: data?.get('phoneNO'),
-                  license: data?.get('licenseNO'),
-                  experience: data?.get('experience'),
+                  imageUrl: data.photoUrl ?? "null",
+                  name: "${data.firstName} ${data.lastName}",
+                  phone: data.phone.toString(),
+                  license: data.license!.toInt(),
+                  experience: data.experience!.toInt(),
                 ),
               ),
             );

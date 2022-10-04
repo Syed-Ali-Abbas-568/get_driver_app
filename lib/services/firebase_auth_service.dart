@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -68,13 +67,16 @@ class FirebaseAuthService {
         email: email,
         password: password,
       );
+      UserModel userModel = UserModel(
+        firstName: fName,
+        lastName: lName,
+        id: userCredential.user!.uid,
+        email: email,
+        userType: userType,
+        photoUrl: null,
+      );
       _firestoreServices.postDetailsToFireStore(
-        fName,
-        lName,
-        userCredential.user!.uid,
-        email,
-        null,
-        userType,
+        userModel,
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -156,5 +158,16 @@ class FirebaseAuthService {
       );
     }
     return userModel;
+  }
+
+  Future<List<String>> forgotPassword(String email) async {
+    List<String> result;
+    try {
+      result = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+    } on FirebaseAuthException catch (e) {
+      debugPrint(e.toString());
+      throw UnkownException("Something went Wrong, ${e.code}");
+    }
+    return result;
   }
 }

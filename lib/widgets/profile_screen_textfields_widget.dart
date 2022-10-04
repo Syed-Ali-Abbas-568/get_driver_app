@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
@@ -103,7 +104,7 @@ class ProfileScreenTextFields extends StatelessWidget {
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.phone,
             controller: _phoneController,
-            decoration: constants.kMessageTextFieldDecoration,
+            decoration: Constants.kMessageTextFieldDecoration,
           ),
           Visibility(
             visible: _userType,

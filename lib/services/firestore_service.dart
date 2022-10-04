@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/services/firebase_auth_service.dart';
 
+enum UserType { driver, client }
+
 class UnkownFirestoreException implements Exception {
   final String message;
 
@@ -18,7 +20,6 @@ class UnkownFirestoreException implements Exception {
 class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
-  final User? _user = _auth.currentUser;
 
   Future<void> uploadSignUpInfo(
     UserModel userModel,
@@ -32,28 +33,14 @@ class FirestoreService {
   }
 
   Future<void> postDetailsToFireStore(
-    String fName,
-    String lName,
-    String id,
-    String email,
-    String? photoUrl,
-    String? userType,
+    UserModel modelToPassData,
   ) async {
     try {
-      UserModel userModel = UserModel(
-        firstName: fName,
-        lastName: lName,
-        email: email,
-        id: id,
-        photoUrl: photoUrl,
-        userType: userType,
-      );
-
       await _firestore
           .collection('Users')
           .doc(FirebaseAuthService().firebaseUser?.uid)
           .set(
-            userModel.toJson(),
+            modelToPassData.toJson(),
           );
     } catch (e) {
       log(e.toString());
@@ -93,20 +80,14 @@ class FirestoreService {
     return isPresent;
   }
 
-  Future<void> updateData(
-    String? photoUrl,
-    String? date,
-    int? experience,
-    int cnic,
-    int? license,
-    String phone,
-  ) async {
+  Future<void> updateData(UserModel modelToPassData) async {
     User? firebaseUser = _auth.currentUser;
     try {
       var data = await FirebaseFirestore.instance
           .collection('Users')
           .doc(firebaseUser?.uid)
           .get();
+      String? photoUrl = modelToPassData.photoUrl;
 
       if (photoUrl != null) {
         var file = File(photoUrl);
@@ -126,11 +107,11 @@ class FirestoreService {
             email: data.data()?['email'],
             id: data.data()?['userId'],
             photoUrl: data.data()?['photoUrl'],
-            cnic: cnic,
-            phone: phone,
-            license: license,
-            experience: experience,
-            dateOfBirth: date,
+            cnic: modelToPassData.cnic,
+            phone: modelToPassData.phone,
+            license: modelToPassData.license,
+            experience: modelToPassData.experience,
+            dateOfBirth: modelToPassData.dateOfBirth,
             userType: data.data()?['userType']);
         await _firestore.collection('Users').doc(firebaseUser?.uid).update(
               userModel.toJson(),
@@ -147,21 +128,16 @@ class FirestoreService {
   }
 
   Future<void> updateProfileData(
-    String photoUrl,
-    String date,
-    int experience,
-    int cnic,
-    int license,
-    String phone,
+    UserModel modelToPassData,
     bool flag,
   ) async {
     User? firebaseUser = _auth.currentUser;
     try {
-      var data = await FirebaseFirestore.instance //initalise only on
+      var data = await FirebaseFirestore.instance //initialise only on
           .collection('Users')
           .doc(firebaseUser?.uid)
           .get();
-
+      String photoUrl = modelToPassData.photoUrl.toString();
       if (flag) {
         var file = File(photoUrl);
 
@@ -180,11 +156,11 @@ class FirestoreService {
           email: data.data()?['email'],
           id: data.data()?['userId'],
           photoUrl: data.data()?['photoUrl'],
-          cnic: cnic,
-          phone: phone,
-          license: license,
-          experience: experience,
-          dateOfBirth: date,
+          cnic: modelToPassData.cnic,
+          phone: modelToPassData.phone,
+          license: modelToPassData.license,
+          experience: modelToPassData.experience,
+          dateOfBirth: modelToPassData.dateOfBirth,
           userType: data.data()?['userType']);
 
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
@@ -203,5 +179,18 @@ class FirestoreService {
   Stream<DocumentSnapshot> getStream() {
     User? user = _auth.currentUser;
     return _firestore.collection("Users").doc(user?.uid).snapshots();
+  }
+
+  Stream<List<UserModel>> getSearchStream() {
+    UserModel userModel = UserModel();
+    return _firestore
+        .collection('Users')
+        .where('userType', isEqualTo: UserType.driver.name)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map((e) => userModel = UserModel.fromJson(e.data()))
+              .toList(),
+        );
   }
 }

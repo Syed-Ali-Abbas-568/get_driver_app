@@ -52,7 +52,7 @@ class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.emailAddress,
           controller: widget.emailController,
-          decoration: constants.kMessageTextFieldDecoration.copyWith(
+          decoration: Constants.kMessageTextFieldDecoration.copyWith(
             hintText: 'example@gmail.com',
           ),
         ),
@@ -79,7 +79,7 @@ class _EmailPasswordTextFieldState extends State<EmailPasswordTextField> {
           textInputAction: TextInputAction.done,
           obscureText: _passwordVisible,
           controller: widget.passController,
-          decoration: constants.kMessageTextFieldDecoration.copyWith(
+          decoration: Constants.kMessageTextFieldDecoration.copyWith(
             suffixIcon: IconButton(
               icon: Icon(
                 _passwordVisible

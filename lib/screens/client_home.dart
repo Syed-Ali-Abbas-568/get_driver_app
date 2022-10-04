@@ -99,7 +99,7 @@ class _ClientHomeState extends State<ClientHome> {
                     );
                   },
                   textAlign: TextAlign.center,
-                  decoration: constants.kMessageTextFieldDecoration,
+                  decoration: Constants.searchFieldDecoration,
                 ),
               ),
             ),

@@ -1,7 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/constants.dart';
+import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/driver_listTile.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -49,7 +51,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       textAlign: TextAlign.center,
                       controller: _searchFieldController,
                       keyboardType: TextInputType.text,
-                      decoration: constants.searchFieldDecoration,
+                      decoration: Constants.searchFieldDecoration,
                     ),
                   ),
                   trailing: Container(
@@ -78,12 +80,10 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               SizedBox(
                 height: height * 0.8,
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("Users")
-                        .where('userType', isEqualTo: 'driver')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                child: StreamBuilder<List<UserModel>>(
+                    stream: context.read<FirestoreProvider>().getSearchStream(),
+                    builder:
+                        (context, AsyncSnapshot<List<UserModel>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(
@@ -127,10 +127,10 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                             )
                           : ListView.builder(
-                              itemCount: snapshot.data?.size,
+                              itemCount: snapshot.data?.length,
                               itemBuilder: (BuildContext context, int index) {
-                                final data = snapshot.data?.docs[index];
-                                if (data!['firstName']
+                                final data = snapshot.data![index];
+                                if (data.firstName
                                     .toString()
                                     .toLowerCase()
                                     .startsWith(_searchFieldController.text

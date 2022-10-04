@@ -17,7 +17,7 @@ import 'package:get_driver_app/widgets/img_button.dart';
 import 'package:get_driver_app/widgets/snackbar_widget.dart';
 import 'package:get_driver_app/widgets/text_field_widget.dart';
 import 'package:get_driver_app/widgets/textfield_label.dart';
-import 'login_screen.dart';
+import 'package:get_driver_app/screens/login_screen.dart';
 
 enum UserType { driver, client }
 
