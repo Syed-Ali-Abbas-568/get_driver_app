@@ -186,10 +186,11 @@ class FirestoreService {
           experience: experience,
           dateOfBirth: date,
           userType: data.data()?['userType']);
+
       await _firestore.collection('Users').doc(firebaseUser?.uid).update(
             userModel.toJson(),
           );
-      getData();
+      await getData();
     } on FirebaseAuthException catch (e) {
       debugPrint(
         e.message,

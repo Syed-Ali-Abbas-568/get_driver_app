@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _imagePath;
   String? _imageUrl;
   String _name = "";
-  final appBar=AppBar(
+  final appBar = AppBar(
     backgroundColor: const Color(0xFF152C5E),
     title: const Text("Profile"),
   );
@@ -81,10 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _firstNameController.text = snapshot.data?.get('firstName') ?? '';
         _lastNameController.text = snapshot.data?.get('lastName') ?? '';
 
-        snapshot.data?.get('photoUrl') == null
-            ? _imageUrl =
-                "https://github.com/Syed-Ali-Abbas-568/get_driver_app/blob/main/assets/images/profile.png"
-            : _imageUrl = snapshot.data?.get('photoUrl');
+        _imageUrl = snapshot.data?.get('photoUrl');
 
         _emailController.text = snapshot.data?.get('email') ?? '';
         _licenceNumController.text = (snapshot.data?.get('licenseNO') != null
@@ -106,12 +104,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         return Scaffold(
           appBar: _editable
-              ? snapshot.data?.get('userType') == 'client'?appBar:AppBar(
-                  title: const Text("Edit Mode"),
-                  centerTitle: true,
-                  backgroundColor: readOnly,
-                  automaticallyImplyLeading: false,
-                )
+              ? snapshot.data?.get('userType') == 'client'
+                  ? appBar
+                  : AppBar(
+                      title: const Text("Edit Mode"),
+                      centerTitle: true,
+                      backgroundColor: readOnly,
+                      automaticallyImplyLeading: false,
+                    )
               : appBar,
           body: Form(
             key: _formKey,
@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.width,
                     height: snapshot.data?.get('userType') == 'client'
                         ? height - 15
-                        : 1000,
+                        : 1000, //increase heres
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -170,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTap: () async {
                               if (_editable) {
                                 _imagePath = await getImage();
-                                if (_imagePath != null) {}
+                                setState(() {});
                               }
                             },
                             child: Container(
@@ -427,9 +427,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (_formKey.currentState!.validate()) {
                           _editable = false;
 
-                          bool flag = true;
+                          bool flag = false;
                           if (_imagePath != null) {
-                            flag = false;
+                            flag = true;
                           }
 
                           await context
@@ -444,6 +444,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 flag,
                               );
                           _imagePath = null;
+                          log("Value of image url = $_imageUrl");
                           Toast.toasts(
                             "Changes Applied Successfully",
                             const Color(0xFF2DD36F),

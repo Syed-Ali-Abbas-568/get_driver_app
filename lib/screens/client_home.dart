@@ -23,7 +23,11 @@ class ClientHome extends StatefulWidget {
 
 class _ClientHomeState extends State<ClientHome> {
   String? imageUrl;
-  Image img = Image.asset("assets/images/profile.png",width: 29,height: 29,);
+  Image img = Image.asset(
+    "assets/images/profile.png",
+    width: 29,
+    height: 29,
+  );
   void getImage() async {
     UserModel? userModel =
         await context.read<FirestoreProvider>().getUserData();
@@ -39,6 +43,7 @@ class _ClientHomeState extends State<ClientHome> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    getImage();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff152C5E),
@@ -52,12 +57,12 @@ class _ClientHomeState extends State<ClientHome> {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: imageUrl == null
-                      ? img.image
-                      : NetworkImage(
-                          imageUrl.toString(),
-                        ),
-                  fit: BoxFit.contain,
+                image: imageUrl == null
+                    ? img.image
+                    : NetworkImage(
+                        imageUrl!,
+                      ),
+                fit: BoxFit.contain,
               ),
               shape: BoxShape.circle,
             ),
