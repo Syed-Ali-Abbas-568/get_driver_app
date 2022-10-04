@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 
 class DriverProfile extends StatelessWidget {
@@ -6,7 +8,7 @@ class DriverProfile extends StatelessWidget {
   final String phone;
   final int license;
   final int experience;
-  DriverProfile({
+  DriverProfile({super.key,
     required this.imageUrl,
     required this.name,
     required this.phone,

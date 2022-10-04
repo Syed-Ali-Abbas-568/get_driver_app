@@ -40,14 +40,14 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
             builder: (context, child) {
               return Theme(
                   data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(
-                      primary: primaryColor,
+                    colorScheme: const ColorScheme.light(
+                      primary: constants.primaryColor,
                       onPrimary: Colors.white,
                       onSurface: Colors.black,
                     ),
                     textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
-                          backgroundColor: primaryColor,
+                          backgroundColor: constants.primaryColor,
                           foregroundColor: Colors.white),
                     ),
                   ),
@@ -216,7 +216,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       controller: _cnicController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
+                      decoration: constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "xxxxxxxxxxxxx",
                       ),
                     ),
@@ -242,7 +242,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
                       controller: _phoneController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
+                      decoration: constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "+92----------",
                       ),
                     ),
@@ -271,7 +271,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       controller: _licenseController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
+                      decoration: constants.kMessageTextFieldDecoration.copyWith(
                         hintText:
                             "Enter your 16 digit license number without dashes",
                       ),
@@ -298,7 +298,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                       },
                       controller: _dateController,
                       keyboardType: TextInputType.none,
-                      decoration: kMessageTextFieldDecoration.copyWith(
+                      decoration: constants.kMessageTextFieldDecoration.copyWith(
                           hintText: "MM/DD/YYYY",
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.date_range,

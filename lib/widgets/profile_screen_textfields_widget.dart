@@ -103,7 +103,7 @@ class ProfileScreenTextFields extends StatelessWidget {
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.phone,
             controller: _phoneController,
-            decoration: kMessageTextFieldDecoration,
+            decoration: constants.kMessageTextFieldDecoration,
           ),
           Visibility(
             visible: _userType,

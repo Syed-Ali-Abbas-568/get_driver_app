@@ -39,7 +39,7 @@ class TextFieldWidget extends StatelessWidget {
       textInputAction: TextInputAction.next,
       keyboardType: inputType,
       controller: controller,
-      decoration: kMessageTextFieldDecoration.copyWith(
+      decoration: constants.kMessageTextFieldDecoration.copyWith(
         hintText: hintText,
       ),
     );

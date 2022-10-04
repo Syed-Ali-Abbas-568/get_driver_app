@@ -180,7 +180,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       controller: _cnicController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
+                      decoration: constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "xxxxxxxxxxxxx",
                       ),
                     ),
@@ -206,7 +206,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
                       controller: _phoneController,
-                      decoration: kMessageTextFieldDecoration.copyWith(
+                      decoration: constants.kMessageTextFieldDecoration.copyWith(
                         hintText: "+92----------",
                       ),
                     ),
