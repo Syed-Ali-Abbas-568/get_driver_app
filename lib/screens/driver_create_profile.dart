@@ -1,4 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, use_build_context_synchronously
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -354,13 +355,15 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                                     .uploadRemainingData(
                                       modelToPassData,
                                     );
-                                print(modelToPassData);
+                                log(modelToPassData.cnic.toString());
 
-                                final firestoreProvider =
-                                    context.read<FirestoreProvider>();
-                                if (firestoreProvider.hasFirestoreError) {
+                                if (context
+                                    .read<FirestoreProvider>()
+                                    .hasFirestoreError) {
                                   SnackBarWidget.SnackBars(
-                                    firestoreProvider.firestoreErrorMsg,
+                                    context
+                                        .read<FirestoreProvider>()
+                                        .firestoreErrorMsg,
                                     "assets/images/errorImg.png",
                                     context: context,
                                   );

@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:provider/provider.dart';
@@ -59,10 +58,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<UserModel>(
       stream: context.read<FirestoreProvider>().getUserStream(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
         if (snapshot.hasError) {
           return const Text("Something went wrong try again");
         }
@@ -73,33 +71,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Color(0xFF152C5E),
           );
         }
+        final driver = snapshot.requireData;
 
-        _firstNameController.text = snapshot.data?.get('firstName') ?? '';
-        _lastNameController.text = snapshot.data?.get('lastName') ?? '';
+        _firstNameController.text = driver.firstName ?? '';
+        _lastNameController.text = driver.lastName ?? '';
 
-        _imageUrl = snapshot.data?.get('photoUrl');
+        _imageUrl = driver.photoUrl;
 
-        _emailController.text = snapshot.data?.get('email') ?? '';
-        _licenceNumController.text = (snapshot.data?.get('licenseNO') != null
-            ? snapshot.data?.get('licenseNO').toString()
-            : '')!;
-        _yearsOfExpController.text = (snapshot.data?.get('experience') != null
-            ? snapshot.data?.get('experience').toString()
-            : " ")!;
-        _cnicController.text = (snapshot.data?.get('cnic') != null
-            ? snapshot.data?.get('cnic').toString()
-            : " ")!;
+        _emailController.text = driver.email ?? '';
+        _licenceNumController.text =
+            (driver.license != null ? driver.license.toString() : '');
+        _yearsOfExpController.text =
+            (driver.experience != null ? driver.experience.toString() : " ");
+        _cnicController.text =
+            (driver.cnic != null ? driver.cnic.toString() : " ");
 
-        _phoneController.text = (snapshot.data?.get('phoneNO') != null
-            ? snapshot.data?.get('phoneNO').toString()
-            : 'null')!;
+        _phoneController.text =
+            (driver.phone != null ? driver.phone.toString() : 'null');
 
-        _dobController.text = snapshot.data?.get('dateOfBirth') ?? " ";
+        _dobController.text = driver.dateOfBirth ?? " ";
         _name = "${_firstNameController.text} ${_lastNameController.text}";
 
         return Scaffold(
           appBar: _editable
-              ? snapshot.data?.get('userType') == 'client'
+              ? driver.userType == 'client'
                   ? appBar
                   : AppBar(
                       title: const Text("Edit Mode"),
@@ -115,9 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    height: snapshot.data?.get('userType') == 'client'
-                        ? height - 15
-                        : 1050,
+                    height: driver.userType == 'client' ? height - 15 : 1050,
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -325,9 +318,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Visibility(
                                 visible:
-                                    snapshot.data?.get('userType') == 'client'
-                                        ? false
-                                        : true,
+                                    driver.userType == 'client' ? false : true,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

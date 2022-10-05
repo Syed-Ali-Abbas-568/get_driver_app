@@ -105,7 +105,7 @@ class _ClientHomeState extends State<ClientHome> {
               ),
             ),
             SizedBox(
-              height: 559,
+              height: height * 0.57,
               child: ClientHomeStream(height: height, width: width),
             ),
           ],

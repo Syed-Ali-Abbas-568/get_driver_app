@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -60,11 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   trailing: GestureDetector(
                     onTap: () {
-                      if (_displayFilter == false) {
-                        _displayFilter = true;
-                      } else {
-                        _displayFilter = false;
-                      }
+                      _displayFilter = !_displayFilter;
                       setState(() {});
                     },
                     child: Container(
@@ -167,7 +161,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: StreamBuilder<List<UserModel>>(
                     stream: context
                         .read<FirestoreProvider>()
-                        .getSearchStream((_displayFilter) ? _filterValue : 0),
+                        .getDriversSearchStream(
+                            (_displayFilter) ? _filterValue : 0),
                     builder:
                         (context, AsyncSnapshot<List<UserModel>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

@@ -1,5 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/screens/client_createProfile.dart';
@@ -136,10 +138,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 User? user = FirebaseAuthService().firebaseUser;
 
-                                UserModel? userModel = await context
+                                UserModel? userModel = UserModel();
+                                userModel = await context
                                     .read<FirestoreProvider>()
                                     .getUserData();
-
+                                print(
+                                    "email is ${userModel?.email.toString()}");
                                 if (userModel == null) return;
 
                                 Navigator.pushReplacement(
@@ -147,14 +151,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => user == null
                                         ? const LoginScreen()
-                                        : userModel.cnic == null
-                                            ? userModel.userType == "client"
+                                        : userModel?.cnic == null
+                                            ? userModel?.userType == "client"
                                                 ? const ClientCreateProfile()
                                                 : const DriverCreateProfile()
-                                            : userModel.userType == "client"
+                                            : userModel?.userType == "client"
                                                 ? ClientHome(
                                                     name:
-                                                        "${userModel.firstName} ${userModel.lastName}")
+                                                        "${userModel?.firstName} ${userModel?.lastName}")
                                                 : const NavBar(),
                                   ),
                                 );
@@ -224,20 +228,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 img: "google_logo",
                                 text: "Google",
                                 onPressed: () async {
-                                  AuthProvider authProvider = AuthProvider();
-                                  if (authProvider.hasError) {
+                                  UserModel? userModel = await context
+                                      .read<AuthProvider>()
+                                      .googleSignUpFunc(null);
+
+                                  if (context.read<AuthProvider>().hasError) {
                                     SnackBarWidget.SnackBars(
-                                      authProvider.errorMsg,
+                                      context.read<AuthProvider>().errorMsg,
                                       "assets/images/errorImg.png",
                                       context: context,
                                     );
                                     return;
                                   }
-
-                                  UserModel? userModel = await context
-                                      .read<AuthProvider>()
-                                      .googleSignUpFunc(null);
+                                  print(userModel?.cnic);
                                   if (userModel != null) {
+                                    log("google login have no error");
                                     Future.delayed(const Duration(seconds: 3));
                                     Navigator.pushReplacement(
                                       context,
@@ -257,9 +262,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     : const NavBar(),
                                       ),
                                     );
+                                    log("google login going to switch");
                                     SnackBarWidget.SnackBars(
                                       "Sign in successful",
                                       "assets/images/successImg.png",
+                                      context: context,
+                                    );
+                                  } else {
+                                    SnackBarWidget.SnackBars(
+                                      "Something went wrong",
+                                      "assets/images/errorImg.png",
                                       context: context,
                                     );
                                   }

@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
@@ -52,7 +53,6 @@ class FirestoreProvider with ChangeNotifier {
       _firestoreService.updateData(
         modelToPassData,
       );
-      print(modelToPassData);
     } on UnkownFirestoreException {
       _firestoreErrorMsg = 'Something went wrong';
       _hasFirestoreError = true;
@@ -67,7 +67,6 @@ class FirestoreProvider with ChangeNotifier {
     bool flag,
   ) async {
     _isLoading = true;
-    ;
 
     try {
       _isProfileCreation = true;
@@ -88,11 +87,15 @@ class FirestoreProvider with ChangeNotifier {
     return _firestoreService.isPresent(id);
   }
 
-  Stream<DocumentSnapshot> getUserStream() {
+  Stream<UserModel> getUserStream() {
     return _firestoreService.getStream();
   }
 
-  Stream<List<UserModel>> getSearchStream(int filterValue) {
-    return _firestoreService.getSearchStream(filterValue);
+  Stream<List<UserModel>> getDriversStream() {
+    return _firestoreService.getDriversStream();
+  }
+
+  Stream<List<UserModel>> getDriversSearchStream(int filterValue) {
+    return _firestoreService.getDriversSearchStream(filterValue);
   }
 }

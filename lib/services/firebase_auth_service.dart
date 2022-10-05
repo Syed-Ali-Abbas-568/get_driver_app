@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -42,7 +44,9 @@ class FirebaseAuthService {
 
   Future<void> signIn(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      var sign = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      debugPrint(sign.user?.email.toString());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') {
         throw WrongPasswordException('You have entered a wrong password');
@@ -55,7 +59,7 @@ class FirebaseAuthService {
   }
 
   Future<UserCredential?> signUp(
-      UserModel modelToPassData,
+    UserModel modelToPassData,
     String password,
   ) async {
     UserCredential? userCredential;
@@ -134,18 +138,19 @@ class FirebaseAuthService {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-      User? firebaseUser = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
       bool isEmpty = false;
-      isEmpty = await _firestoreServices.isPresent(firebaseUser!.uid);
+      isEmpty = await _firestoreServices.isPresent(user!.uid);
       final name = _user!.displayName?.split(" ");
+      log(name.toString());
       if (!isEmpty) {
         userModel.firstName = name?[0];
         userModel.lastName = name?[1];
         userModel.email = _user?.email;
-        userModel.id = firebaseUser.uid;
+        userModel.id = user.uid;
         userModel.photoUrl = _user?.photoUrl;
         userModel.userType = userType;
-        _firestoreServices.uploadSignUpInfo(userModel, firebaseUser.uid);
+        _firestoreServices.uploadSignUpInfo(userModel, user.uid.toString());
       } else {
         userModel = await _firestoreServices.getData();
       }

@@ -47,7 +47,8 @@ class FirestoreService {
 
   Future<UserModel?> getData() async {
     UserModel? myUser;
-    String? id = _firebaseUser?.uid;
+    User? userId = _auth.currentUser;
+    String? id = userId?.uid;
     try {
       if (id == null) {
         return myUser;
@@ -89,6 +90,11 @@ class FirestoreService {
         photoUrl = await imgToUpload.getDownloadURL();
         log("The uploaded Image URL is $photoUrl");
       }
+      log(modelToPassData.email.toString());
+      log(modelToPassData.cnic.toString());
+      log(modelToPassData.photoUrl.toString());
+      log(modelToPassData.firstName.toString());
+      log(modelToPassData.lastName.toString());
 
       UserModel userModel = UserModel(
           firstName: data.data()?['firstName'],
@@ -102,7 +108,7 @@ class FirestoreService {
           experience: modelToPassData.experience,
           dateOfBirth: modelToPassData.dateOfBirth,
           userType: data.data()?['userType']);
-      await _firestore.doc(_firebaseUser?.uid).update(
+      final result = await _firestore.doc(_firebaseUser?.uid).update(
             userModel.toJson(),
           );
     } on FirebaseAuthException catch (e) {
@@ -161,25 +167,38 @@ class FirestoreService {
     }
   }
 
-  Stream<DocumentSnapshot> getStream() {
-    User? user = _auth.currentUser;
-    return _firestore.doc(user?.uid).snapshots();
+  Stream<UserModel> getStream() {
+    final User? user = _auth.currentUser;
+    return _firestore.doc(user?.uid).snapshots().map((event) {
+      return UserModel.fromJson(event.data()!);
+    });
   }
 
-  Stream<List<UserModel>> getSearchStream(int filterValue) {
-    log("value is = $filterValue");
-    UserModel userModel = UserModel();
+  Stream<List<UserModel>> getDriversStream() {
     return _firestore
-        // .where(
-        //   'userType',
-        //   isEqualTo: UserType.driver.name,
-        // )
-        .where('experience', isGreaterThanOrEqualTo: filterValue)
+        .where(
+          'userType',
+          isEqualTo: UserType.driver.name,
+        )
         .snapshots()
         .map(
-          (event) => event.docs
-              .map((e) => userModel = UserModel.fromJson(e.data()))
-              .toList(),
+          (event) =>
+              event.docs.map((e) => UserModel.fromJson(e.data())).toList(),
+        );
+  }
+
+  Stream<List<UserModel>> getDriversSearchStream(int filterValue) {
+    log("value is = $filterValue");
+    return _firestore
+        .where(
+          'userType',
+          isEqualTo: UserType.driver.name,
+        )
+        .where('experience', isGreaterThan: filterValue)
+        .snapshots()
+        .map(
+          (event) =>
+              event.docs.map((e) => UserModel.fromJson(e.data())).toList(),
         );
   }
 }

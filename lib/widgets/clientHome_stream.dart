@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +20,7 @@ class ClientHomeStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<UserModel>>(
-        stream: context.read<FirestoreProvider>().getSearchStream(0),
+        stream: context.read<FirestoreProvider>().getDriversStream(),
         builder: (context, AsyncSnapshot<List<UserModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
