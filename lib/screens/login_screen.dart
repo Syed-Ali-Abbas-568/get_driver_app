@@ -262,7 +262,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     : const NavBar(),
                                       ),
                                     );
-                                    log("google login going to switch");
                                     SnackBarWidget.SnackBars(
                                       "Sign in successful",
                                       "assets/images/successImg.png",

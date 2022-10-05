@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/screens/client_createProfile.dart';
 import 'package:get_driver_app/screens/client_home.dart';
@@ -293,46 +294,49 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               img: "google_logo",
                               text: "Google",
                               onPressed: () async {
-                                if (context.watch<AuthProvider>().hasError) {
-                                  SnackBarWidget.SnackBars(
-                                      context.watch<AuthProvider>().errorMsg,
-                                      "assets/images/errorImg.png",
-                                      context: context);
-                                  return;
-                                }
-
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
-                                    .googleSignUpFunc(
-                                      _selectedUserType,
-                                    );
+                                    .googleSignUpFunc(_selectedUserType);
 
-                                if (userModel == null) return;
-
-                                if (userModel.cnic == null) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          userModel.userType == "client"
-                                              ? const ClientCreateProfile()
-                                              : const DriverCreateProfile(),
-                                    ),
+                                if (context.read<AuthProvider>().hasError) {
+                                  SnackBarWidget.SnackBars(
+                                    context.read<AuthProvider>().errorMsg,
+                                    "assets/images/errorImg.png",
+                                    context: context,
                                   );
-                                } else {
-                                  Navigator.of(context).pushReplacement(
+                                  return;
+                                }
+                                print(userModel?.cnic);
+                                if (userModel != null) {
+                                  log("google login have no error");
+                                  Future.delayed(const Duration(seconds: 3));
+                                  Navigator.pushReplacement(
+                                    context,
                                     MaterialPageRoute(
-                                      builder: (context) => userModel
-                                                  .userType ==
-                                              "client"
-                                          ? ClientHome(
-                                              name:
-                                                  "${userModel.firstName} ${userModel.lastName}")
-                                          : const NavBar(),
+                                      builder: (context) => FirebaseAuth
+                                                  .instance.currentUser ==
+                                              null
+                                          ? const LoginScreen()
+                                          : userModel.cnic == null
+                                              ? userModel.userType == "client"
+                                                  ? const ClientCreateProfile()
+                                                  : const DriverCreateProfile()
+                                              : userModel.userType == "client"
+                                                  ? ClientHome(
+                                                      name:
+                                                          "${userModel.firstName} ${userModel.lastName}")
+                                                  : const NavBar(),
                                     ),
                                   );
                                   SnackBarWidget.SnackBars(
-                                    "Facebook Sign in successful",
+                                    "Sign up successful",
                                     "assets/images/successImg.png",
+                                    context: context,
+                                  );
+                                } else {
+                                  SnackBarWidget.SnackBars(
+                                    "Something went wrong",
+                                    "assets/images/errorImg.png",
                                     context: context,
                                   );
                                 }
@@ -349,33 +353,49 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               img: "facebook_logo",
                               text: "Facebook",
                               onPressed: () async {
+                                AuthProvider authProvider = AuthProvider();
+                                if (authProvider.hasError) {
+                                  SnackBarWidget.SnackBars(
+                                      authProvider.errorMsg,
+                                      "assets/images/errorImg.png",
+                                      context: context);
+                                  return;
+                                }
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
                                     .facebookSignUp(
-                                      _selectedUserType,
-                                    );
+                                  _selectedUserType,
+                                );
                                 if (userModel == null ||
                                     userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          userModel?.userType == "client"
-                                              ? const ClientCreateProfile()
-                                              : const DriverCreateProfile(),
+                                      userModel?.userType == "client"
+                                          ? const ClientCreateProfile()
+                                          : const DriverCreateProfile(),
                                     ),
                                   );
+                                  SnackBarWidget.SnackBars(
+                                      "Sign in successful",
+                                      "assets/images/successImg.png",
+                                      context: context);
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) => userModel
-                                                  .userType ==
-                                              "client"
+                                          .userType ==
+                                          "client"
                                           ? ClientHome(
-                                              name:
-                                                  "${userModel.firstName} ${userModel.lastName}")
+                                          name:
+                                          "${userModel.firstName} ${userModel.lastName}")
                                           : const NavBar(),
                                     ),
                                   );
+                                  SnackBarWidget.SnackBars(
+                                      "Sign in successful",
+                                      "assets/images/successImg.png",
+                                      context: context);
                                 }
                               },
                             ),
