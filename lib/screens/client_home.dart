@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/models/user_model.dart';
@@ -57,7 +58,7 @@ class _ClientHomeState extends State<ClientHome> {
               image: DecorationImage(
                 image: imageUrl == null
                     ? img.image
-                    : NetworkImage(
+                    : CachedNetworkImageProvider(
                         imageUrl!,
                       ),
                 fit: BoxFit.contain,

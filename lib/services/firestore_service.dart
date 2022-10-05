@@ -83,29 +83,28 @@ class FirestoreService {
 
         Reference refRoot = FirebaseStorage.instance.ref();
         Reference referenceDir = refRoot.child('images');
-        Reference imgToUpload = referenceDir.child(DateTime.now().toString());
+        Reference imgToUpload = referenceDir.child(data.id);
 
         await imgToUpload.putFile(file);
         photoUrl = await imgToUpload.getDownloadURL();
         log("The uploaded Image URL is $photoUrl");
       }
-      if (photoUrl != null) {
-        UserModel userModel = UserModel(
-            firstName: data.data()?['firstName'],
-            lastName: data.data()?['lastName'],
-            email: data.data()?['email'],
-            id: data.data()?['userId'],
-            photoUrl: data.data()?['photoUrl'],
-            cnic: modelToPassData.cnic,
-            phone: modelToPassData.phone,
-            license: modelToPassData.license,
-            experience: modelToPassData.experience,
-            dateOfBirth: modelToPassData.dateOfBirth,
-            userType: data.data()?['userType']);
-        await _firestore.doc(_firebaseUser?.uid).update(
-              userModel.toJson(),
-            );
-      }
+
+      UserModel userModel = UserModel(
+          firstName: data.data()?['firstName'],
+          lastName: data.data()?['lastName'],
+          email: data.data()?['email'],
+          id: data.data()?['userId'],
+          photoUrl: photoUrl ?? data.data()?['photoUrl'],
+          cnic: modelToPassData.cnic,
+          phone: modelToPassData.phone,
+          license: modelToPassData.license,
+          experience: modelToPassData.experience,
+          dateOfBirth: modelToPassData.dateOfBirth,
+          userType: data.data()?['userType']);
+      await _firestore.doc(_firebaseUser?.uid).update(
+            userModel.toJson(),
+          );
     } on FirebaseAuthException catch (e) {
       debugPrint(
         e.message,
@@ -128,7 +127,8 @@ class FirestoreService {
 
         Reference refRoot = FirebaseStorage.instance.ref();
         Reference referenceDir = refRoot.child('images');
-        Reference imgToUpload = referenceDir.child(DateTime.now().toString());
+        Reference imgToUpload =
+            referenceDir.child(data.id); // try making the string  same
 
         await imgToUpload.putFile(file);
         photoUrl = await imgToUpload.getDownloadURL();
@@ -140,7 +140,7 @@ class FirestoreService {
           lastName: data.data()?['lastName'],
           email: data.data()?['email'],
           id: data.data()?['userId'],
-          photoUrl: data.data()?['photoUrl'],
+          photoUrl: flag ? photoUrl : data.data()?['photoUrl'],
           cnic: modelToPassData.cnic,
           phone: modelToPassData.phone,
           license: modelToPassData.license,
@@ -166,10 +166,15 @@ class FirestoreService {
     return _firestore.doc(user?.uid).snapshots();
   }
 
-  Stream<List<UserModel>> getSearchStream() {
+  Stream<List<UserModel>> getSearchStream(int filterValue) {
+    log("value is = $filterValue");
     UserModel userModel = UserModel();
     return _firestore
-        .where('userType', isEqualTo: UserType.driver.name)
+        // .where(
+        //   'userType',
+        //   isEqualTo: UserType.driver.name,
+        // )
+        .where('experience', isGreaterThanOrEqualTo: filterValue)
         .snapshots()
         .map(
           (event) => event.docs

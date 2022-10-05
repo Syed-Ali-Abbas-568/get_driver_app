@@ -18,7 +18,7 @@ class ClientHomeStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<UserModel>>(
-        stream: context.read<FirestoreProvider>().getSearchStream(),
+        stream: context.read<FirestoreProvider>().getSearchStream(0),
         builder: (context, AsyncSnapshot<List<UserModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +17,8 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final _searchFieldController = TextEditingController();
+  bool _displayFilter = false;
+  int _filterValue = 5;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -54,34 +58,116 @@ class _SearchScreenState extends State<SearchScreen> {
                       decoration: Constants.searchFieldDecoration,
                     ),
                   ),
-                  trailing: Container(
-                    margin: const EdgeInsets.only(
-                      left: 13,
+                  trailing: GestureDetector(
+                    onTap: () {
+                      if (_displayFilter == false) {
+                        _displayFilter = true;
+                      } else {
+                        _displayFilter = false;
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                        left: 13,
+                      ),
+                      padding: EdgeInsets.all(height * 0.015),
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 1,
+                            spreadRadius: 0.1,
+                          ),
+                        ],
+                        shape: BoxShape.circle,
+                        color: Color(0xffEEF3FF),
+                      ),
+                      child: Image.asset(
+                        "assets/images/filter_icon.png",
+                        width: width * 0.049,
+                        height: height * 0.019,
+                      ),
                     ),
-                    padding: EdgeInsets.all(height * 0.015),
-                    decoration: const BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 1,
-                          spreadRadius: 0.1,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Visibility(
+                visible: _displayFilter,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 11, 16, 11),
+                  color: const Color(0xDDEEF3FF),
+                  height: 120,
+                  width: (width < 328) ? width : 328,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Select Years of Experience",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
                         ),
-                      ],
-                      shape: BoxShape.circle,
-                      color: Color(0xffEEF3FF),
-                    ),
-                    child: Image.asset(
-                      "assets/images/filter_icon.png",
-                      width: width * 0.049,
-                      height: height * 0.019,
-                    ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Radio(
+                            activeColor: Constants.primaryColor,
+                            value: 5,
+                            groupValue: _filterValue,
+                            onChanged: (value) {
+                              _filterValue = 5;
+                              setState(() {});
+                            },
+                          ),
+                          const Text("5+"),
+                          Radio(
+                            activeColor: Constants.primaryColor,
+                            value: 4,
+                            groupValue: _filterValue,
+                            onChanged: (value) {
+                              _filterValue = 4;
+                              setState(() {});
+                            },
+                          ),
+                          const Text("4+"),
+                          Radio(
+                            activeColor: Constants.primaryColor,
+                            value: 3,
+                            groupValue: _filterValue,
+                            onChanged: (value) {
+                              _filterValue = 3;
+                              setState(() {});
+                            },
+                          ),
+                          const Text("3+"),
+                          Radio(
+                            activeColor: Constants.primaryColor,
+                            value: 2,
+                            groupValue: _filterValue,
+                            onChanged: (value) {
+                              _filterValue = 2;
+                              setState(() {});
+                            },
+                          ),
+                          const Text("2+"),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
               SizedBox(
                 height: height * 0.8,
                 child: StreamBuilder<List<UserModel>>(
-                    stream: context.read<FirestoreProvider>().getSearchStream(),
+                    stream: context
+                        .read<FirestoreProvider>()
+                        .getSearchStream((_displayFilter) ? _filterValue : 0),
                     builder:
                         (context, AsyncSnapshot<List<UserModel>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

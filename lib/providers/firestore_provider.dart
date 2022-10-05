@@ -16,6 +16,9 @@ class FirestoreProvider with ChangeNotifier {
 
   String get firestoreErrorMsg => _firestoreErrorMsg;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   Future<UserModel?> getUserData() async {
     UserModel? userModel;
     try {
@@ -63,6 +66,9 @@ class FirestoreProvider with ChangeNotifier {
     UserModel modelToPassData,
     bool flag,
   ) async {
+    _isLoading = true;
+    ;
+
     try {
       _isProfileCreation = true;
       await _firestoreService.updateProfileData(
@@ -74,6 +80,7 @@ class FirestoreProvider with ChangeNotifier {
       _hasFirestoreError = true;
     }
     _isProfileCreation = false;
+    _isLoading = false;
     notifyListeners();
   }
 
@@ -85,7 +92,7 @@ class FirestoreProvider with ChangeNotifier {
     return _firestoreService.getStream();
   }
 
-  Stream<List<UserModel>> getSearchStream() {
-    return _firestoreService.getSearchStream();
+  Stream<List<UserModel>> getSearchStream(int filterValue) {
+    return _firestoreService.getSearchStream(filterValue);
   }
 }

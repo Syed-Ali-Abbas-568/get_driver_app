@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/models/user_model.dart';
@@ -116,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: MediaQuery.of(context).size.width,
                     height: snapshot.data?.get('userType') == 'client'
                         ? height - 15
-                        : 1000, //increase here
+                        : 1050,
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -178,14 +179,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               child: CircleAvatar(
                                 backgroundColor: Colors.transparent,
-                                backgroundImage:
+                                backgroundImage: const AssetImage(
+                                    'assets/images/profile.png'),
+                                foregroundImage:
                                     (_imageUrl != null && _imagePath == null)
-                                        ? NetworkImage(_imageUrl!)
-                                        : (_imagePath != null)
-                                            ? FileImage(File(_imagePath!))
-                                            : const AssetImage(
-                                                    'assets/images/profile.png')
-                                                as ImageProvider,
+                                        ? CachedNetworkImageProvider(
+                                            _imageUrl.toString(),
+                                          )
+                                        : FileImage(File(_imagePath.toString()))
+                                            as ImageProvider,
                               ),
                             ),
                           ),
@@ -411,18 +413,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           minimumSize:
                               Size(MediaQuery.of(context).size.width - 33, 50)),
-                      child: const Text(
-                        "Update",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16),
-                      ),
+                      child: (context.watch<FirestoreProvider>().isLoading)
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              "Update",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16),
+                            ),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          _editable = false;
                           UserModel modelToPassData = UserModel(
-                            photoUrl: _imagePath ?? _imageUrl!,
+                            photoUrl: _imagePath ?? _imageUrl,
                             dateOfBirth: _dobController.text,
                             experience: int.parse(_yearsOfExpController.text),
                             cnic: int.parse(_cnicController.text),
@@ -437,7 +442,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 (_imagePath != null) ? true : false,
                               );
                           _imagePath = null;
-
+                          _editable = false;
                           Toast.toasts(
                             "Changes Applied Successfully",
                             const Color(0xFF2DD36F),
