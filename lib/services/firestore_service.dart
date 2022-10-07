@@ -169,7 +169,7 @@ class FirestoreService {
       log(modelToPassData.lastName.toString());
       log(modelToPassData.id.toString());
 
-      await _firestore.doc(_firebaseUser?.uid).update(
+      await _firestore.doc(_firebaseUser?.uid).set(
             userModel.toJson(),
           );
     } on FirebaseAuthException catch (e) {
