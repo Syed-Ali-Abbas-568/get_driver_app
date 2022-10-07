@@ -36,6 +36,7 @@ class Constants {
     prefixIconColor: Colors.grey,
     prefixIcon: Icon(
       Icons.search,
+      color: Colors.grey,
     ),
     fillColor: Color(0xffEEF3FF),
     filled: true,

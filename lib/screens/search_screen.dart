@@ -17,7 +17,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final _searchFieldController = TextEditingController();
   bool _displayFilter = false;
   bool _enableFilter = false;
-  int _filterValue = 5;
+  int _filterValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +182,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: MaterialButton(
                               onPressed: () {
                                 _enableFilter = true;
+                                _displayFilter = false;
                                 setState(() {});
                               },
                               height: 24.0,
