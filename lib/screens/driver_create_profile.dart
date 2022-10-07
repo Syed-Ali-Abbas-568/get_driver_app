@@ -1,5 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, use_build_context_synchronously
-import 'dart:developer';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -32,6 +32,7 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
   final _phoneController = TextEditingController();
   final _dateController = TextEditingController();
   String? _imagePath;
+  String? _imageUrl;
   String _name = "";
   String _email = "";
   final String _pattern = '^(?:[+0]9)?[0-9]{11}\$';
@@ -342,8 +343,16 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                             onPressed: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (_formKey.currentState!.validate()) {
+                                if (_imagePath != null) {
+                                  _imageUrl = await context
+                                      .read<FirestoreProvider>()
+                                      .uploadImage(_imagePath!);
+                                } else {
+                                  _imageUrl ??= Constants.defaultImage;
+                                }
+
                                 UserModel modelToPassData = UserModel(
-                                  photoUrl: _imagePath,
+                                  photoUrl: _imageUrl,
                                   dateOfBirth: _dateController.text,
                                   experience: int.parse(_expController.text),
                                   cnic: int.parse(_cnicController.text),
@@ -352,10 +361,9 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                                 );
                                 await context
                                     .read<FirestoreProvider>()
-                                    .uploadRemainingData(
+                                    .uploadProfileData(
                                       modelToPassData,
                                     );
-                                log(modelToPassData.cnic.toString());
 
                                 if (context
                                     .read<FirestoreProvider>()

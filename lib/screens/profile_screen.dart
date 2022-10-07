@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -417,8 +418,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
+                          if (_imagePath != null) {
+                            _imageUrl = await context
+                                .read<FirestoreProvider>()
+                                .uploadImage(_imagePath!);
+                            _imagePath = null;
+                          } else {
+                            _imageUrl ??= Constants.defaultImage;
+                          }
+
+                          log("The Uploaded URL is = $_imageUrl");
+
                           UserModel modelToPassData = UserModel(
-                            photoUrl: _imagePath ?? _imageUrl,
+                            photoUrl: _imageUrl,
                             dateOfBirth: _dobController.text,
                             experience: int.parse(_yearsOfExpController.text),
                             cnic: int.parse(_cnicController.text),
@@ -430,10 +442,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               .read<FirestoreProvider>()
                               .uploadProfileData(
                                 modelToPassData,
-                                (_imagePath != null) ? true : false,
                               );
-                          _imagePath = null;
+
                           _editable = false;
+
                           Toast.toasts(
                             "Changes Applied Successfully",
                             const Color(0xFF2DD36F),

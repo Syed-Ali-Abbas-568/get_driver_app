@@ -16,7 +16,9 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _searchFieldController = TextEditingController();
   bool _displayFilter = false;
+  bool _enableFilter = false;
   int _filterValue = 5;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -94,11 +96,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(16, 11, 16, 11),
                   color: const Color(0xDDEEF3FF),
-                  height: 120,
-                  width: (width < 328) ? width : 328,
+                  height: 140,
+                  width: (width < 350) ? width : 350,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         "Select Years of Experience",
@@ -115,8 +117,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             value: 5,
                             groupValue: _filterValue,
                             onChanged: (value) {
-                              _filterValue = 5;
                               setState(() {});
+                              _filterValue = 5;
+                              _enableFilter = false;
                             },
                           ),
                           const Text("5+"),
@@ -125,8 +128,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             value: 4,
                             groupValue: _filterValue,
                             onChanged: (value) {
-                              _filterValue = 4;
                               setState(() {});
+                              _filterValue = 4;
+                              _enableFilter = false;
                             },
                           ),
                           const Text("4+"),
@@ -135,8 +139,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             value: 3,
                             groupValue: _filterValue,
                             onChanged: (value) {
-                              _filterValue = 3;
                               setState(() {});
+                              _filterValue = 3;
+                              _enableFilter = false;
                             },
                           ),
                           const Text("3+"),
@@ -145,11 +150,50 @@ class _SearchScreenState extends State<SearchScreen> {
                             value: 2,
                             groupValue: _filterValue,
                             onChanged: (value) {
-                              _filterValue = 2;
                               setState(() {});
+                              _filterValue = 2;
+                              _enableFilter = false;
                             },
                           ),
                           const Text("2+"),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              _enableFilter = false;
+                              setState(() {});
+                            },
+                            child: const Text(
+                              'Clear',
+                              style: TextStyle(
+                                color: Constants.primaryColor,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          Material(
+                            color: Constants.primaryColor,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(100.0),
+                            ),
+                            child: MaterialButton(
+                              onPressed: () {
+                                _enableFilter = true;
+                                setState(() {});
+                              },
+                              height: 24.0,
+                              child: const Text(
+                                'Apply',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       )
                     ],
@@ -162,7 +206,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     stream: context
                         .read<FirestoreProvider>()
                         .getDriversSearchStream(
-                            (_displayFilter) ? _filterValue : 0),
+                            (_enableFilter) ? _filterValue : 0),
                     builder:
                         (context, AsyncSnapshot<List<UserModel>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

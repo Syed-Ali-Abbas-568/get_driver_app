@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
@@ -45,26 +43,37 @@ class FirestoreProvider with ChangeNotifier {
     return _firestoreService.uploadSignUpInfo(userModel, id);
   }
 
-  Future<void> uploadRemainingData(
-    UserModel modelToPassData,
-  ) async {
+  // Future<void> uploadRemainingData(
+  //   UserModel modelToPassData,
+  // ) async {
+  //   try {
+  //     _isProfileCreation = true;
+  //     _firestoreService.updateData(
+  //       modelToPassData,
+  //     );
+  //   } on UnkownFirestoreException {
+  //     _firestoreErrorMsg = 'Something went wrong';
+  //     _hasFirestoreError = true;
+  //   }
+  //   _isProfileCreation = false;
+  //   notifyListeners();
+  // }
+
+  Future<String?> uploadImage(String filePath) async {
+    _isLoading = true;
+    notifyListeners();
+    String? imageUrl;
     try {
-      _isProfileCreation = true;
-      _firestoreService.updateData(
-        modelToPassData,
-      );
+      imageUrl = await _firestoreService.uploadImage(filePath);
     } on UnkownFirestoreException {
-      _firestoreErrorMsg = 'Something went wrong';
+      _firestoreErrorMsg = 'Something went Wrong';
       _hasFirestoreError = true;
     }
-    _isProfileCreation = false;
-    notifyListeners();
+    return imageUrl;
   }
-  //pass models here
 
   Future<void> uploadProfileData(
     UserModel modelToPassData,
-    bool flag,
   ) async {
     _isLoading = true;
 
@@ -72,7 +81,6 @@ class FirestoreProvider with ChangeNotifier {
       _isProfileCreation = true;
       await _firestoreService.updateProfileData(
         modelToPassData,
-        flag,
       );
     } on UnkownFirestoreException {
       _firestoreErrorMsg = 'Something went wrong';

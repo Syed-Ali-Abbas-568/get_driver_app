@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:get_driver_app/constants.dart';
 
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/screens/driver_profile.dart';
@@ -52,9 +53,15 @@ class DriverListTile extends StatelessWidget {
               child: Image.asset("assets/images/profile.png"),
             )
           : Container(
-              color: Colors.white,
-              child: Image.network(
-                data.photoUrl.toString(),
+              width: 70,
+              height: 75,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                image: DecorationImage(
+                  image: NetworkImage(data.photoUrl.toString()),
+                  fit: BoxFit.cover,
+                  repeat: ImageRepeat.noRepeat,
+                ),
               ),
             ),
       trailing: Material(
@@ -68,7 +75,7 @@ class DriverListTile extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => DriverProfile(
-                  imageUrl: data.photoUrl ?? "null",
+                  imageUrl: data.photoUrl ?? Constants.defaultImage,
                   name: "${data.firstName} ${data.lastName}",
                   phone: data.phone.toString(),
                   license: data.license!.toInt(),

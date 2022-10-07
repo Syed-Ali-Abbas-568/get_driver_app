@@ -69,6 +69,8 @@ class Constants {
     ),
   );
 
+  static const String defaultImage =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfd_zHfi__RrE9HcIukgjGt6HdH7ZFbjERDA&usqp=CAU";
   static const primaryColor = Color(0xFF152C5E);
   static const selectStyle = TextStyle(
     color: Colors.white,

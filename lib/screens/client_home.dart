@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/constants.dart';
@@ -27,14 +29,22 @@ class _ClientHomeState extends State<ClientHome> {
     width: 29,
     height: 29,
   );
-  void getImage() async {
+  Future<void> getImage() async {
+    //async method was created here
     UserModel? userModel =
         await context.read<FirestoreProvider>().getUserData();
     imageUrl = userModel?.photoUrl;
+    log("imageURl= $imageUrl");
+  }
+
+  void asyncImageMethod() async {
+    await getImage();
+    setState(() {});
   }
 
   @override
   void initState() {
+    asyncImageMethod();
     super.initState();
   }
 
@@ -42,7 +52,7 @@ class _ClientHomeState extends State<ClientHome> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    getImage();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff152C5E),

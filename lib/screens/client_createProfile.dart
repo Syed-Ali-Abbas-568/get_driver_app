@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, file_names
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
   final _cnicController = TextEditingController();
   final _phoneController = TextEditingController();
   String? _imagePath;
+  String? _imageUrl;
   String _name = "";
   String _email = "";
   final String _pattern = '^(?:[+0]9)?[0-9]{11}\$';
@@ -226,16 +228,25 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                             onPressed: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (_formKey.currentState!.validate()) {
+                                if (_imagePath != null) {
+                                  _imageUrl = await context
+                                      .read<FirestoreProvider>()
+                                      .uploadImage(_imagePath!);
+                                } else {
+                                  _imageUrl ??= Constants.defaultImage;
+                                }
+                                log("uploaded image for client is: $_imageUrl");
                                 UserModel modelToPassData = UserModel(
-                                  photoUrl: _imagePath,
+                                  photoUrl: _imageUrl,
                                   dateOfBirth: null,
                                   experience: null,
                                   cnic: int.parse(_cnicController.text),
                                   phone: _phoneController.text,
                                 );
+
                                 await context
                                     .read<FirestoreProvider>()
-                                    .uploadRemainingData(
+                                    .uploadProfileData(
                                       modelToPassData,
                                     );
 
