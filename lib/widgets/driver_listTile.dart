@@ -77,8 +77,8 @@ class DriverListTile extends StatelessWidget {
                 builder: (context) => DriverProfile(
                   imageUrl: data.photoUrl ?? Constants.defaultImage,
                   name: "${data.firstName} ${data.lastName}",
-                  phone: data.phone.toString(),
-                  license: data.license!.toInt(),
+                  phone: data.phoneNO.toString(),
+                  license: data.licenseNO!.toInt(),
                   experience: data.experience!.toInt(),
                 ),
               ),

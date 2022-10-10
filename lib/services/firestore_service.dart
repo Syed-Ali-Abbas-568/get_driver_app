@@ -156,8 +156,8 @@ class FirestoreService {
           id: data.data()?['userId'],
           photoUrl: modelToPassData.photoUrl,
           cnic: modelToPassData.cnic,
-          phone: modelToPassData.phone,
-          license: modelToPassData.license,
+          phoneNO: modelToPassData.phoneNO,
+          licenseNO: modelToPassData.licenseNO,
           experience: modelToPassData.experience,
           dateOfBirth: modelToPassData.dateOfBirth,
           userType: data.data()?['userType']);

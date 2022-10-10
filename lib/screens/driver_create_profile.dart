@@ -356,8 +356,8 @@ class _DriverCreateProfileState extends State<DriverCreateProfile> {
                                   dateOfBirth: _dateController.text,
                                   experience: int.parse(_expController.text),
                                   cnic: int.parse(_cnicController.text),
-                                  license: int.parse(_licenseController.text),
-                                  phone: _phoneController.text,
+                                  licenseNO: int.parse(_licenseController.text),
+                                  phoneNO: _phoneController.text,
                                 );
                                 await context
                                     .read<FirestoreProvider>()

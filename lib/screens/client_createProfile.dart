@@ -241,7 +241,7 @@ class _ClientCreateProfileState extends State<ClientCreateProfile> {
                                   dateOfBirth: null,
                                   experience: null,
                                   cnic: int.parse(_cnicController.text),
-                                  phone: _phoneController.text,
+                                  phoneNO: _phoneController.text,
                                 );
 
                                 await context

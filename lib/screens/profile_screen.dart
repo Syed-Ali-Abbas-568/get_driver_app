@@ -81,14 +81,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         _emailController.text = driver.email ?? '';
         _licenceNumController.text =
-            (driver.license != null ? driver.license.toString() : '');
+            (driver.licenseNO != null ? driver.licenseNO.toString() : '');
         _yearsOfExpController.text =
             (driver.experience != null ? driver.experience.toString() : " ");
         _cnicController.text =
             (driver.cnic != null ? driver.cnic.toString() : " ");
 
         _phoneController.text =
-            (driver.phone != null ? driver.phone.toString() : 'null');
+            (driver.phoneNO != null ? driver.phoneNO.toString() : 'null');
 
         _dobController.text = driver.dateOfBirth ?? " ";
         _name = "${_firstNameController.text} ${_lastNameController.text}";
@@ -434,8 +434,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             dateOfBirth: _dobController.text,
                             experience: int.parse(_yearsOfExpController.text),
                             cnic: int.parse(_cnicController.text),
-                            license: int.parse(_licenceNumController.text),
-                            phone: _phoneController.text,
+                            licenseNO: int.parse(_licenceNumController.text),
+                            phoneNO: _phoneController.text,
                           );
 
                           await context
