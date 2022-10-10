@@ -125,7 +125,7 @@ class FirebaseAuthService {
   }
 
   Future<UserModel?> googleSignUp(String? userType) async {
-    UserModel? userModel = UserModel();
+    UserModel? userModel;
     try {
       final googleUser = await _googleSignIn.signIn();
 
@@ -144,12 +144,14 @@ class FirebaseAuthService {
       final name = _user!.displayName?.split(" ");
       log(name.toString());
       if (!isEmpty) {
-        userModel.firstName = name?[0];
-        userModel.lastName = name?[1];
-        userModel.email = _user?.email;
-        userModel.id = user.uid;
-        userModel.photoUrl = _user?.photoUrl;
-        userModel.userType = userType;
+        userModel=UserModel(
+          firstName:name?[0],
+          lastName: name?[1],
+          email: _user?.email,
+          id: user.uid,
+          photoUrl: _user?.photoUrl,
+          userType: userType,
+        );
         _firestoreServices.uploadSignUpInfo(userModel, user.uid.toString());
       } else {
         userModel = await _firestoreServices.getData();
