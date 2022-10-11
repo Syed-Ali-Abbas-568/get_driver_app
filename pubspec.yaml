@@ -48,6 +48,7 @@ dependencies:
   cached_network_image: ^3.2.2
   build_runner: ^2.2.1
   json_annotation: ^4.7.0
+  equatable: ^2.0.5
 
 
 dev_dependencies:

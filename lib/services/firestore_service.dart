@@ -74,52 +74,6 @@ class FirestoreService {
     return isPresent;
   }
 
-  // Future<void> updateData(UserModel modelToPassData) async {
-  //   try {
-  //     var data = await _firestore.doc(_firebaseUser?.uid).get();
-  //     String? photoUrl = modelToPassData.photoUrl;
-
-  //     if (photoUrl != null) {
-  //       var file = File(photoUrl);
-
-  //       Reference refRoot = FirebaseStorage.instance.ref();
-  //       Reference referenceDir = refRoot.child('images');
-  //       Reference imgToUpload = referenceDir.child(data.id);
-
-  //       await imgToUpload.putFile(file);
-  //       photoUrl = await imgToUpload.getDownloadURL();
-  //       log("The uploaded Image URL is $photoUrl");
-  //     }
-  //     log(modelToPassData.email.toString());
-  //     log(modelToPassData.cnic.toString());
-  //     log(modelToPassData.photoUrl.toString());
-  //     log(modelToPassData.firstName.toString());
-  //     log(modelToPassData.lastName.toString());
-
-  //     UserModel userModel = UserModel(
-  //         firstName: data.data()?['firstName'],
-  //         lastName: data.data()?['lastName'],
-  //         email: data.data()?['email'],
-  //         id: data.data()?['userId'],
-  //         photoUrl: photoUrl ?? data.data()?['photoUrl'],
-  //         cnic: modelToPassData.cnic,
-  //         phone: modelToPassData.phone,
-  //         license: modelToPassData.license,
-  //         experience: modelToPassData.experience,
-  //         dateOfBirth: modelToPassData.dateOfBirth,
-  //         userType: data.data()?['userType']);
-  //     final result = await _firestore.doc(_firebaseUser?.uid).update(
-  //           userModel.toJson(),
-  //         );
-  //   } on FirebaseAuthException catch (e) {
-  //     debugPrint(
-  //       e.message,
-  //     );
-  //     throw UnkownFirestoreException(
-  //       'Something went wrong ${e.code} ${e.message}',
-  //     );
-  //   }
-  // }
 
   Future<String> uploadImage(String filePath) async {
     try {
