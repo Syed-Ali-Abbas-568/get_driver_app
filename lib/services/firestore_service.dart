@@ -37,9 +37,8 @@ class FirestoreService {
     UserModel modelToPassData,
   ) async {
     try {
-      Map<String,dynamic> map=modelToPassData.toJson();
       await _firestore.doc(FirebaseAuthService().firebaseUser?.uid).set(
-            map,
+            modelToPassData.toJson(),
           );
     } catch (e) {
       log(e.toString());
@@ -101,23 +100,23 @@ class FirestoreService {
     UserModel modelToPassData,
   ) async {
     try {
-      var data = await _firestore.doc(_firebaseUser?.uid).get();
+      User? user= FirebaseAuth.instance.currentUser;
+      DocumentSnapshot data = await _firestore.doc(user?.uid).get();
       UserModel userModel = UserModel(
-        firstName: data.data()?['firstName'],
-        lastName: data.data()?['lastName'],
-        email: data.data()?['email'],
-        id: FirebaseAuthService().firebaseUser?.uid,
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName'),
+        email: data.get('email'),
+        id: user?.uid,
         photoUrl: modelToPassData.photoUrl,
         cnic: modelToPassData.cnic,
         phoneNO: modelToPassData.phoneNO,
         licenseNO: modelToPassData.licenseNO,
         experience: modelToPassData.experience,
         dateOfBirth: modelToPassData.dateOfBirth,
-        userType: data.data()?['userType'],
+        userType: data.get('userType'),
       );
-      Map<String, dynamic> map = userModel.toJson();
-      await _firestore.doc(FirebaseAuthService().firebaseUser?.uid).update(
-            map,
+      await _firestore.doc(user?.uid).update(
+          userModel.toJson(),
           );
     } on FirebaseAuthException catch (e) {
       debugPrint(
