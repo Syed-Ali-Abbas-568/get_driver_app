@@ -200,6 +200,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 email: _emailController.text,
                                 userType: _selectedUserType,
                               );
+
                               final userCred = await context
                                   .read<AuthProvider>()
                                   .signUpWithEmailPass(
@@ -364,36 +365,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 UserModel? userModel = await context
                                     .read<AuthProvider>()
                                     .facebookSignUp(
-                                  _selectedUserType,
-                                );
+                                      _selectedUserType,
+                                    );
                                 if (userModel == null ||
                                     userModel.cnic == null) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                      userModel?.userType == "client"
-                                          ? const ClientCreateProfile()
-                                          : const DriverCreateProfile(),
+                                          userModel?.userType == "client"
+                                              ? const ClientCreateProfile()
+                                              : const DriverCreateProfile(),
                                     ),
                                   );
-                                  SnackBarWidget.SnackBars(
-                                      "Sign in successful",
+                                  SnackBarWidget.SnackBars("Sign in successful",
                                       "assets/images/successImg.png",
                                       context: context);
                                 } else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) => userModel
-                                          .userType ==
-                                          "client"
+                                                  .userType ==
+                                              "client"
                                           ? ClientHome(
-                                          name:
-                                          "${userModel.firstName} ${userModel.lastName}")
+                                              name:
+                                                  "${userModel.firstName} ${userModel.lastName}")
                                           : const NavBar(),
                                     ),
                                   );
-                                  SnackBarWidget.SnackBars(
-                                      "Sign in successful",
+                                  SnackBarWidget.SnackBars("Sign in successful",
                                       "assets/images/successImg.png",
                                       context: context);
                                 }

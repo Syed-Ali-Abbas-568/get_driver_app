@@ -101,31 +101,22 @@ class FirestoreService {
   ) async {
     try {
       var data = await _firestore.doc(_firebaseUser?.uid).get();
-      log("reached till here");
-      log("${_firebaseUser?.uid}");
       UserModel userModel = UserModel(
-          firstName: data.data()?['firstName'],
-          lastName: data.data()?['lastName'],
-          email: data.data()?['email'],
-          id: data.data()?['userId'],
-          photoUrl: modelToPassData.photoUrl,
-          cnic: modelToPassData.cnic,
-          phoneNO: modelToPassData.phoneNO,
-          licenseNO: modelToPassData.licenseNO,
-          experience: modelToPassData.experience,
-          dateOfBirth: modelToPassData.dateOfBirth,
-          userType: data.data()?['userType']);
-
-      log(modelToPassData.phoneNO.toString());
-      log(modelToPassData.cnic.toString());
-      log(modelToPassData.photoUrl.toString());
-      log(modelToPassData.firstName.toString());
-      log(modelToPassData.lastName.toString());
-
-      log("${_firebaseUser?.uid.toString()} the firebase id");
-
-      await _firestore.doc(_firebaseUser?.uid).set(
-            userModel.toJson(),
+        firstName: data.data()?['firstName'],
+        lastName: data.data()?['lastName'],
+        email: data.data()?['email'],
+        id: FirebaseAuthService().firebaseUser?.uid,
+        photoUrl: modelToPassData.photoUrl,
+        cnic: modelToPassData.cnic,
+        phoneNO: modelToPassData.phoneNO,
+        licenseNO: modelToPassData.licenseNO,
+        experience: modelToPassData.experience,
+        dateOfBirth: modelToPassData.dateOfBirth,
+        userType: data.data()?['userType'],
+      );
+      Map<String, dynamic> map = userModel.toJson();
+      await _firestore.doc(FirebaseAuthService().firebaseUser?.uid).update(
+            map,
           );
     } on FirebaseAuthException catch (e) {
       debugPrint(

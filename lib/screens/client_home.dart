@@ -4,16 +4,16 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get_driver_app/constants.dart';
 import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
-import 'package:get_driver_app/screens/profile_screen.dart';
+import 'package:get_driver_app/screens/client_profile.dart';
 import 'package:get_driver_app/screens/search_screen.dart';
-
 import 'package:get_driver_app/widgets/clientHome_stream.dart';
 import 'package:get_driver_app/widgets/client_screen_banner.dart';
 import 'package:get_driver_app/widgets/signout_alert.dart';
-import 'package:provider/provider.dart';
 
 class ClientHome extends StatefulWidget {
   ClientHome({super.key, this.name = "John"});
@@ -61,7 +61,7 @@ class _ClientHomeState extends State<ClientHome> {
         leading: GestureDetector(
           onTap: () {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ProfileScreen()));
+                MaterialPageRoute(builder: (context) => const ClientProfile()));
           },
           child: Container(
             decoration: BoxDecoration(

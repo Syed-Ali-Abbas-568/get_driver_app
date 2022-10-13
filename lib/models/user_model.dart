@@ -32,11 +32,24 @@ class UserModel extends Equatable {
   });
 
   factory UserModel.fromJson(
-      Map<String, dynamic> json,
-      ) => _$UserModelFromJson(json);
+    Map<String, dynamic> json,
+  ) =>
+      _$UserModelFromJson(json);
 
-  Map<String, dynamic> toJson()=> _$UserModelToJson(this);
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   @override
-  List<Object?> get props => [id,email,firstName,lastName,photoUrl,dateOfBirth,experience,cnic,licenseNO,phoneNO,userType];
+  List<Object?> get props => [
+        id,
+        email,
+        firstName,
+        lastName,
+        photoUrl,
+        dateOfBirth,
+        experience,
+        cnic,
+        licenseNO,
+        phoneNO,
+        userType
+      ];
 }

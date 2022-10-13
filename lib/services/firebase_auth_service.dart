@@ -76,6 +76,7 @@ class FirebaseAuthService {
         userType: modelToPassData.userType,
         photoUrl: null,
       );
+
       _firestoreServices.postDetailsToFireStore(
         userModel,
       );
@@ -142,10 +143,9 @@ class FirebaseAuthService {
       bool isEmpty = false;
       isEmpty = await _firestoreServices.isPresent(user!.uid);
       final name = _user!.displayName?.split(" ");
-      log(name.toString());
       if (!isEmpty) {
-        userModel=UserModel(
-          firstName:name?[0],
+        userModel = UserModel(
+          firstName: name?[0],
           lastName: name?[1],
           email: _user?.email,
           id: user.uid,
