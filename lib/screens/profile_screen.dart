@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_driver_app/models/user_model.dart';
+import 'package:get_driver_app/screens/register_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:get_driver_app/providers/firestore_provider.dart';
@@ -44,6 +45,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   );
   final String _pattern = '^(?:[+0]9)?[0-9]{11}\$';
   final _formKey = GlobalKey<FormState>();
+  Stream<UserModel>? _userStream;
+
+  @override
+  void initState() {
+    _userStream = context.read<FirestoreProvider>().getUserStream();
+    log("Image Path= $_imagePath");
+    super.initState();
+  }
+
   @override
   void dispose() {
     _cnicController.dispose();
@@ -60,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return StreamBuilder<UserModel>(
-      stream: context.read<FirestoreProvider>().getUserStream(),
+      stream: _userStream,
       builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
         if (snapshot.hasError) {
           return const Text("Something went wrong try again");
@@ -175,13 +185,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 backgroundColor: Colors.transparent,
                                 backgroundImage: const AssetImage(
                                     'assets/images/profile.png'),
-                                foregroundImage:
-                                    (_imageUrl != null && _imagePath == null)
-                                        ? CachedNetworkImageProvider(
-                                            _imageUrl.toString(),
-                                          )
-                                        : FileImage(File(_imagePath.toString()))
-                                            as ImageProvider,
+                                foregroundImage: (_imageUrl != null &&
+                                        _imagePath == null)
+                                    ? CachedNetworkImageProvider(
+                                        _imageUrl.toString(),
+                                      )
+                                    : (_imagePath != null)
+                                        ? FileImage(File(_imagePath.toString()))
+                                            as ImageProvider
+                                        : null,
                               ),
                             ),
                           ),
@@ -427,14 +439,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             _imageUrl ??= Constants.defaultImage;
                           }
 
-                          log("The Uploaded URL is = $_imageUrl");
+                          log("Driver user type is ${driver.userType}");
+                          log("phone controller.txt= ${_phoneController.text}");
 
                           UserModel modelToPassData = UserModel(
                             photoUrl: _imageUrl,
                             dateOfBirth: _dobController.text,
-                            experience: int.parse(_yearsOfExpController.text),
+                            experience: (driver.userType == 'client')
+                                ? null
+                                : int.parse(_yearsOfExpController.text),
                             cnic: int.parse(_cnicController.text),
-                            licenseNO: int.parse(_licenceNumController.text),
+                            licenseNO: (driver.userType == 'client')
+                                ? null
+                                : int.parse(_licenceNumController.text),
                             phoneNO: _phoneController.text,
                           );
 

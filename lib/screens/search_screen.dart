@@ -6,6 +6,8 @@ import 'package:get_driver_app/models/user_model.dart';
 import 'package:get_driver_app/providers/firestore_provider.dart';
 import 'package:get_driver_app/widgets/driver_listTile.dart';
 
+import 'dart:developer';
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
@@ -18,6 +20,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _displayFilter = false;
   bool _enableFilter = false;
   int _filterValue = 0;
+  int? _length = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +167,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           TextButton(
                             onPressed: () {
                               _enableFilter = false;
+                              _filterValue = 0;
                               setState(() {});
                             },
                             child: const Text(
@@ -210,6 +214,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             (_enableFilter) ? _filterValue : 0),
                     builder:
                         (context, AsyncSnapshot<List<UserModel>> snapshot) {
+                      log("length = $_length");
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(
@@ -243,10 +248,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         );
                       }
-                      return _searchFieldController.text.isEmpty
+                      _length = 0;
+                      (_searchFieldController.text.isEmpty)
                           ? const Center(
                               child: Text(
-                                "No driver found",
+                                "Type a driver name to serach",
                                 style: TextStyle(
                                   color: Color(0xff152C5E),
                                 ),
@@ -256,11 +262,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               itemCount: snapshot.data?.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final data = snapshot.data![index];
+
                                 if (data.firstName
                                     .toString()
                                     .toLowerCase()
                                     .startsWith(_searchFieldController.text
                                         .toLowerCase())) {
+                                  _length = 1;
                                   return Container(
                                     margin: EdgeInsets.only(
                                       top: height * 0.025,
@@ -278,6 +286,28 @@ class _SearchScreenState extends State<SearchScreen> {
                                 return Container();
                               },
                             );
+
+                      if (_searchFieldController.text.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "Type a driver name to serach",
+                            style: TextStyle(
+                              color: Color(0xff152C5E),
+                            ),
+                          ),
+                        );
+                      } else if (_length == 0) {
+                        return const Center(
+                          child: Text(
+                            "No driver found",
+                            style: TextStyle(
+                              color: Color(0xff152C5E),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return Container();
                     }),
               ),
             ],

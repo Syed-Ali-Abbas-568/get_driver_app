@@ -74,7 +74,6 @@ class FirestoreService {
     return isPresent;
   }
 
-
   Future<String> uploadImage(String filePath) async {
     try {
       var file = File(filePath);
@@ -102,7 +101,8 @@ class FirestoreService {
   ) async {
     try {
       var data = await _firestore.doc(_firebaseUser?.uid).get();
-
+      log("reached till here");
+      log("${_firebaseUser?.uid}");
       UserModel userModel = UserModel(
           firstName: data.data()?['firstName'],
           lastName: data.data()?['lastName'],
@@ -116,12 +116,13 @@ class FirestoreService {
           dateOfBirth: modelToPassData.dateOfBirth,
           userType: data.data()?['userType']);
 
-      log(modelToPassData.email.toString());
+      log(modelToPassData.phoneNO.toString());
       log(modelToPassData.cnic.toString());
       log(modelToPassData.photoUrl.toString());
       log(modelToPassData.firstName.toString());
       log(modelToPassData.lastName.toString());
-      log(modelToPassData.id.toString());
+
+      log("${_firebaseUser?.uid.toString()} the firebase id");
 
       await _firestore.doc(_firebaseUser?.uid).set(
             userModel.toJson(),
