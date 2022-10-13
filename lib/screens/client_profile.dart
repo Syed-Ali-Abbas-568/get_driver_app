@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'dart:io';
 
@@ -55,41 +57,42 @@ class _ClientProfileState extends State<ClientProfile> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return StreamBuilder<UserModel>(
-      stream: _userStream,
-      builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
-        if (snapshot.hasError) {
-          return const Text("Something went wrong try again");
-        }
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF152C5E),
+        title: const Text("Profile"),
+      ),
+      body: StreamBuilder<UserModel>(
+        stream: _userStream,
+        builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
+          if (snapshot.hasError) {
+            return const Text("Something went wrong try again");
+          }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(
-            semanticsLabel: "Loading",
-            color: Color(0xFF152C5E),
-          );
-        }
-        final driver = snapshot.requireData;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: "Loading",
+                color: Color(0xFF152C5E),
+              ),
+            );
+          }
+          final driver = snapshot.requireData;
 
-        _firstNameController.text = driver.firstName ?? '';
-        _lastNameController.text = driver.lastName ?? '';
+          _firstNameController.text = driver.firstName ?? '';
+          _lastNameController.text = driver.lastName ?? '';
 
-        _imageUrl = driver.photoUrl;
+          _imageUrl = driver.photoUrl;
 
-        _emailController.text = driver.email ?? '';
-        _cnicController.text =
-            (driver.cnic != null ? driver.cnic.toString() : " ");
+          _emailController.text = driver.email ?? '';
+          _cnicController.text =
+              (driver.cnic != null ? driver.cnic.toString() : " ");
 
-        _phoneController.text =
-            (driver.phoneNO != null ? driver.phoneNO.toString() : 'null');
+          _phoneController.text =
+              (driver.phoneNO != null ? driver.phoneNO.toString() : 'null');
 
-        _name = "${_firstNameController.text} ${_lastNameController.text}";
-
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xFF152C5E),
-            title: const Text("Profile"),
-          ),
-          body: Form(
+          _name = "${_firstNameController.text} ${_lastNameController.text}";
+          return Form(
             key: _formKey,
             child: SingleChildScrollView(
               child: Column(
@@ -392,9 +395,9 @@ class _ClientProfileState extends State<ClientProfile> {
                 ],
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

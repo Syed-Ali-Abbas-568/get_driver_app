@@ -37,8 +37,9 @@ class FirestoreService {
     UserModel modelToPassData,
   ) async {
     try {
+      Map<String,dynamic> map=modelToPassData.toJson();
       await _firestore.doc(FirebaseAuthService().firebaseUser?.uid).set(
-            modelToPassData.toJson(),
+            map,
           );
     } catch (e) {
       log(e.toString());
