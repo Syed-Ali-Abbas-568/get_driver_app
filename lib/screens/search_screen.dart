@@ -249,7 +249,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         );
                       }
                       _length = 0;
-                      (_searchFieldController.text.isEmpty)
+                      return (_searchFieldController.text.isEmpty)
                           ? const Center(
                               child: Text(
                                 "Type a driver name to serach",
@@ -283,31 +283,22 @@ class _SearchScreenState extends State<SearchScreen> {
                                         height: height),
                                   );
                                 }
+
+                                if (index + 1 == snapshot.data?.length) {
+                                  if (_length == 0) {
+                                    return const Center(
+                                      child: Text(
+                                        "No driver found",
+                                        style: TextStyle(
+                                          color: Color(0xff152C5E),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
                                 return Container();
                               },
                             );
-
-                      if (_searchFieldController.text.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            "Type a driver name to serach",
-                            style: TextStyle(
-                              color: Color(0xff152C5E),
-                            ),
-                          ),
-                        );
-                      } else if (_length == 0) {
-                        return const Center(
-                          child: Text(
-                            "No driver found",
-                            style: TextStyle(
-                              color: Color(0xff152C5E),
-                            ),
-                          ),
-                        );
-                      }
-
-                      return Container();
                     }),
               ),
             ],
