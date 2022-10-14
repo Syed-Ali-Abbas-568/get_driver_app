@@ -33,7 +33,7 @@ class DriverListTile extends StatelessWidget {
       ),
       tileColor: const Color(0xffEEF3FF),
       title: Text(
-        "${data.firstName}${data.lastName}",
+        "${data.firstName} ${data.lastName}",
         style: const TextStyle(
           color: Color(0xff152C5E),
           fontSize: 15,
